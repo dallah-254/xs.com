@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XS Platform</title>
+    <link rel="stylesheet" href="/customer/css/header.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Your Slogan Here</div>
+            <nav class="main-nav">
+                <a href="/customer/shop" class="nav-link">Browse <i class="fas fa-caret-down"></i></a> 
+                <a href="/customer/deals" class="nav-link">Deals <span class="badge-new">NEW</span></a>
+                <a href="/customer/resources" class="nav-link">Resources</a>
+                <a href="/customer/support" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products, services, or brands..." class="search-input">
+            </div>
+
+            <!-- Desktop Auth State -->
+            <div class="auth-state">
+                <!-- Logged Out State (default) -->
+                <div class="logged-out-state" id="logged-out-state">
+                    <a href="/customer/auth" class="auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Logged In State -->
+                <div class="logged-in-state" id="logged-in-state" style="display: none;">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="/customer/profile" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="/customer/orders" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="/customer/wishlist" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Icon -->
+            <button class="filter-btn" id="filter-btn">
+                <i class="fas fa-filter"></i>
+            </button>
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-pro" id="request-quote-btn"><i class="fas fa-envelope"></i> Request Quote</button>
+            <button class="btn-submit" id="cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></button>
+            
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Search Bar (Hidden by default) -->
+    <div class="mobile-search-bar" id="mobile-search-bar">
+        <div class="mobile-search-container">
+            <input type="text" placeholder="Search..." class="mobile-search-input">
+            <button class="mobile-search-close" id="mobile-search-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Panel (Hidden by default) -->
+    <div class="mobile-menu-panel" id="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <div class="mobile-logo">XS</div>
+            <button class="mobile-menu-close" id="mobile-menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-content">
+            <!-- Mobile Auth State -->
+            <div class="mobile-auth-state">
+                <!-- Mobile Logged Out State -->
+                <div class="mobile-logged-out-state" id="mobile-logged-out-state">
+                    <a href="/customer/auth" class="mobile-auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Mobile Logged In State -->
+                <div class="mobile-logged-in-state" id="mobile-logged-in-state" style="display: none;">
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name" id="mobile-user-name">Welcome!</div>
+                            <div class="mobile-user-email" id="mobile-user-email">user@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-user-menu">
+                        <a href="/customer/profile" class="mobile-nav-link">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="/customer/orders" class="mobile-nav-link">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                        <a href="/customer/wishlist" class="mobile-nav-link">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </a>
+                        <div class="mobile-menu-divider"></div>
+                        <button class="mobile-action-btn" id="mobile-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-section">
+                <a href="/customer/shop" class="mobile-nav-link">
+                    <i class="fas fa-store"></i> Browse
+                </a>
+                <a href="/customer/deals" class="mobile-nav-link">
+                    <i class="fas fa-tag"></i> Deals <span class="mobile-badge-new">NEW</span>
+                </a>
+                <a href="/customer/resources" class="mobile-nav-link">
+                    <i class="fas fa-book"></i> Resources
+                </a>
+                <a href="/customer/support" class="mobile-nav-link">
+                    <i class="fas fa-headset"></i> Support
+                </a>
+            </div>
+            
+            <div class="mobile-actions-section">
+                <button class="mobile-action-btn" id="mobile-wishlist-btn">
+                    <i class="fas fa-heart"></i> Wishlist <span class="mobile-wishlist-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-cart-btn">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="mobile-cart-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-quote-btn">
+                    <i class="fas fa-envelope"></i> Request Quote
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Sidebar (Hidden by default) -->
+    <div class="filter-sidebar" id="filter-sidebar">
+        <div class="filter-sidebar-header">
+            <h3>Filters</h3>
+            <button class="filter-sidebar-close" id="filter-sidebar-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="filter-sidebar-content">
+            <div class="filter-group">
+                <label for="sidebar-type-filter">Type (Product/Service)</label>
+                <select class="filter-dropdown" id="sidebar-type-filter">
+                    <option value="">All Types</option>
+                    <option value="product">Product</option>
+                    <option value="service">Service</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-category-filter">Category</label>
+                <select class="filter-dropdown" id="sidebar-category-filter">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="home">Home Services</option>
+                    <option value="beauty">Beauty</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-location-filter">Location/Shipping</label>
+                <select class="filter-dropdown" id="sidebar-location-filter">
+                    <option value="">All Locations</option>
+                    <option value="local">Local</option>
+                    <option value="shipping">Shipping Available</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-price-filter">Price/Rate</label>
+                <select class="filter-dropdown" id="sidebar-price-filter">
+                    <option value="">All Prices</option>
+                    <option value="low">Under $50</option>
+                    <option value="medium">$50 - $200</option>
+                    <option value="high">Over $200</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-rating-filter">Rating</label>
+                <select class="filter-dropdown" id="sidebar-rating-filter">
+                    <option value="">All Ratings</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="3">3+ Stars</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="reset-filters" id="sidebar-reset-filters-btn">
+                    Reset filters <i class="fas fa-redo"></i>
+                </button>
+                <button class="apply-filters" id="apply-filters-btn">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-bar-row">
+        <div class="filter-container">
+            <select class="filter-dropdown" id="type-filter">
+                <option value="">Type (Product/Service)</option>
+                <option value="product">Product</option>
+                <option value="service">Service</option>
+            </select>
+            
+            <select class="filter-dropdown" id="category-filter">
+                <option value="">Category</option>
+                <option value="electronics">Electronics</option>
+                <option value="home">Home Services</option>
+                <option value="beauty">Beauty</option>
+            </select>
+            
+            <select class="filter-dropdown" id="location-filter">
+                <option value="">Location/Shipping</option>
+                <option value="local">Local</option>
+                <option value="shipping">Shipping Available</option>
+            </select>
+            
+            <select class="filter-dropdown" id="price-filter">
+                <option value="">Price/Rate</option>
+                <option value="low">Under $50</option>
+                <option value="medium">$50 - $200</option>
+                <option value="high">Over $200</option>
+            </select>
+            
+            <select class="filter-dropdown" id="rating-filter">
+                <option value="">Rating</option>
+                <option value="4">4+ Stars</option>
+                <option value="3">3+ Stars</option>
+            </select>
+            
+            <button class="notification-btn" id="notification-btn">
+                <i class="fas fa-bell"></i>
+                <div class="dot"></div>
+            </button>
+            
+            <button class="reset-filters" id="reset-filters-btn">
+                Reset filters <i class="fas fa-redo"></i>
+            </button>
+        </div>
+    </div>
+</header>
+<main class="main-content">
+    <!-- Main content will be injected here by the server -->
+</main>
