@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XS Platform - Frequently Asked Questions</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* FAQ PAGE SPECIFIC STYLES */
+        .faq-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .faq-header h1 {
+            font-size: 2.2rem;
+            margin: 0 0 10px;
+        }
+
+        .faq-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* FAQ Container */
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto 50px;
+        }
+
+        /* Search Section */
+        .faq-search {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin: 0 0 20px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid var(--light-bg);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text);
+            cursor: pointer;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .category-tab {
+            padding: 12px 25px;
+            border-radius: 8px;
+            background: var(--light-bg);
+            color: var(--secondary-text);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-tab:hover {
+            background: #e0e0e0;
+        }
+
+        .category-tab.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* FAQ Accordion */
+        .faq-accordion {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: var(--light-bg);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .faq-icon {
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-answer.active {
+            padding: 0 30px 25px;
+            max-height: 500px;
+        }
+
+        .answer-content {
+            color: var(--secondary-text);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .answer-content p {
+            margin: 0 0 15px;
+        }
+
+        .answer-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .answer-content ul,
+        .answer-content ol {
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .answer-content strong {
+            color: var(--primary-text);
+        }
+
+        .answer-content a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .answer-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+        }
+
+        .contact-cta h3 {
+            font-size: 1.5rem;
+            color: var(--primary-text);
+            margin: 0 0 15px;
+        }
+
+        .contact-cta p {
+            color: var(--secondary-text);
+            max-width: 600px;
+            margin: 0 auto 25px;
+            line-height: 1.6;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-link.phone {
+            background: var(--light-bg);
+            color: var(--primary-text);
+        }
+
+        .contact-link.phone:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .contact-link.email {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .contact-link.email:hover {
+            background: var(--accent-blue);
+        }
+
+        /* Related FAQs */
+        .related-faqs {
+            margin-top: 40px;
+        }
+
+        .related-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin: 0 0 20px;
+            text-align: center;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .related-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .related-card h4 {
+            margin: 0 0 10px;
+            color: var(--primary-text);
+            font-size: 1rem;
+        }
+
+        .related-card p {
+            margin: 0;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .read-more {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            color: var(--light-bg);
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            color: var(--primary-text);
+            margin: 0 0 15px;
+        }
+
+        .no-results p {
+            color: var(--secondary-text);
+            margin: 0 0 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .faq-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .faq-question {
+                padding: 20px;
+            }
+            
+            .faq-answer {
+                padding: 0 20px;
+            }
+            
+            .faq-answer.active {
+                padding: 0 20px 20px;
+            }
+            
+            .category-tabs {
+                justify-content: center;
+            }
+            
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-link {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-tab {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+            
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header (same structure as other pages) -->
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Electronics Shop & Repair Services</div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a> 
+                <a href="services.html" class="nav-link">Services <span class="badge-new">NEW</span></a>
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <!-- ... same as other pages ... -->
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- FAQ Header -->
+    <section class="faq-header">
+        <h1>Frequently Asked Questions</h1>
+        <p>Find answers to common questions about our products, services, and policies</p>
+    </section>
+
+    <!-- FAQ Container -->
+    <div class="faq-container">
+        <!-- Search Section -->
+        <section class="faq-search">
+            <h2 class="search-title">How can we help you today?</h2>
+            <div class="search-box">
+                <input type="text" class="search-input" id="faq-search-input" placeholder="Search for questions or topics...">
+                <div class="search-icon" id="faq-search-btn">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs" id="category-tabs">
+            <button class="category-tab active" data-category="all">
+                <i class="fas fa-th"></i> All Questions
+            </button>
+            <button class="category-tab" data-category="products">
+                <i class="fas fa-shopping-bag"></i> Products
+            </button>
+            <button class="category-tab" data-category="services">
+                <i class="fas fa-tools"></i> Services
+            </button>
+            <button class="category-tab" data-category="orders">
+                <i class="fas fa-box"></i> Orders & Shipping
+            </button>
+            <button class="category-tab" data-category="returns">
+                <i class="fas fa-exchange-alt"></i> Returns & Warranty
+            </button>
+            <button class="category-tab" data-category="account">
+                <i class="fas fa-user"></i> Account & Billing
+            </button>
+        </div>
+
+        <!-- FAQ Accordion -->
+        <div class="faq-accordion" id="faq-accordion">
+            <!-- FAQ Item 1 -->
+            <div class="faq-item" data-category="orders">
+                <div class="faq-question">
+                    <div class="question-text">How long does shipping take?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>We offer several shipping options to meet your needs:</p>
+                        <ul>
+                            <li><strong>Standard Shipping:</strong> 3-5 business days</li>
+                            <li><strong>Express Shipping:</strong> 1-2 business days</li>
+                            <li><strong>Same-Day Delivery:</strong> Available for local orders placed before 2 PM</li>
+                            <li><strong>Store Pickup:</strong> Ready in 1 hour (available at select locations)</li>
+                        </ul>
+                        <p>Shipping times are calculated from the moment your order is processed. You'll receive tracking information via email once your order ships.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-item" data-category="services">
+                <div class="faq-question">
+                    <div class="question-text">Do you offer repair warranties?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>Yes, all our repair services come with a comprehensive warranty:</p>
+                        <ul>
+                            <li><strong>90-Day Service Warranty:</strong> Covers both parts and labor</li>
+                            <li><strong>Genuine Parts Guarantee:</strong> We use only original or certified replacement parts</li>
+                            <li><strong>Water Damage Warranty:</strong> 30-day warranty on water damage repairs</li>
+                            <li><strong>Screen Replacement Warranty:</strong> 180-day warranty on all screen repairs</li>
+                        </ul>
+                        <p>If you experience any issues with your repair within the warranty period, bring your device back for a free diagnosis and repair.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-item" data-category="returns">
+                <div class="faq-question">
+                    <div class="question-text">What is your return policy?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>We offer a 30-day return policy for most products:</p>
+                        <ul>
+                            <li><strong>Unopened Products:</strong> Full refund within 30 days</li>
+                            <li><strong>Opened Products:</strong> Return within 14 days for exchange or store credit</li>
+                            <li><strong>Defective Products:</strong> 1-year warranty from date of purchase</li>
+                            <li><strong>Special Items:</strong> Software, gift cards, and personalized items are non-returnable</li>
+                        </ul>
+                        <p>To initiate a return, visit our <a href="returns.html">Returns Center</a> or contact our customer support team.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-item" data-category="products">
+                <div class="faq-question">
+                    <div class="question-text">Are your products covered by manufacturer warranties?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>Yes, all products sold through XS Platform are covered by manufacturer warranties:</p>
+                        <ul>
+                            <li><strong>Electronics:</strong> Typically 1-year manufacturer warranty</li>
+                            <li><strong>Apple Products:</strong> 1-year limited warranty + AppleCare eligibility</li>
+                            <li><strong>Extended Warranties:</strong> Available for purchase on most products</li>
+                            <li><strong>International Warranty:</strong> Most major brands offer global warranty coverage</li>
+                        </ul>
+                        <p>We also offer our own 1-year extended warranty on all products for additional peace of mind.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-item" data-category="account">
+                <div class="faq-question">
+                    <div class="question-text">How can I track my order?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>There are several ways to track your order:</p>
+                        <ol>
+                            <li><strong>Order Tracking Page:</strong> Visit our <a href="order-tracking.html">Order Tracking</a> page and enter your order number and email</li>
+                            <li><strong>Account Dashboard:</strong> Log into your account and view order history</li>
+                            <li><strong>Email Notifications:</strong> You'll receive shipping confirmation with tracking link</li>
+                            <li><strong>Mobile App:</strong> Track orders through our mobile application</li>
+                        </ol>
+                        <p>If you're having trouble tracking your order, contact our support team for assistance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="faq-item" data-category="services">
+                <div class="faq-question">
+                    <div class="question-text">How long does a typical repair take?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>Repair times vary depending on the service:</p>
+                        <ul>
+                            <li><strong>Screen Replacements:</strong> 1-2 hours (same-day service available)</li>
+                            <li><strong>Battery Replacements:</strong> 30-60 minutes</li>
+                            <li><strong>Water Damage Repair:</strong> 24-48 hours (requires diagnostics and drying)</li>
+                            <li><strong>Software Issues:</strong> 1-2 hours</li>
+                            <li><strong>Motherboard Repair:</strong> 3-5 business days</li>
+                        </ul>
+                        <p>We offer while-you-wait service for common repairs and provide loaner devices for longer repairs upon request.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 7 -->
+            <div class="faq-item" data-category="account">
+                <div class="faq-question">
+                    <div class="question-text">What payment methods do you accept?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>We accept a wide variety of payment methods:</p>
+                        <ul>
+                            <li><strong>Credit/Debit Cards:</strong> Visa, MasterCard, American Express, Discover</li>
+                            <li><strong>Digital Wallets:</strong> Apple Pay, Google Pay, Samsung Pay</li>
+                            <li><strong>Bank Transfers:</strong> Available for business accounts</li>
+                            <li><strong>Financing:</strong> 0% APR financing available for purchases over $500</li>
+                            <li><strong>Cash:</strong> Accepted for in-store purchases</li>
+                            <li><strong>Cryptocurrency:</strong> Bitcoin and Ethereum accepted online</li>
+                        </ul>
+                        <p>All payments are processed securely using industry-standard encryption.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 8 -->
+            <div class="faq-item" data-category="products">
+                <div class="faq-question">
+                    <div class="question-text">Do you offer price matching?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <div class="answer-content">
+                        <p>Yes, we offer a 30-day price match guarantee:</p>
+                        <ul>
+                            <li><strong>Eligible Competitors:</strong> Major authorized retailers (Best Buy, Amazon, etc.)</li>
+                            <li><strong>Time Frame:</strong> Within 30 days of purchase</li>
+                            <li><strong>Requirements:</strong> Same product, new condition, in stock at competitor</li>
+                            <li><strong>Exclusions:</strong> Clearance items, refurbished products, limited-time sales</li>
+                        </ul>
+                        <p>To request a price match, contact our customer service with proof of the lower price (screenshot or link).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="no-results">
+            <div class="no-results-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>No matching questions found</h3>
+            <p>Try searching with different keywords or browse our categories</p>
+            <button class="category-tab active" data-category="all">
+                <i class="fas fa-redo"></i> Show All Questions
+            </button>
+        </div>
+
+        <!-- Related FAQs -->
+        <div class="related-faqs">
+            <h3 class="related-title">Popular Questions</h3>
+            <div class="related-grid">
+                <div class="related-card">
+                    <h4>How do I cancel my service appointment?</h4>
+                    <p>Learn about our cancellation policy and how to reschedule appointments.</p>
+                    <a href="#" class="read-more" data-question="cancel">Read Answer →</a>
+                </div>
+                
+                <div class="related-card">
+                    <h4>Do you offer corporate/bulk discounts?</h4>
+                    <p>Information about our business accounts and volume purchasing.</p>
+                    <a href="#" class="read-more" data-question="discount">Read Answer →</a>
+                </div>
+                
+                <div class="related-card">
+                    <h4>Can I upgrade my shipping after ordering?</h4>
+                    <p>Instructions for modifying your shipping method post-purchase.</p>
+                    <a href="#" class="read-more" data-question="shipping">Read Answer →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <section class="contact-cta">
+            <div class="cta-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h3>Still have questions?</h3>
+            <p>Our customer support team is available 24/7 to help you with any questions or concerns.</p>
+            <div class="contact-links">
+                <a href="tel:+15551234567" class="contact-link phone">
+                    <i class="fas fa-phone-alt"></i> Call Us: (555) 123-4567
+                </a>
+                <a href="contact.html" class="contact-link email">
+                    <i class="fas fa-envelope"></i> Send a Message
+                </a>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<script src="header-footer.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // FAQ Accordion Functionality
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        const noResults = document.getElementById('no-results');
+        const faqAccordion = document.getElementById('faq-accordion');
+        const searchInput = document.getElementById('faq-search-input');
+        const searchBtn = document.getElementById('faq-search-btn');
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const readMoreLinks = document.querySelectorAll('.read-more');
+        
+        // Initialize all FAQ answers as collapsed
+        faqQuestions.forEach(question => {
+            const answer = question.nextElementSibling;
+            answer.style.maxHeight = '0';
+        });
+        
+        // FAQ Accordion toggle
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const icon = this.querySelector('.faq-icon i');
+                
+                // Close all other answers
+                faqQuestions.forEach(otherQuestion => {
+                    if (otherQuestion !== this) {
+                        const otherAnswer = otherQuestion.nextElementSibling;
+                        const otherIcon = otherQuestion.querySelector('.faq-icon i');
+                        otherAnswer.classList.remove('active');
+                        otherAnswer.style.maxHeight = '0';
+                        otherIcon.className = 'fas fa-chevron-down';
+                    }
+                });
+                
+                // Toggle current answer
+                if (answer.classList.contains('active')) {
+                    answer.classList.remove('active');
+                    answer.style.maxHeight = '0';
+                    icon.className = 'fas fa-chevron-down';
+                } else {
+                    answer.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    icon.className = 'fas fa-chevron-up';
+                }
+            });
+        });
+        
+        // Category Filtering
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                filterFAQs(category);
+            });
+        });
+        
+        // Search Functionality
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const activeCategory = document.querySelector('.category-tab.active').getAttribute('data-category');
+            
+            if (searchTerm === '') {
+                filterFAQs(activeCategory);
+                return;
+            }
+            
+            let foundCount = 0;
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.question-text').textContent.toLowerCase();
+                const answer = item.querySelector('.answer-content').textContent.toLowerCase();
+                const itemCategory = item.getAttribute('data-category');
+                
+                const matchesSearch = question.includes(searchTerm) || answer.includes(searchTerm);
+                const matchesCategory = activeCategory === 'all' || activeCategory === itemCategory;
+                
+                if (matchesSearch && matchesCategory) {
+                    item.style.display = 'block';
+                    foundCount++;
+                    
+                    // Highlight search term
+                    const questionText = item.querySelector('.question-text');
+                    const originalText = questionText.textContent;
+                    const highlightedText = originalText.replace(
+                        new RegExp(searchTerm, 'gi'),
+                        match => `<span style="background-color: #fff3cd; padding: 2px 4px; border-radius: 4px;">${match}</span>`
+                    );
+                    questionText.innerHTML = highlightedText;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results message
+            if (foundCount === 0) {
+                noResults.style.display = 'block';
+                faqAccordion.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                faqAccordion.style.display = 'block';
+            }
+        }
+        
+        // Filter FAQs by category
+        function filterFAQs(category) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            let visibleCount = 0;
+            
+            faqItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                
+                if (category === 'all' || category === itemCategory) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+                faqAccordion.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                faqAccordion.style.display = 'block';
+            }
+            
+            // Reset search input
+            searchInput.value = '';
+        }
+        
+        // Event listeners for search
+        searchInput.addEventListener('input', performSearch);
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Read More links
+        readMoreLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const questionType = this.getAttribute('data-question');
+                
+                // In a real implementation, this would scroll to and open the specific FAQ
+                // For demo, we'll just show an alert
+                switch(questionType) {
+                    case 'cancel':
+                        alert("To cancel a service appointment, visit your booking history or contact our support team at least 24 hours in advance to avoid cancellation fees.");
+                        break;
+                    case 'discount':
+                        alert("We offer corporate discounts for bulk purchases. Contact our business sales team at business@xsplatform.com for custom quotes.");
+                        break;
+                    case 'shipping':
+                        alert("You can upgrade your shipping by contacting customer support within 1 hour of placing your order, subject to availability.");
+                        break;
+                }
+            });
+        });
+        
+        // Show all questions button in no results
+        const showAllBtn = noResults.querySelector('.category-tab');
+        if (showAllBtn) {
+            showAllBtn.addEventListener('click', function() {
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                document.querySelector('.category-tab[data-category="all"]').classList.add('active');
+                filterFAQs('all');
+                searchInput.value = '';
+            });
+        }
+        
+        // Check for URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        const searchParam = urlParams.get('search');
+        
+        if (categoryParam) {
+            const tab = document.querySelector(`.category-tab[data-category="${categoryParam}"]`);
+            if (tab) {
+                tab.click();
+            }
+        }
+        
+        if (searchParam) {
+            searchInput.value = searchParam;
+            setTimeout(() => {
+                performSearch();
+            }, 100);
+        }
+    });
+</script>
+</body>
+</html>

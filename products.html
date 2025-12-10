@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XS Platform - Products</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* PRODUCTS PAGE SPECIFIC STYLES */
+        
+        /* Page Header */
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--primary-text);
+            margin: 0 0 10px;
+        }
+        
+        .page-header p {
+            color: var(--secondary-text);
+            margin: 0;
+        }
+        
+        /* Products Grid */
+        .products-section {
+            margin-bottom: 40px;
+        }
+        
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .products-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary-text);
+            margin: 0;
+        }
+        
+        .products-count {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sort-label {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+        
+        .sort-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--primary-text);
+            background: white;
+            cursor: pointer;
+            min-width: 150px;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent-orange);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .product-badge.new {
+            background: var(--accent-blue);
+        }
+        
+        .product-badge.sale {
+            background: #e74c3c;
+        }
+        
+        .product-badge.popular {
+            background: #2ecc71;
+        }
+        
+        .product-image {
+            height: 200px;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-image-placeholder {
+            font-size: 48px;
+            color: var(--border-color);
+        }
+        
+        .wishlist-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--secondary-text);
+            transition: all 0.2s;
+            z-index: 1;
+        }
+        
+        .wishlist-btn:hover {
+            color: #e74c3c;
+            background: #ffeaea;
+        }
+        
+        .wishlist-btn.active {
+            color: #e74c3c;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .product-title {
+            font-size: 1.1rem;
+            color: var(--primary-text);
+            margin: 0 0 10px;
+            line-height: 1.3;
+        }
+        
+        .product-description {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            margin: 0 0 15px;
+            line-height: 1.4;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .stars {
+            color: #ffc107;
+        }
+        
+        .rating-count {
+            font-size: 0.8rem;
+            color: var(--secondary-text);
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .current-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+        
+        .original-price {
+            font-size: 1rem;
+            color: var(--secondary-text);
+            text-decoration: line-through;
+        }
+        
+        .discount {
+            font-size: 0.8rem;
+            color: #e74c3c;
+            font-weight: 600;
+            background: #ffeaea;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .add-to-cart-btn {
+            flex: 1;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .add-to-cart-btn:hover {
+            background: var(--accent-blue);
+        }
+        
+        .quick-view-btn {
+            background: white;
+            color: var(--primary-text);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .quick-view-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        
+        /* Loading States */
+        .loading-indicator {
+            text-align: center;
+            padding: 40px;
+            color: var(--secondary-text);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--primary-blue);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #ffeaea;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        /* Product Filters */
+        .filters-sidebar {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .filters-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary-text);
+            margin: 0;
+        }
+        
+        .clear-filters {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        
+        .filter-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .filter-group h4 {
+            font-size: 1rem;
+            color: var(--primary-text);
+            margin: 0 0 15px;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .filter-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .filter-option label {
+            font-size: 0.9rem;
+            color: var(--primary-text);
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .filter-count {
+            font-size: 0.8rem;
+            color: var(--secondary-text);
+        }
+        
+        .price-range {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .price-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .price-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .apply-price-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .apply-price-btn:hover {
+            background: var(--accent-blue);
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 40px;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            color: var(--primary-text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-btn:hover:not(.active):not(.disabled) {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        
+        .page-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+        
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .page-dots {
+            padding: 0 10px;
+            color: var(--secondary-text);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            color: var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--primary-text);
+            margin: 0 0 10px;
+        }
+        
+        .empty-state p {
+            color: var(--secondary-text);
+            margin: 0 0 20px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Responsive */
+        @media (min-width: 992px) {
+            .products-container {
+                display: grid;
+                grid-template-columns: 250px 1fr;
+                gap: 30px;
+            }
+            
+            .filters-sidebar {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .products-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .sort-options {
+                width: 100%;
+            }
+            
+            .sort-select {
+                flex: 1;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Customized Header - Modified from index.html -->
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Premium Electronics Store</div> <!-- Changed slogan -->
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link active">Products</a> 
+                <a href="services.html" class="nav-link">Services</a> <!-- Removed NEW badge -->
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" id="global-search" placeholder="Search products..." class="search-input">
+            </div>
+
+            <!-- Desktop Auth State -->
+            <div class="auth-state">
+                <!-- Logged Out State (default) -->
+                <div class="logged-out-state" id="logged-out-state">
+                    <a href="login.html" class="auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Logged In State -->
+                <div class="logged-in-state" id="logged-in-state" style="display: none;">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="user-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="profile.html" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="orders.html" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="wishlist.html" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Removed Filter Icon from products page -->
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-submit" id="cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></button>
+            
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Search Bar (Hidden by default) -->
+    <div class="mobile-search-bar" id="mobile-search-bar">
+        <div class="mobile-search-container">
+            <input type="text" placeholder="Search..." class="mobile-search-input">
+            <button class="mobile-search-close" id="mobile-search-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Panel (Hidden by default) -->
+    <div class="mobile-menu-panel" id="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <div class="mobile-logo">XS</div>
+            <button class="mobile-menu-close" id="mobile-menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-content">
+            <!-- Mobile Auth State -->
+            <div class="mobile-auth-state">
+                <!-- Mobile Logged Out State -->
+                <div class="mobile-logged-out-state" id="mobile-logged-out-state">
+                    <a href="login.html" class="mobile-auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Mobile Logged In State -->
+                <div class="mobile-logged-in-state" id="mobile-logged-in-state" style="display: none;">
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name" id="mobile-user-name">Welcome!</div>
+                            <div class="mobile-user-email" id="mobile-user-email">user@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-user-menu">
+                        <a href="user-dashboard.html" class="mobile-nav-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="profile.html" class="mobile-nav-link">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="orders.html" class="mobile-nav-link">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                        <a href="wishlist.html" class="mobile-nav-link">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </a>
+                        <div class="mobile-menu-divider"></div>
+                        <button class="mobile-action-btn" id="mobile-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-section">
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="products.html" class="mobile-nav-link active">
+                    <i class="fas fa-shopping-bag"></i> Products
+                </a>
+                <a href="services.html" class="mobile-nav-link">
+                    <i class="fas fa-tools"></i> Services
+                </a>
+                <a href="deals.html" class="mobile-nav-link">
+                    <i class="fas fa-tag"></i> Deals
+                </a>
+                <a href="support.html" class="mobile-nav-link">
+                    <i class="fas fa-headset"></i> Support
+                </a>
+            </div>
+            
+            <div class="mobile-actions-section">
+                <button class="mobile-action-btn" id="mobile-wishlist-btn">
+                    <i class="fas fa-heart"></i> Wishlist <span class="mobile-wishlist-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-cart-btn">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="mobile-cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Removed Filter Bar Row from products page -->
+</header>
+
+<main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>All Products</h1>
+        <p>Browse our collection of electronics, accessories, and more</p>
+    </div>
+    
+    <!-- Products Container -->
+    <div class="products-container">
+        <!-- Desktop Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <div class="filters-header">
+                <h3>Filters</h3>
+                <button class="clear-filters" id="clear-all-filters">Clear All</button>
+            </div>
+            
+            <!-- Category Filter -->
+            <div class="filter-group">
+                <h4>Category</h4>
+                <div class="filter-options" id="category-filters">
+                    <!-- Dynamically populated from API -->
+                </div>
+            </div>
+            
+            <!-- Price Range Filter -->
+            <div class="filter-group">
+                <h4>Price Range</h4>
+                <div class="price-range">
+                    <div class="price-inputs">
+                        <input type="number" class="price-input" id="min-price" placeholder="Min" value="0">
+                        <input type="number" class="price-input" id="max-price" placeholder="Max" value="5000">
+                    </div>
+                    <button class="apply-price-btn" id="apply-price">Apply</button>
+                </div>
+            </div>
+            
+            <!-- Brand Filter -->
+            <div class="filter-group">
+                <h4>Brand</h4>
+                <div class="filter-options" id="brand-filters">
+                    <!-- Dynamically populated from API -->
+                </div>
+            </div>
+            
+            <!-- Rating Filter -->
+            <div class="filter-group">
+                <h4>Rating</h4>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="rating-5" name="rating" value="5">
+                        <label for="rating-5">
+                            <span class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </label>
+                        <span class="filter-count" id="rating-5-count">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="rating-4" name="rating" value="4">
+                        <label for="rating-4">
+                            <span class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </span>
+                        </label>
+                        <span class="filter-count" id="rating-4-count">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="rating-3" name="rating" value="3">
+                        <label for="rating-3">
+                            <span class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </span>
+                        </label>
+                        <span class="filter-count" id="rating-3-count">(0)</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Products Content -->
+        <div class="products-content">
+            <!-- Products Header -->
+            <div class="products-header">
+                <div>
+                    <h2>Featured Products</h2>
+                    <div class="products-count" id="products-count">Loading products...</div>
+                </div>
+                
+                <div class="sort-options">
+                    <span class="sort-label">Sort by:</span>
+                    <select class="sort-select" id="sort-by">
+                        <option value="featured">Featured</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                        <option value="name_asc">Name: A to Z</option>
+                        <option value="name_desc">Name: Z to A</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="newest">Newest</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Loading State -->
+            <div class="loading-indicator" id="loading-indicator">
+                <div class="loading-spinner"></div>
+                <p>Loading products...</p>
+            </div>
+            
+            <!-- Error State -->
+            <div class="error-message" id="error-message" style="display: none;">
+                <p>Error loading products. Please try again later.</p>
+                <button class="btn-pro" id="retry-load-btn">Retry</button>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid" id="products-grid">
+                <!-- Product cards will be dynamically generated from API -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Empty State (Hidden by default) -->
+    <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-state-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>No products found</h3>
+        <p>Try adjusting your filters or search terms to find what you're looking for.</p>
+        <button class="btn-pro" id="reset-filters-empty">Reset All Filters</button>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<!-- Link to shared JavaScript file -->
+<script src="header-footer.js"></script>
+
+<!-- Products page specific JavaScript with API Integration -->
+<script>
+    // API Configuration
+    const API_BASE_URL = 'https://api.xsplatform.com'; // Replace with your actual API base URL
+    const API_ENDPOINTS = {
+        PRODUCTS: `${API_BASE_URL}/api/v1/products`,
+        PRODUCT_DETAIL: `${API_BASE_URL}/api/v1/products/{id}`,
+        CATEGORIES: `${API_BASE_URL}/api/v1/categories`,
+        BRANDS: `${API_BASE_URL}/api/v1/brands`,
+        WISHLIST: `${API_BASE_URL}/api/v1/wishlist`,
+        CART: `${API_BASE_URL}/api/v1/cart`,
+        ORDERS: `${API_BASE_URL}/api/v1/orders`,
+        SEARCH: `${API_BASE_URL}/api/v1/search`,
+        REVIEWS: `${API_BASE_URL}/api/v1/reviews`,
+        AUTH_LOGIN: `${API_BASE_URL}/api/v1/auth/login`,
+        AUTH_REGISTER: `${API_BASE_URL}/api/v1/auth/register`,
+        AUTH_LOGOUT: `${API_BASE_URL}/api/v1/auth/logout`,
+        USER_PROFILE: `${API_BASE_URL}/api/v1/user/profile`,
+        USER_ORDERS: `${API_BASE_URL}/api/v1/user/orders`,
+        USER_WISHLIST: `${API_BASE_URL}/api/v1/user/wishlist`,
+        FILTER_OPTIONS: `${API_BASE_URL}/api/v1/filter-options`
+    };
+
+    // Current state
+    let currentPage = 1;
+    let productsPerPage = 12;
+    let totalProducts = 0;
+    let filteredProducts = [];
+    let allProducts = [];
+    let wishlistItems = [];
+    let cartItems = [];
+    let currentFilters = {
+        categories: [],
+        brands: [],
+        minPrice: 0,
+        maxPrice: 5000,
+        ratings: []
+    };
+    let currentSort = 'featured';
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Products page initialized with API integration');
+        
+        // Load initial data
+        loadProducts();
+        loadFilterOptions();
+        
+        // Initialize event listeners
+        initFilters();
+        initSort();
+        initSearch();
+        initEventListeners();
+    });
+
+    // API Helper Functions
+    async function fetchAPI(url, options = {}) {
+        try {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                ...options
+            };
+            
+            const response = await fetch(url, defaultOptions);
+            
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API Fetch Error:', error);
+            showError('Failed to load data. Please try again.');
+            throw error;
+        }
+    }
+
+    function getAuthToken() {
+        // Get auth token from localStorage or cookies
+        return localStorage.getItem('xs_auth_token') || '';
+    }
+
+    // Load products from API
+    async function loadProducts() {
+        try {
+            showLoading();
+            
+            const params = new URLSearchParams({
+                page: currentPage,
+                limit: productsPerPage,
+                sort: currentSort,
+                ...currentFilters
+            });
+            
+            const data = await fetchAPI(`${API_ENDPOINTS.PRODUCTS}?${params}`);
+            
+            allProducts = data.products || [];
+            filteredProducts = [...allProducts];
+            totalProducts = data.total || allProducts.length;
+            
+            hideLoading();
+            renderProducts();
+            renderPagination();
+            updateFilterCounts();
+            
+        } catch (error) {
+            hideLoading();
+            showError('Failed to load products');
+        }
+    }
+
+    // Load filter options from API
+    async function loadFilterOptions() {
+        try {
+            const data = await fetchAPI(API_ENDPOINTS.FILTER_OPTIONS);
+            
+            // Populate categories
+            const categoriesContainer = document.getElementById('category-filters');
+            if (data.categories && categoriesContainer) {
+                categoriesContainer.innerHTML = data.categories.map(category => `
+                    <div class="filter-option">
+                        <input type="checkbox" id="cat-${category.id}" name="category" value="${category.id}">
+                        <label for="cat-${category.id}">${category.name}</label>
+                        <span class="filter-count">(${category.count || 0})</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Populate brands
+            const brandsContainer = document.getElementById('brand-filters');
+            if (data.brands && brandsContainer) {
+                brandsContainer.innerHTML = data.brands.map(brand => `
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-${brand.id}" name="brand" value="${brand.id}">
+                        <label for="brand-${brand.id}">${brand.name}</label>
+                        <span class="filter-count">(${brand.count || 0})</span>
+                    </div>
+                `).join('');
+            }
+            
+        } catch (error) {
+            console.error('Failed to load filter options:', error);
+        }
+    }
+
+    // Render products
+    function renderProducts() {
+        const productsGrid = document.getElementById('products-grid');
+        const emptyState = document.getElementById('empty-state');
+        
+        if (filteredProducts.length === 0) {
+            productsGrid.innerHTML = '';
+            emptyState.style.display = 'block';
+            document.querySelector('.products-content').style.display = 'none';
+            return;
+        }
+        
+        emptyState.style.display = 'none';
+        document.querySelector('.products-content').style.display = 'block';
+        
+        // Clear grid
+        productsGrid.innerHTML = '';
+        
+        // Render product cards
+        filteredProducts.forEach(product => {
+            const productCard = createProductCard(product);
+            productsGrid.appendChild(productCard);
+        });
+        
+        // Update products count
+        const showingStart = (currentPage - 1) * productsPerPage + 1;
+        const showingEnd = Math.min(currentPage * productsPerPage, totalProducts);
+        document.getElementById('products-count').textContent = 
+            `Showing ${showingStart}-${showingEnd} of ${totalProducts} products`;
+    }
+
+    // Create product card HTML
+    function createProductCard(product) {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        
+        // Calculate discount if any
+        let discountHtml = '';
+        if (product.originalPrice && product.originalPrice > product.price) {
+            const discount = Math.round((1 - product.price / product.originalPrice) * 100);
+            discountHtml = `<span class="discount">-${discount}%</span>`;
+        }
+        
+        // Create price HTML
+        let priceHtml = `<div class="current-price">$${product.price.toFixed(2)}</div>`;
+        if (product.originalPrice && product.originalPrice > product.price) {
+            priceHtml += `<div class="original-price">$${product.originalPrice.toFixed(2)}</div>${discountHtml}`;
+        }
+        
+        // Create badge HTML
+        let badgeHtml = '';
+        if (product.tags && product.tags.length > 0) {
+            const badgeClass = product.tags[0].toLowerCase();
+            const badgeText = product.tags[0];
+            badgeHtml = `<div class="product-badge ${badgeClass}">${badgeText}</div>`;
+        }
+        
+        // Create rating stars
+        const starsHtml = createStars(product.rating || 0);
+        
+        // Check if product is in wishlist
+        const isInWishlist = wishlistItems.includes(product.id);
+        const wishlistClass = isInWishlist ? 'active' : '';
+        
+        // Get product image
+        const productImage = getProductImage(product);
+        
+        card.innerHTML = `
+            ${badgeHtml}
+            <div class="product-image">
+                ${productImage}
+                <button class="wishlist-btn ${wishlistClass}" data-id="${product.id}">
+                    <i class="${wishlistClass ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+            </div>
+            <div class="product-info">
+                <div class="product-category">${product.category || 'Electronics'}</div>
+                <h3 class="product-title">${product.name}</h3>
+                <p class="product-description">${product.description || 'No description available'}</p>
+                <div class="product-rating">
+                    <div class="stars">${starsHtml}</div>
+                    <div class="rating-count">(${product.reviewCount || 0})</div>
+                </div>
+                <div class="product-price">${priceHtml}</div>
+                <div class="product-actions">
+                    <button class="add-to-cart-btn" data-id="${product.id}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="quick-view-btn" data-id="${product.id}">
+                        <i class="fas fa-eye"></i> Quick View
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+
+    // Helper function to get product image
+    function getProductImage(product) {
+        if (product.imageUrl) {
+            return `<img src="${product.imageUrl}" alt="${product.name}" loading="lazy">`;
+        }
+        
+        // Fallback to icons based on category
+        const iconMap = {
+            'phones': 'fa-mobile-alt',
+            'computers': 'fa-laptop',
+            'audio': 'fa-headphones',
+            'electronics': 'fa-tv',
+            'accessories': 'fa-keyboard',
+            'tablets': 'fa-tablet-alt',
+            'wearables': 'fa-clock'
+        };
+        
+        const category = product.category ? product.category.toLowerCase() : 'electronics';
+        const iconClass = iconMap[category] || 'fa-box';
+        
+        return `<i class="fas ${iconClass} product-image-placeholder"></i>`;
+    }
+
+    // Create star rating HTML
+    function createStars(rating) {
+        let stars = '';
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        
+        // Full stars
+        for (let i = 0; i < fullStars; i++) {
+            stars += '<i class="fas fa-star"></i>';
+        }
+        
+        // Half star
+        if (hasHalfStar) {
+            stars += '<i class="fas fa-star-half-alt"></i>';
+        }
+        
+        // Empty stars
+        const remaining = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        for (let i = 0; i < remaining; i++) {
+            stars += '<i class="far fa-star"></i>';
+        }
+        
+        return stars;
+    }
+
+    // Render pagination
+    function renderPagination() {
+        const pagination = document.getElementById('pagination');
+        const totalPages = Math.ceil(totalProducts / productsPerPage);
+        
+        if (totalPages <= 1) {
+            pagination.innerHTML = '';
+            return;
+        }
+        
+        let paginationHtml = '';
+        
+        // Previous button
+        paginationHtml += `
+            <button class="page-btn prev ${currentPage === 1 ? 'disabled' : ''}" 
+                    data-page="${currentPage - 1}">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        `;
+        
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        
+        // Adjust if we're near the end
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+        
+        // First page if not in range
+        if (startPage > 1) {
+            paginationHtml += `
+                <button class="page-btn" data-page="1">1</button>
+                ${startPage > 2 ? '<span class="page-dots">...</span>' : ''}
+            `;
+        }
+        
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `
+                <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                        data-page="${i}">${i}</button>
+            `;
+        }
+        
+        // Last page if not in range
+        if (endPage < totalPages) {
+            paginationHtml += `
+                ${endPage < totalPages - 1 ? '<span class="page-dots">...</span>' : ''}
+                <button class="page-btn" data-page="${totalPages}">${totalPages}</button>
+            `;
+        }
+        
+        // Next button
+        paginationHtml += `
+            <button class="page-btn next ${currentPage === totalPages ? 'disabled' : ''}" 
+                    data-page="${currentPage + 1}">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+        
+        pagination.innerHTML = paginationHtml;
+        
+        // Add event listeners
+        pagination.querySelectorAll('.page-btn:not(.disabled)').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = parseInt(btn.dataset.page);
+                if (page && page !== currentPage) {
+                    currentPage = page;
+                    loadProducts();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+    }
+
+    // Initialize filters
+    function initFilters() {
+        // Clear all filters button
+        document.getElementById('clear-all-filters').addEventListener('click', clearAllFilters);
+        document.getElementById('reset-filters-empty').addEventListener('click', clearAllFilters);
+        
+        // Apply price button
+        document.getElementById('apply-price').addEventListener('click', applyFilters);
+        
+        // Filter checkboxes
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('input[name="category"], input[name="brand"], input[name="rating"]')) {
+                applyFilters();
+            }
+        });
+        
+        // Price inputs
+        document.getElementById('min-price').addEventListener('change', applyFilters);
+        document.getElementById('max-price').addEventListener('change', applyFilters);
+    }
+
+    // Clear all filters
+    function clearAllFilters() {
+        // Reset all checkboxes
+        document.querySelectorAll('.filter-option input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+        
+        // Reset price inputs
+        document.getElementById('min-price').value = 0;
+        document.getElementById('max-price').value = 5000;
+        
+        // Reset current filters
+        currentFilters = {
+            categories: [],
+            brands: [],
+            minPrice: 0,
+            maxPrice: 5000,
+            ratings: []
+        };
+        
+        // Apply filters
+        applyFilters();
+    }
+
+    // Apply filters
+    function applyFilters() {
+        // Get selected categories
+        currentFilters.categories = Array.from(
+            document.querySelectorAll('input[name="category"]:checked')
+        ).map(cb => cb.value);
+        
+        // Get selected brands
+        currentFilters.brands = Array.from(
+            document.querySelectorAll('input[name="brand"]:checked')
+        ).map(cb => cb.value);
+        
+        // Get selected ratings
+        currentFilters.ratings = Array.from(
+            document.querySelectorAll('input[name="rating"]:checked')
+        ).map(cb => parseInt(cb.value));
+        
+        // Get price range
+        currentFilters.minPrice = parseInt(document.getElementById('min-price').value) || 0;
+        currentFilters.maxPrice = parseInt(document.getElementById('max-price').value) || 5000;
+        
+        // Reset to first page
+        currentPage = 1;
+        
+        // Load products with filters
+        loadProducts();
+    }
+
+    // Update filter counts
+    function updateFilterCounts() {
+        // This would ideally come from the API
+        // For now, we'll update based on current filtered products
+        const ratingCounts = {
+            5: 0,
+            4: 0,
+            3: 0
+        };
+        
+        filteredProducts.forEach(product => {
+            const rating = Math.floor(product.rating || 0);
+            if (rating >= 5) ratingCounts[5]++;
+            if (rating >= 4) ratingCounts[4]++;
+            if (rating >= 3) ratingCounts[3]++;
+        });
+        
+        // Update UI
+        document.getElementById('rating-5-count').textContent = `(${ratingCounts[5]})`;
+        document.getElementById('rating-4-count').textContent = `(${ratingCounts[4]})`;
+        document.getElementById('rating-3-count').textContent = `(${ratingCounts[3]})`;
+    }
+
+    // Initialize sort
+    function initSort() {
+        const sortSelect = document.getElementById('sort-by');
+        
+        sortSelect.addEventListener('change', function() {
+            currentSort = this.value;
+            currentPage = 1;
+            loadProducts();
+        });
+    }
+
+    // Initialize search
+    function initSearch() {
+        const searchInput = document.getElementById('global-search');
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (this.value.trim()) {
+                    searchProducts(this.value.trim());
+                } else {
+                    // Clear search and show all products
+                    loadProducts();
+                }
+            }, 500);
+        });
+    }
+
+    // Search products
+    async function searchProducts(query) {
+        try {
+            showLoading();
+            
+            const response = await fetchAPI(`${API_ENDPOINTS.SEARCH}?q=${encodeURIComponent(query)}`);
+            
+            filteredProducts = response.products || [];
+            totalProducts = response.total || filteredProducts.length;
+            
+            hideLoading();
+            renderProducts();
+            renderPagination();
+            
+        } catch (error) {
+            hideLoading();
+            showError('Search failed');
+        }
+    }
+
+    // Initialize event listeners
+    function initEventListeners() {
+        // Wishlist button clicks
+        document.addEventListener('click', function(e) {
+            const wishlistBtn = e.target.closest('.wishlist-btn');
+            if (wishlistBtn) {
+                e.preventDefault();
+                const productId = wishlistBtn.dataset.id;
+                toggleWishlist(productId, wishlistBtn);
+            }
+        });
+        
+        // Add to cart button clicks
+        document.addEventListener('click', function(e) {
+            const addToCartBtn = e.target.closest('.add-to-cart-btn');
+            if (addToCartBtn) {
+                e.preventDefault();
+                const productId = addToCartBtn.dataset.id;
+                addToCart(productId);
+            }
+        });
+        
+        // Quick view button clicks
+        document.addEventListener('click', function(e) {
+            const quickViewBtn = e.target.closest('.quick-view-btn');
+            if (quickViewBtn) {
+                e.preventDefault();
+                const productId = quickViewBtn.dataset.id;
+                showQuickView(productId);
+            }
+        });
+        
+        // Retry button
+        document.getElementById('retry-load-btn').addEventListener('click', loadProducts);
+    }
+
+    // Toggle wishlist
+    async function toggleWishlist(productId, button) {
+        try {
+            const isInWishlist = wishlistItems.includes(productId);
+            
+            if (isInWishlist) {
+                // Remove from wishlist
+                await fetchAPI(`${API_ENDPOINTS.WISHLIST}/${productId}`, {
+                    method: 'DELETE'
+                });
+                wishlistItems = wishlistItems.filter(id => id !== productId);
+                button.classList.remove('active');
+                button.innerHTML = '<i class="far fa-heart"></i>';
+                showMessage('Removed from wishlist');
+            } else {
+                // Add to wishlist
+                await fetchAPI(API_ENDPOINTS.WISHLIST, {
+                    method: 'POST',
+                    body: JSON.stringify({ productId })
+                });
+                wishlistItems.push(productId);
+                button.classList.add('active');
+                button.innerHTML = '<i class="fas fa-heart"></i>';
+                showMessage('Added to wishlist');
+            }
+            
+            // Update wishlist count
+            updateWishlistCount();
+            
+        } catch (error) {
+            showError('Failed to update wishlist');
+        }
+    }
+
+    // Add to cart
+    async function addToCart(productId) {
+        try {
+            await fetchAPI(API_ENDPOINTS.CART, {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    productId, 
+                    quantity: 1 
+                })
+            });
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Find product name
+            const product = allProducts.find(p => p.id === productId);
+            showMessage(`Added ${product ? product.name : 'item'} to cart`);
+            
+        } catch (error) {
+            showError('Failed to add to cart');
+        }
+    }
+
+    // Show quick view
+    async function showQuickView(productId) {
+        try {
+            // In a real implementation, this would open a modal with product details
+            // For now, navigate to product detail page
+            window.location.href = `product-detail.html?id=${productId}`;
+            
+        } catch (error) {
+            showError('Failed to load product details');
+        }
+    }
+
+    // Update wishlist count
+    async function updateWishlistCount() {
+        try {
+            const data = await fetchAPI(API_ENDPOINTS.USER_WISHLIST);
+            const count = data.items ? data.items.length : wishlistItems.length;
+            
+            // Update UI
+            document.querySelectorAll('.wishlist-count, .mobile-wishlist-count').forEach(el => {
+                el.textContent = count;
+            });
+            
+        } catch (error) {
+            // Fallback to local count
+            const count = wishlistItems.length;
+            document.querySelectorAll('.wishlist-count, .mobile-wishlist-count').forEach(el => {
+                el.textContent = count;
+            });
+        }
+    }
+
+    // Update cart count
+    async function updateCartCount() {
+        try {
+            const data = await fetchAPI(API_ENDPOINTS.CART);
+            const count = data.items ? data.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+            
+            // Update UI
+            document.querySelectorAll('.cart-count, .mobile-cart-count').forEach(el => {
+                el.textContent = count;
+            });
+            
+        } catch (error) {
+            // Fallback
+            document.querySelectorAll('.cart-count, .mobile-cart-count').forEach(el => {
+                el.textContent = '0';
+            });
+        }
+    }
+
+    // UI Helper Functions
+    function showLoading() {
+        document.getElementById('loading-indicator').style.display = 'block';
+        document.getElementById('error-message').style.display = 'none';
+        document.getElementById('products-grid').innerHTML = '';
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-indicator').style.display = 'none';
+    }
+
+    function showError(message) {
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('error-message').querySelector('p').textContent = message;
+        document.getElementById('loading-indicator').style.display = 'none';
+    }
+
+    function showMessage(message) {
+        // Use existing header message functionality or create simple alert
+        if (window.XSHeader && window.XSHeader.showMessage) {
+            window.XSHeader.showMessage(message);
+        } else {
+            // Simple notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--primary-blue);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    }
+
+    // API Endpoints Documentation
+    function listAPIEndpoints() {
+        console.log('=== XS Platform API Endpoints ===');
+        console.log('Base URL:', API_BASE_URL);
+        console.log('\nProduct Endpoints:');
+        console.log('- GET  /api/v1/products          - List products with pagination & filters');
+        console.log('- GET  /api/v1/products/{id}     - Get product details');
+        console.log('- POST /api/v1/products          - Create new product (admin)');
+        console.log('- PUT  /api/v1/products/{id}     - Update product (admin)');
+        
+        console.log('\nCategory Endpoints:');
+        console.log('- GET  /api/v1/categories        - List all categories');
+        console.log('- GET  /api/v1/categories/{id}   - Get category with products');
+        
+        console.log('\nBrand Endpoints:');
+        console.log('- GET  /api/v1/brands            - List all brands');
+        
+        console.log('\nUser Endpoints:');
+        console.log('- GET  /api/v1/user/profile      - Get user profile');
+        console.log('- PUT  /api/v1/user/profile      - Update profile');
+        console.log('- GET  /api/v1/user/orders       - Get user orders');
+        console.log('- GET  /api/v1/user/wishlist     - Get user wishlist');
+        
+        console.log('\nWishlist Endpoints:');
+        console.log('- GET  /api/v1/wishlist          - Get wishlist items');
+        console.log('- POST /api/v1/wishlist          - Add to wishlist');
+        console.log('- DELETE /api/v1/wishlist/{id}   - Remove from wishlist');
+        
+        console.log('\nCart Endpoints:');
+        console.log('- GET  /api/v1/cart              - Get cart items');
+        console.log('- POST /api/v1/cart              - Add to cart');
+        console.log('- PUT  /api/v1/cart/{id}         - Update cart item');
+        console.log('- DELETE /api/v1/cart/{id}       - Remove from cart');
+        
+        console.log('\nOrder Endpoints:');
+        console.log('- GET  /api/v1/orders            - List orders');
+        console.log('- POST /api/v1/orders            - Create order');
+        console.log('- GET  /api/v1/orders/{id}       - Get order details');
+        
+        console.log('\nSearch Endpoints:');
+        console.log('- GET  /api/v1/search            - Search products');
+        
+        console.log('\nReview Endpoints:');
+        console.log('- GET  /api/v1/reviews/{id}      - Get product reviews');
+        console.log('- POST /api/v1/reviews           - Add review');
+        
+        console.log('\nAuth Endpoints:');
+        console.log('- POST /api/v1/auth/login        - User login');
+        console.log('- POST /api/v1/auth/register     - User registration');
+        console.log('- POST /api/v1/auth/logout       - User logout');
+        
+        console.log('\nFilter Endpoints:');
+        console.log('- GET  /api/v1/filter-options    - Get filter options with counts');
+        
+        console.log('\n=================================');
+    }
+
+    // Initialize and log endpoints
+    listAPIEndpoints();
+</script>
+</body>
+</html>

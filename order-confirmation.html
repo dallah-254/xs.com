@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - XS Platform</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* ORDER CONFIRMATION PAGE SPECIFIC STYLES */
+        .confirmation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 70vh;
+        }
+
+        /* Confirmation Header */
+        .confirmation-header {
+            margin-bottom: 50px;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirmation-header:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #4CAF50 0%, #2E7D32 100%);
+        }
+
+        .success-animation {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .success-circle {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 0 20px rgba(76, 175, 80, 0.1);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+            70% { box-shadow: 0 0 0 25px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .confirmation-header h1 {
+            color: var(--primary-text);
+            margin-bottom: 15px;
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .confirmation-header p {
+            color: var(--secondary-text);
+            margin: 0 auto 25px;
+            font-size: 1.2rem;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .order-number-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-number-badge:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            to { left: 100%; }
+        }
+
+        .order-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-text);
+            font-size: 1rem;
+        }
+
+        .meta-item i {
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+        }
+
+        /* Email Confirmation */
+        .email-confirmation-banner {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid #4CAF50;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .email-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .email-content {
+            flex: 1;
+        }
+
+        .email-content h3 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .email-content p {
+            color: var(--secondary-text);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .email-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        /* Confirmation Cards Grid */
+        .confirmation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .confirmation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--light-bg);
+        }
+
+        .card-header-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 20px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .card-header-content {
+            flex: 1;
+        }
+
+        .card-header h3 {
+            color: var(--primary-text);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        .card-content {
+            flex: 1;
+            color: var(--secondary-text);
+            line-height: 1.6;
+        }
+
+        .card-content p {
+            margin: 0 0 15px 0;
+        }
+
+        .card-content strong {
+            color: var(--primary-text);
+        }
+
+        /* Order Timeline */
+        .order-timeline {
+            position: relative;
+            padding: 20px 0;
+            margin: 25px 0;
+        }
+
+        .timeline-track {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--light-bg) 0%, var(--light-bg) 100%);
+        }
+
+        .timeline-progress {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            height: 40%;
+            width: 3px;
+            background: linear-gradient(to bottom, #4CAF50 0%, #2E7D32 100%);
+            transition: height 1s ease;
+        }
+
+        .timeline-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .timeline-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-marker {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            z-index: 1;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .step-marker i {
+            font-size: 20px;
+            color: var(--secondary-text);
+        }
+
+        .timeline-step.active .step-marker {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            border-color: var(--primary-blue);
+            transform: scale(1.1);
+            box-shadow: 0 0 0 10px rgba(33, 150, 243, 0.1);
+        }
+
+        .timeline-step.active .step-marker i {
+            color: white;
+        }
+
+        .timeline-step.completed .step-marker {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            border-color: #4CAF50;
+        }
+
+        .timeline-step.completed .step-marker i {
+            color: white;
+            display: none;
+        }
+
+        .timeline-step.completed .step-marker:after {
+            content: '✓';
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 12px;
+        }
+
+        .step-content h4 {
+            color: var(--primary-text);
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .step-content .step-date {
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .step-content p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Order Items */
+        .order-items-container {
+            margin: 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--light-bg);
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            border-bottom: 1px solid var(--light-bg);
+            background: white;
+            transition: background-color 0.2s ease;
+        }
+
+        .order-item:hover {
+            background: #fafafa;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .item-image i {
+            font-size: 32px;
+            color: var(--accent-blue);
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 700;
+            color: var(--primary-text);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+
+        .item-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .item-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            color: #1565C0;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .item-type.service {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            color: #2E7D32;
+        }
+
+        .item-price {
+            font-weight: 800;
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            white-space: nowrap;
+            margin-left: 15px;
+        }
+
+        /* Order Summary */
+        .order-summary-breakdown {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: var(--secondary-text);
+            font-size: 1.05rem;
+            padding: 10px 0;
+        }
+
+        .summary-row.highlight {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffecb3 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 25px -20px;
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .summary-row.total {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 3px solid var(--light-bg);
+        }
+
+        /* Action Buttons */
+        .confirmation-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 50px 0;
+        }
+
+        .confirmation-btn {
+            padding: 18px 35px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 200px;
+        }
+
+        .confirmation-btn.primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .confirmation-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .confirmation-btn.secondary {
+            background: white;
+            color: var(--primary-text);
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .confirmation-btn.secondary:hover {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+
+        .confirmation-btn.outline {
+            background: transparent;
+            color: var(--primary-text);
+            border: 2px solid var(--border-color);
+        }
+
+        .confirmation-btn.outline:hover {
+            background: var(--light-bg);
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        /* Important Notes */
+        .important-notes-container {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: 18px;
+            padding: 35px;
+            margin: 50px 0;
+            border: 1px solid #ff9800;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .important-notes-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, #ff9800 0%, #ff5722 100%);
+        }
+
+        .notes-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .notes-header i {
+            color: #ff9800;
+            font-size: 28px;
+        }
+
+        .notes-header h3 {
+            color: #e65100;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .notes-list {
+            margin: 0;
+            padding-left: 25px;
+        }
+
+        .notes-list li {
+            margin-bottom: 15px;
+            color: var(--secondary-text);
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .notes-list li:before {
+            content: '•';
+            color: #ff9800;
+            font-size: 1.5rem;
+            position: absolute;
+            left: -25px;
+            top: -3px;
+        }
+
+        .notes-list a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .notes-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Support Section */
+        .support-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 50px 0;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .support-section h3 {
+            color: var(--primary-text);
+            margin: 0 0 35px 0;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .support-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .support-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            border-color: var(--accent-blue);
+        }
+
+        .support-card-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.2);
+        }
+
+        .support-card h4 {
+            color: var(--primary-text);
+            margin: 0 0 15px 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .support-card p {
+            color: var(--secondary-text);
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .support-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .support-link:hover {
+            color: var(--primary-blue);
+            gap: 12px;
+        }
+
+        /* Service Appointment Card */
+        .service-appointment-card {
+            background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+            border-radius: 18px;
+            padding: 35px;
+            margin: 30px 0;
+            border: 2px solid var(--primary-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .appointment-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .appointment-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .appointment-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .appointment-date {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .appointment-month {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .appointment-day {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-text);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .appointment-weekday {
+            font-size: 1rem;
+            color: var(--secondary-text);
+            font-weight: 500;
+        }
+
+        .appointment-details {
+            flex: 1;
+        }
+
+        .appointment-details h4 {
+            color: var(--primary-text);
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+        }
+
+        .appointment-meta {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-text);
+        }
+
+        .meta-item i {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        .appointment-notes {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Loading & Error States */
+        .loading-state {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            border: 5px solid var(--light-bg);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary-blue);
+            animation: spin 1s linear infinite;
+            margin-bottom: 30px;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .error-state i {
+            font-size: 80px;
+            color: #f44336;
+            margin-bottom: 25px;
+        }
+
+        .error-state h3 {
+            color: #d32f2f;
+            margin-bottom: 15px;
+        }
+
+        .error-state p {
+            color: var(--secondary-text);
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .confirmation-container {
+                padding: 15px;
+            }
+            
+            .confirmation-header {
+                padding: 30px 20px;
+            }
+            
+            .confirmation-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .success-animation {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .success-circle {
+                font-size: 40px;
+            }
+            
+            .order-meta {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .confirmation-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .confirmation-btn {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .email-confirmation-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .email-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-actions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .confirmation-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .confirmation-card {
+                padding: 25px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .card-header-icon {
+                margin-right: 0;
+            }
+            
+            .order-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .item-image {
+                margin-right: 0;
+                width: 120px;
+                height: 120px;
+            }
+            
+            .item-price {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            
+            .timeline-step {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .timeline-track,
+            .timeline-progress {
+                left: 30px;
+            }
+            
+            .step-marker {
+                margin-right: 0;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .confirmation-header,
+            .confirmation-card,
+            .support-section {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .confirmation-btn,
+            .appointment-actions {
+                display: none !important;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            color: var(--primary-text);
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        .toast.success {
+            border-left-color: #4CAF50;
+        }
+
+        .toast.error {
+            border-left-color: #f44336;
+        }
+
+        .toast.warning {
+            border-left-color: #ff9800;
+        }
+
+        .toast i {
+            font-size: 24px;
+        }
+
+        .toast.success i {
+            color: #4CAF50;
+        }
+
+        .toast.error i {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+<!-- Order Confirmation Header -->
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Premium Electronics Store</div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+                <a href="orders.html" class="nav-link active">My Orders</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" id="global-search" placeholder="Search products..." class="search-input">
+            </div>
+
+            <!-- Desktop Auth State -->
+            <div class="auth-state">
+                <!-- Logged In State -->
+                <div class="logged-in-state" id="logged-in-state">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="user-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="profile.html" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="orders.html" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="wishlist.html" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-submit" id="cart-btn">
+                <i class="fas fa-shopping-cart"></i> 
+                Cart <span class="cart-count">0</span>
+            </button>
+            
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Order Progress Bar -->
+    <div class="filter-bar-row order-progress-bar">
+        <div class="filter-container">
+            <div class="progress-step completed">
+                <span class="step-number">✓</span>
+                <span class="step-label">Cart</span>
+            </div>
+            <div class="progress-step completed">
+                <span class="step-number">✓</span>
+                <span class="step-label">Checkout</span>
+            </div>
+            <div class="progress-step active">
+                <span class="step-number">✓</span>
+                <span class="step-label">Confirmation</span>
+            </div>
+            <div class="progress-step">
+                <span class="step-number">4</span>
+                <span class="step-label">Delivery</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- Loading State -->
+    <div class="loading-state" id="loading-state" style="display: none;">
+        <div class="loading-spinner"></div>
+        <h3>Loading Order Confirmation</h3>
+        <p>Please wait while we load your order details...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" id="error-state" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Order Not Found</h3>
+        <p id="error-message">We couldn't find your order details. Please check your order number or try again later.</p>
+        <button class="confirmation-btn secondary" id="retry-load-btn">
+            <i class="fas fa-redo"></i> Retry
+        </button>
+        <a href="orders.html" class="confirmation-btn outline" style="margin-top: 15px;">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+
+    <!-- Confirmation Content -->
+    <div class="confirmation-container" id="confirmation-content">
+        <!-- Confirmation Header -->
+        <div class="confirmation-header">
+            <div class="success-animation">
+                <div class="success-circle">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+            
+            <h1>Order Confirmed!</h1>
+            <p>Thank you for your purchase. Your order has been successfully placed and is being processed.</p>
+            
+            <div class="order-number-badge" id="order-number-badge">
+                Order #<span id="order-number">XS-2024-78945</span>
+            </div>
+            
+            <div class="order-meta">
+                <div class="meta-item">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="order-date">October 26, 2024</span>
+                </div>
+                <div class="meta-item">
+                    <i class="far fa-clock"></i>
+                    <span id="order-time">2:30 PM</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                    <span style="color: #4CAF50; font-weight: 600;">Payment Confirmed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Confirmation -->
+        <div class="email-confirmation-banner">
+            <div class="email-icon">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <div class="email-content">
+                <h3><i class="fas fa-envelope"></i> Check Your Email</h3>
+                <p>We've sent a confirmation email to <strong id="customer-email">john.doe@example.com</strong> with your order details and receipt. Please check your inbox (and spam folder).</p>
+                <div class="email-actions">
+                    <button class="confirmation-btn outline" id="resend-email-btn">
+                        <i class="fas fa-redo"></i> Resend Email
+                    </button>
+                    <button class="confirmation-btn outline" id="download-receipt-btn">
+                        <i class="fas fa-download"></i> Download Receipt
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Grid -->
+        <div class="confirmation-grid">
+            <!-- Order Timeline Card -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <div class="card-header-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div class="card-header-content">
+                        <h3>Order Timeline</h3>
+                        <div class="card-subtitle">Track your order progress</div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="order-timeline">
+                        <div class="timeline-track"></div>
+                        <div class="timeline-progress" id="timeline-progress"></div>
+                        
+                        <div class="timeline-step completed">
+                            <div class="step-marker">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Order Placed</h4>
+                                <span class="step-date">October 26, 2024 • 2:30 PM</span>
+                                <p>Your order has been received and confirmed.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step active" id="processing-step">
+                            <div class="step-marker">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Processing</h4>
+                                <span class="step-date">Expected: October 26-27, 2024</span>
+                                <p>We're preparing your order for shipment.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" id="shipping-step">
+                            <div class="step-marker">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Shipped</h4>
+                                <span class="step-date">Expected: October 28, 2024</span>
+                                <p>Your order will be shipped with tracking information.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" id="delivery-step">
+                            <div class="step-marker">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="step-content">
+                                <h4>Delivered</h4>
+                                <span class="step-date">Estimated: October 30 - November 2, 2024</span>
+                                <p>Your order will arrive at your doorstep.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <div class="card-header-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="card-header-content">
+                        <h3>Order Summary</h3>
+                        <div class="card-subtitle">Items & Total</div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="order-items-container" id="order-items-container">
+                        <!-- Order items will be populated from API -->
+                    </div>
+                    
+                    <div class="order-summary-breakdown">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal-amount">$1,529.97</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span id="shipping-amount">$24.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax</span>
+                            <span id="tax-amount">$122.40</span>
+                        </div>
+                        <div class="summary-row highlight" id="discount-row" style="display: none;">
+                            <span>Discount</span>
+                            <span id="discount-amount">-$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="total-amount">$1,677.36</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping & Payment Info -->
+        <div class="confirmation-grid">
+            <!-- Shipping Information Card -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <div class="card-header-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="card-header-content">
+                        <h3>Shipping Information</h3>
+                        <div class="card-subtitle">Delivery details</div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div id="shipping-info">
+                        <!-- Will be populated from API -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information Card -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <div class="card-header-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="card-header-content">
+                        <h3>Payment Information</h3>
+                        <div class="card-subtitle">Payment method & status</div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div id="payment-info">
+                        <!-- Will be populated from API -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Appointment Card (If services in order) -->
+        <div class="service-appointment-card" id="service-appointment-card" style="display: none;">
+            <div class="appointment-badge">
+                <i class="fas fa-calendar-check"></i> Service Appointment
+            </div>
+            
+            <div class="appointment-content">
+                <div class="appointment-date">
+                    <div class="appointment-month">NOV</div>
+                    <div class="appointment-day">02</div>
+                    <div class="appointment-weekday">Saturday</div>
+                </div>
+                
+                <div class="appointment-details">
+                    <h4 id="service-title">Screen Replacement Service</h4>
+                    
+                    <div class="appointment-meta">
+                        <div class="meta-item">
+                            <i class="far fa-clock"></i>
+                            <span id="service-time">10:00 AM - 12:00 PM</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="service-location">XS Service Center</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span id="service-device">Samsung Galaxy S23</span>
+                        </div>
+                    </div>
+                    
+                    <p id="service-description">
+                        Please bring your Samsung Galaxy S23 device and any accessories. 
+                        Our technicians will call you 30 minutes before the appointment.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="appointment-notes">
+                <i class="fas fa-info-circle"></i> 
+                <strong>Important:</strong> Please arrive 10 minutes early. Bring your device and any accessories. 
+                Cancellations must be made 24 hours in advance.
+            </div>
+            
+            <div class="appointment-actions">
+                <button class="confirmation-btn secondary" id="add-to-calendar-btn">
+                    <i class="fas fa-calendar-plus"></i> Add to Calendar
+                </button>
+                <button class="confirmation-btn outline" id="reschedule-service-btn">
+                    <i class="fas fa-edit"></i> Reschedule
+                </button>
+                <button class="confirmation-btn outline" id="cancel-service-btn">
+                    <i class="fas fa-times"></i> Cancel Service
+                </button>
+            </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="important-notes-container">
+            <div class="notes-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Important Information</h3>
+            </div>
+            <ul class="notes-list">
+                <li>Please keep your order number (<strong id="important-order-number">XS-2024-78945</strong>) for any customer service inquiries.</li>
+                <li>Shipping confirmation with tracking information will be sent within 24 hours.</li>
+                <li>You can track your order status in your <a href="user-dashboard.html">Dashboard</a> at any time.</li>
+                <li>All products come with a 1-year manufacturer warranty. Services have a 90-day service guarantee.</li>
+                <li>For returns or exchanges, please visit our <a href="returns.html">Returns Policy</a> page.</li>
+                <li>Need help? Contact our support team at <a href="mailto:support@xsplatform.com">support@xsplatform.com</a> or call (555) 123-4567.</li>
+            </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="confirmation-actions">
+            <a href="order-tracking.html" class="confirmation-btn primary">
+                <i class="fas fa-truck"></i> Track Your Order
+            </a>
+            <a href="user-dashboard.html" class="confirmation-btn secondary">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+            <a href="products.html" class="confirmation-btn outline">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </a>
+            <button class="confirmation-btn outline" id="print-confirmation-btn">
+                <i class="fas fa-print"></i> Print Confirmation
+            </button>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-section">
+            <h3>Need Help With Your Order?</h3>
+            <div class="support-grid">
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4>Customer Support</h4>
+                    <p>Have questions about your order? Our team is here to help 24/7.</p>
+                    <a href="contact.html" class="support-link">
+                        Contact Support <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h4>Frequently Asked Questions</h4>
+                    <p>Find answers to commonly asked questions about orders and services.</p>
+                    <a href="faq.html" class="support-link">
+                        Browse FAQ <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h4>Shipping Information</h4>
+                    <p>Learn about our shipping policies, delivery times, and tracking.</p>
+                    <a href="shipping.html" class="support-link">
+                        Shipping Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="support-card">
+                    <div class="support-card-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h4>Returns & Exchanges</h4>
+                    <p>Information about our return policy, warranty claims, and exchanges.</p>
+                    <a href="returns.html" class="support-link">
+                        Return Policy <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<!-- Link to shared JavaScript file -->
+<script src="header-footer.js"></script>
+
+<!-- Confirmation-specific JavaScript with API Integration -->
+<script>
+    // API Configuration
+    const API_BASE_URL = 'https://api.xsplatform.com';
+    const API_ENDPOINTS = {
+        ORDER_DETAIL: (orderId) => `${API_BASE_URL}/api/v1/orders/${orderId}`,
+        ORDER_RECEIPT: (orderId) => `${API_BASE_URL}/api/v1/orders/${orderId}/receipt`,
+        ORDER_RESEND_EMAIL: (orderId) => `${API_BASE_URL}/api/v1/orders/${orderId}/resend-email`,
+        ORDER_TRACKING: (orderId) => `${API_BASE_URL}/api/v1/orders/${orderId}/tracking`,
+        USER_PROFILE: `${API_BASE_URL}/api/v1/user/profile`,
+        APPOINTMENT_DETAILS: (appointmentId) => `${API_BASE_URL}/api/v1/appointments/${appointmentId}`,
+        APPOINTMENT_RESCHEDULE: (appointmentId) => `${API_BASE_URL}/api/v1/appointments/${appointmentId}/reschedule`,
+        APPOINTMENT_CANCEL: (appointmentId) => `${API_BASE_URL}/api/v1/appointments/${appointmentId}/cancel`
+    };
+
+    // Order State
+    let orderData = null;
+    let appointmentData = null;
+    let isLoading = true;
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Order confirmation page initialized');
+        
+        // Get order ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order') || localStorage.getItem('lastOrderId');
+        
+        if (orderId) {
+            loadOrderDetails(orderId);
+        } else {
+            showError('Order ID not found. Please check your order confirmation link.');
+        }
+        
+        // Initialize event listeners
+        initConfirmationEventListeners();
+        
+        // Update cart count to 0 after successful order
+        updateCartCount(0);
+    });
+
+    // API Helper Functions
+    async function fetchAPI(url, options = {}) {
+        try {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                ...options
+            };
+            
+            const response = await fetch(url, defaultOptions);
+            
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API Fetch Error:', error);
+            showError('Failed to load order details. Please try again.');
+            throw error;
+        }
+    }
+
+    function getAuthToken() {
+        return localStorage.getItem('xs_auth_token') || '';
+    }
+
+    // Load order details
+    async function loadOrderDetails(orderId) {
+        try {
+            showLoading();
+            
+            // Load order data from API
+            const data = await fetchAPI(API_ENDPOINTS.ORDER_DETAIL(orderId));
+            orderData = data;
+            
+            // Load user profile for email
+            const profileData = await fetchAPI(API_ENDPOINTS.USER_PROFILE);
+            
+            // Check for appointment data if services in order
+            if (hasServices(orderData.items)) {
+                loadAppointmentDetails(orderId);
+            }
+            
+            hideLoading();
+            renderOrderConfirmation();
+            updateImportantNotes();
+            
+            // Start timeline animation
+            startTimelineAnimation();
+            
+        } catch (error) {
+            hideLoading();
+            showError('Failed to load order details');
+        }
+    }
+
+    // Check if order has services
+    function hasServices(items) {
+        return items && items.some(item => item.type === 'service');
+    }
+
+    // Load appointment details
+    async function loadAppointmentDetails(orderId) {
+        try {
+            const data = await fetchAPI(`${API_BASE_URL}/api/v1/orders/${orderId}/appointment`);
+            appointmentData = data;
+            renderServiceAppointment();
+        } catch (error) {
+            console.error('Failed to load appointment details:', error);
+        }
+    }
+
+    // Render order confirmation
+    function renderOrderConfirmation() {
+        if (!orderData) return;
+        
+        // Update order number
+        document.getElementById('order-number').textContent = orderData.orderNumber;
+        document.getElementById('important-order-number').textContent = orderData.orderNumber;
+        
+        // Update dates
+        const orderDate = new Date(orderData.createdAt);
+        document.getElementById('order-date').textContent = formatDate(orderDate);
+        document.getElementById('order-time').textContent = formatTime(orderDate);
+        
+        // Update customer email
+        document.getElementById('customer-email').textContent = orderData.customerEmail;
+        
+        // Render order items
+        renderOrderItems();
+        
+        // Render shipping information
+        renderShippingInfo();
+        
+        // Render payment information
+        renderPaymentInfo();
+        
+        // Update order summary
+        updateOrderSummary();
+    }
+
+    // Render order items
+    function renderOrderItems() {
+        const itemsContainer = document.getElementById('order-items-container');
+        
+        if (!orderData.items || orderData.items.length === 0) {
+            itemsContainer.innerHTML = `
+                <div style="text-align: center; padding: 30px; color: var(--secondary-text);">
+                    <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 15px;"></i>
+                    <p>No items found</p>
+                </div>
+            `;
+            return;
+        }
+        
+        itemsContainer.innerHTML = orderData.items.map(item => `
+            <div class="order-item">
+                <div class="item-image">
+                    ${item.imageUrl ? 
+                        `<img src="${item.imageUrl}" alt="${item.name}">` : 
+                        `<i class="fas ${getItemIcon(item.type)}"></i>`
+                    }
+                </div>
+                <div class="item-details">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-meta">
+                        ${item.sku ? `<span>SKU: ${item.sku}</span>` : ''}
+                        ${item.color ? `<span>Color: ${item.color}</span>` : ''}
+                        ${item.size ? `<span>Size: ${item.size}</span>` : ''}
+                        ${item.brand ? `<span>Brand: ${item.brand}</span>` : ''}
+                    </div>
+                    <span class="item-type ${item.type}">
+                        ${item.type === 'service' ? 'Service' : 'Product'}
+                    </span>
+                </div>
+                <div class="item-price">
+                    $${(item.price * item.quantity).toFixed(2)}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Get item icon
+    function getItemIcon(type) {
+        const iconMap = {
+            'product': 'fa-box',
+            'service': 'fa-tools',
+            'phone': 'fa-mobile-alt',
+            'computer': 'fa-laptop',
+            'audio': 'fa-headphones',
+            'electronic': 'fa-tv',
+            'tablet': 'fa-tablet-alt',
+            'wearable': 'fa-clock'
+        };
+        return iconMap[type] || 'fa-box';
+    }
+
+    // Render shipping information
+    function renderShippingInfo() {
+        const shippingContainer = document.getElementById('shipping-info');
+        
+        if (!orderData.shippingAddress) {
+            shippingContainer.innerHTML = '<p>No shipping information available.</p>';
+            return;
+        }
+        
+        const address = orderData.shippingAddress;
+        shippingContainer.innerHTML = `
+            <p><strong>${address.name || 'Shipping Address'}</strong></p>
+            <p>${address.line1}</p>
+            ${address.line2 ? `<p>${address.line2}</p>` : ''}
+            <p>${address.city}, ${address.state} ${address.postalCode}</p>
+            <p>${address.country}</p>
+            <p>📞 ${address.phone}</p>
+            <div style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 10px;">
+                <strong>Shipping Method:</strong><br>
+                <span style="color: var(--primary-blue); font-weight: 600;">
+                    ${getShippingMethodName(orderData.shippingMethod)}
+                </span>
+                ${orderData.trackingNumber ? `<br><br><strong>Tracking Number:</strong><br><code style="background: #e8f4fd; padding: 5px 10px; border-radius: 5px;">${orderData.trackingNumber}</code>` : ''}
+            </div>
+        `;
+    }
+
+    // Get shipping method name
+    function getShippingMethodName(method) {
+        const methods = {
+            'standard': 'Standard Shipping (5-7 business days)',
+            'express': 'Express Shipping (2-3 business days)',
+            'overnight': 'Overnight Shipping (Next business day)'
+        };
+        return methods[method] || 'Standard Shipping';
+    }
+
+    // Render payment information
+    function renderPaymentInfo() {
+        const paymentContainer = document.getElementById('payment-info');
+        
+        if (!orderData.payment) {
+            paymentContainer.innerHTML = '<p>No payment information available.</p>';
+            return;
+        }
+        
+        const payment = orderData.payment;
+        let paymentDetails = '';
+        
+        if (payment.method === 'card') {
+            paymentDetails = `
+                <p><strong>Payment Method:</strong></p>
+                <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+                    <div style="width: 50px; height: 30px; background: #1565C0; color: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: 600;">
+                        ${payment.cardBrand || 'VISA'}
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;">${payment.cardBrand || 'Card'} ending in ${payment.lastFour}</div>
+                        <div style="font-size: 0.9rem; color: var(--secondary-text);">${payment.cardName}</div>
+                    </div>
+                </div>
+            `;
+        } else if (payment.method === 'paypal') {
+            paymentDetails = `
+                <p><strong>Payment Method:</strong></p>
+                <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+                    <i class="fab fa-paypal" style="font-size: 32px; color: #003087;"></i>
+                    <div>
+                        <div style="font-weight: 600;">PayPal</div>
+                        <div style="font-size: 0.9rem; color: var(--secondary-text);">${payment.paypalEmail}</div>
+                    </div>
+                </div>
+            `;
+        } else if (payment.method === 'mpesa') {
+            paymentDetails = `
+                <p><strong>Payment Method:</strong></p>
+                <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+                    <i class="fas fa-mobile-alt" style="font-size: 32px; color: #32CD32;"></i>
+                    <div>
+                        <div style="font-weight: 600;">M-Pesa</div>
+                        <div style="font-size: 0.9rem; color: var(--secondary-text);">${payment.phoneNumber}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            paymentDetails = `<p><strong>Payment Method:</strong> ${payment.method}</p>`;
+        }
+        
+        paymentContainer.innerHTML = `
+            ${paymentDetails}
+            <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; color: #2E7D32;">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Payment Successful</strong>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9rem;">
+                    Processed on ${formatDate(new Date(payment.processedAt))}
+                </div>
+            </div>
+            ${orderData.billingAddress && orderData.billingAddress.id !== orderData.shippingAddress?.id ? `
+                <div style="margin-top: 20px;">
+                    <p><strong>Billing Address:</strong></p>
+                    <p>${orderData.billingAddress.line1}<br>
+                    ${orderData.billingAddress.city}, ${orderData.billingAddress.state} ${orderData.billingAddress.postalCode}</p>
+                </div>
+            ` : `
+                <div style="margin-top: 20px; font-size: 0.9rem; color: var(--secondary-text);">
+                    <i class="fas fa-info-circle"></i> Billing address same as shipping
+                </div>
+            `}
+        `;
+    }
+
+    // Render service appointment
+    function renderServiceAppointment() {
+        if (!appointmentData) return;
+        
+        const appointmentCard = document.getElementById('service-appointment-card');
+        appointmentCard.style.display = 'block';
+        
+        document.getElementById('service-title').textContent = appointmentData.serviceName;
+        document.getElementById('service-time').textContent = formatAppointmentTime(appointmentData);
+        document.getElementById('service-location').textContent = appointmentData.location;
+        document.getElementById('service-device').textContent = appointmentData.device;
+        document.getElementById('service-description').textContent = appointmentData.description || 'No additional details provided.';
+        
+        // Update appointment date
+        const appointmentDate = new Date(appointmentData.scheduledAt);
+        const dateElement = appointmentCard.querySelector('.appointment-date');
+        dateElement.querySelector('.appointment-month').textContent = 
+            appointmentDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+        dateElement.querySelector('.appointment-day').textContent = 
+            appointmentDate.getDate();
+        dateElement.querySelector('.appointment-weekday').textContent = 
+            appointmentDate.toLocaleDateString('en-US', { weekday: 'long' });
+    }
+
+    // Update order summary
+    function updateOrderSummary() {
+        if (!orderData) return;
+        
+        document.getElementById('subtotal-amount').textContent = 
+            `$${orderData.summary.subtotal.toFixed(2)}`;
+        document.getElementById('shipping-amount').textContent = 
+            orderData.summary.shipping === 0 ? 'FREE' : `$${orderData.summary.shipping.toFixed(2)}`;
+        document.getElementById('tax-amount').textContent = 
+            `$${orderData.summary.tax.toFixed(2)}`;
+        document.getElementById('total-amount').textContent = 
+            `$${orderData.summary.total.toFixed(2)}`;
+        
+        // Show/hide discount
+        const discountRow = document.getElementById('discount-row');
+        if (orderData.summary.discount > 0) {
+            discountRow.style.display = 'flex';
+            document.getElementById('discount-amount').textContent = 
+                `-$${orderData.summary.discount.toFixed(2)}`;
+        } else {
+            discountRow.style.display = 'none';
+        }
+    }
+
+    // Update important notes
+    function updateImportantNotes() {
+        if (!orderData) return;
+        
+        // Update order number in important notes
+        document.getElementById('important-order-number').textContent = orderData.orderNumber;
+    }
+
+    // Start timeline animation
+    function startTimelineAnimation() {
+        const timelineProgress = document.getElementById('timeline-progress');
+        const steps = document.querySelectorAll('.timeline-step');
+        
+        // Calculate progress based on order status
+        let progressHeight = 0;
+        let currentStepIndex = 0;
+        
+        steps.forEach((step, index) => {
+            if (step.classList.contains('completed')) {
+                progressHeight += 100 / (steps.length - 1);
+                currentStepIndex = index;
+            }
+        });
+        
+        // Animate progress bar
+        setTimeout(() => {
+            timelineProgress.style.height = `${progressHeight}%`;
+        }, 500);
+        
+        // Simulate order progress updates
+        if (currentStepIndex < steps.length - 1) {
+            simulateOrderProgress(currentStepIndex);
+        }
+    }
+
+    // Simulate order progress
+    function simulateOrderProgress(currentStepIndex) {
+        const steps = document.querySelectorAll('.timeline-step');
+        const timelineProgress = document.getElementById('timeline-progress');
+        
+        // Move to next step after delay
+        setTimeout(() => {
+            if (currentStepIndex < steps.length - 1) {
+                const currentStep = steps[currentStepIndex];
+                const nextStep = steps[currentStepIndex + 1];
+                
+                currentStep.classList.remove('active');
+                currentStep.classList.add('completed');
+                nextStep.classList.add('active');
+                
+                // Update progress bar
+                const progressHeight = ((currentStepIndex + 1) * 100) / (steps.length - 1);
+                timelineProgress.style.height = `${progressHeight}%`;
+                
+                // Continue simulation
+                simulateOrderProgress(currentStepIndex + 1);
+            }
+        }, 5000); // 5 seconds between steps
+    }
+
+    // Initialize event listeners
+    function initConfirmationEventListeners() {
+        // Resend email button
+        document.getElementById('resend-email-btn').addEventListener('click', resendConfirmationEmail);
+        
+        // Download receipt button
+        document.getElementById('download-receipt-btn').addEventListener('click', downloadReceipt);
+        
+        // Print confirmation button
+        document.getElementById('print-confirmation-btn').addEventListener('click', printConfirmation);
+        
+        // Add to calendar button
+        document.getElementById('add-to-calendar-btn').addEventListener('click', addToCalendar);
+        
+        // Reschedule service button
+        document.getElementById('reschedule-service-btn').addEventListener('click', rescheduleService);
+        
+        // Cancel service button
+        document.getElementById('cancel-service-btn').addEventListener('click', cancelService);
+        
+        // Retry button
+        document.getElementById('retry-load-btn').addEventListener('click', () => {
+            const orderId = localStorage.getItem('lastOrderId');
+            if (orderId) {
+                loadOrderDetails(orderId);
+            }
+        });
+    }
+
+    // Resend confirmation email
+    async function resendConfirmationEmail() {
+        if (!orderData) return;
+        
+        try {
+            showToast('Sending confirmation email...', 'info');
+            
+            await fetchAPI(API_ENDPOINTS.ORDER_RESEND_EMAIL(orderData.id), {
+                method: 'POST'
+            });
+            
+            showToast('Confirmation email sent successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Failed to resend email:', error);
+            showToast('Failed to resend email. Please try again.', 'error');
+        }
+    }
+
+    // Download receipt
+    async function downloadReceipt() {
+        if (!orderData) return;
+        
+        try {
+            showToast('Generating receipt...', 'info');
+            
+            const response = await fetchAPI(API_ENDPOINTS.ORDER_RECEIPT(orderData.id));
+            
+            // Create download link
+            const blob = new Blob([response.content], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Receipt-${orderData.orderNumber}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Receipt downloaded successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Failed to download receipt:', error);
+            showToast('Failed to download receipt. Please try again.', 'error');
+        }
+    }
+
+    // Print confirmation
+    function printConfirmation() {
+        window.print();
+    }
+
+    // Add to calendar
+    function addToCalendar() {
+        if (!appointmentData) return;
+        
+        const appointmentDate = new Date(appointmentData.scheduledAt);
+        const endDate = new Date(appointmentDate.getTime() + (appointmentData.duration || 120) * 60000);
+        
+        const eventDetails = {
+            title: `XS Platform - ${appointmentData.serviceName}`,
+            description: appointmentData.description || 'Service appointment at XS Platform',
+            location: appointmentData.location,
+            startTime: appointmentDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
+            endTime: endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+        };
+        
+        // Create calendar event
+        const calendarEvent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//XS Platform//Service Appointment//EN
+BEGIN:VEVENT
+UID:${appointmentData.id}@xsplatform.com
+SUMMARY:${eventDetails.title}
+DESCRIPTION:${eventDetails.description}
+LOCATION:${eventDetails.location}
+DTSTART:${eventDetails.startTime}
+DTEND:${eventDetails.endTime}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'}
+END:VEVENT
+END:VCALENDAR`;
+        
+        // Create download link
+        const blob = new Blob([calendarEvent], { type: 'text/calendar' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `appointment-${appointmentData.id}.ics`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showToast('Calendar event downloaded. Import it to your calendar app.', 'success');
+    }
+
+    // Reschedule service
+    function rescheduleService() {
+        if (!appointmentData) return;
+        
+        showToast('Redirecting to reschedule page...', 'info');
+        
+        // Redirect to reschedule page
+        setTimeout(() => {
+            window.location.href = `reschedule-service.html?appointment=${appointmentData.id}`;
+        }, 1000);
+    }
+
+    // Cancel service
+    async function cancelService() {
+        if (!appointmentData) return;
+        
+        if (!confirm('Are you sure you want to cancel this service appointment? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            showToast('Cancelling service appointment...', 'info');
+            
+            await fetchAPI(API_ENDPOINTS.APPOINTMENT_CANCEL(appointmentData.id), {
+                method: 'DELETE'
+            });
+            
+            showToast('Service appointment cancelled successfully.', 'success');
+            
+            // Update UI
+            setTimeout(() => {
+                document.getElementById('service-appointment-card').style.display = 'none';
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Failed to cancel service:', error);
+            showToast('Failed to cancel service. Please try again.', 'error');
+        }
+    }
+
+    // Format appointment time
+    function formatAppointmentTime(appointment) {
+        const startTime = new Date(appointment.scheduledAt);
+        const endTime = new Date(startTime.getTime() + (appointment.duration || 120) * 60000);
+        
+        return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+    }
+
+    // Format date
+    function formatDate(date) {
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    // Format time
+    function formatTime(date) {
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    // Update cart count
+    function updateCartCount(count) {
+        document.querySelectorAll('.cart-count, .mobile-cart-count').forEach(el => {
+            el.textContent = count;
+        });
+    }
+
+    // Show loading state
+    function showLoading() {
+        isLoading = true;
+        document.getElementById('loading-state').style.display = 'block';
+        document.getElementById('error-state').style.display = 'none';
+        document.getElementById('confirmation-content').style.display = 'none';
+    }
+
+    // Hide loading state
+    function hideLoading() {
+        isLoading = false;
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('confirmation-content').style.display = 'block';
+    }
+
+    // Show error state
+    function showError(message) {
+        document.getElementById('error-message').textContent = message;
+        document.getElementById('error-state').style.display = 'block';
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('confirmation-content').style.display = 'none';
+    }
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+        // Remove existing toasts
+        const existingToasts = document.querySelectorAll('.toast');
+        existingToasts.forEach(toast => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        });
+        
+        // Create new toast
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icon = type === 'success' ? 'check-circle' : 
+                    type === 'error' ? 'exclamation-circle' : 'info-circle';
+        
+        toast.innerHTML = `
+            <i class="fas fa-${icon}"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Remove toast after 4 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 4000);
+    }
+
+    // Confirmation API endpoints documentation
+    function listConfirmationEndpoints() {
+        console.log('=== XS Platform Order Confirmation API Endpoints ===');
+        console.log('Base URL:', API_BASE_URL);
+        console.log('\nOrder Endpoints:');
+        console.log('- GET    /api/v1/orders/{id}          - Get order details');
+        console.log('- GET    /api/v1/orders/{id}/receipt  - Download receipt');
+        console.log('- POST   /api/v1/orders/{id}/resend-email - Resend confirmation email');
+        console.log('- GET    /api/v1/orders/{id}/tracking - Get tracking info');
+        console.log('- GET    /api/v1/orders/{id}/appointment - Get service appointment');
+        
+        console.log('\nAppointment Endpoints:');
+        console.log('- GET    /api/v1/appointments/{id}    - Get appointment details');
+        console.log('- PUT    /api/v1/appointments/{id}    - Update appointment');
+        console.log('- POST   /api/v1/appointments/{id}/reschedule - Reschedule appointment');
+        console.log('- DELETE /api/v1/appointments/{id}    - Cancel appointment');
+        
+        console.log('\nUser Endpoints:');
+        console.log('- GET    /api/v1/user/profile         - Get user profile');
+        
+        console.log('\n==================================================');
+    }
+
+    // Initialize and log endpoints
+    listConfirmationEndpoints();
+</script>
+</body>
+</html>

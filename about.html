@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XS Platform - About Us</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* ABOUT PAGE SPECIFIC STYLES */
+        .about-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .about-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px;
+        }
+
+        .about-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* About Container */
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+            align-items: center;
+        }
+
+        .mission-content {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .mission-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin: 0 0 20px;
+        }
+
+        .mission-text {
+            color: var(--secondary-text);
+            line-height: 1.8;
+            margin: 0 0 25px;
+            font-size: 1.05rem;
+        }
+
+        .mission-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: 400px;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-text);
+        }
+
+        .mission-image i {
+            font-size: 4rem;
+            color: var(--primary-blue);
+        }
+
+        /* Values Grid */
+        .values-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 0 0 40px;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--primary-text);
+            margin: 0 0 15px;
+        }
+
+        .section-title p {
+            color: var(--secondary-text);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .value-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--light-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary-blue);
+            font-size: 2rem;
+        }
+
+        .value-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin: 0 0 15px;
+        }
+
+        .value-description {
+            color: var(--secondary-text);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Team Section */
+        .team-section {
+            margin-bottom: 50px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .team-image {
+            height: 200px;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-text);
+        }
+
+        .team-image i {
+            font-size: 4rem;
+            color: var(--primary-blue);
+        }
+
+        .team-info {
+            padding: 25px;
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin: 0 0 5px;
+        }
+
+        .team-role {
+            color: var(--accent-blue);
+            font-weight: 500;
+            margin: 0 0 15px;
+        }
+
+        .team-bio {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0 0 20px;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--light-bg);
+            color: var(--secondary-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .social-link:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 60px 20px;
+            border-radius: 12px;
+            margin-bottom: 50px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            margin-bottom: 50px;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--light-bg);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            width: 50%;
+            padding-right: 40px;
+            box-sizing: border-box;
+        }
+
+        .timeline-item:nth-child(even) {
+            margin-left: 50%;
+            padding-left: 40px;
+            padding-right: 0;
+        }
+
+        .timeline-content {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .timeline-year {
+            position: absolute;
+            top: -20px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-year {
+            right: -70px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-year {
+            left: -70px;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin: 0 0 10px;
+        }
+
+        .timeline-description {
+            color: var(--secondary-text);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 60px 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            color: var(--primary-text);
+            margin: 0 0 20px;
+        }
+
+        .cta-text {
+            color: var(--secondary-text);
+            max-width: 600px;
+            margin: 0 auto 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .cta-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .cta-btn.primary:hover {
+            background: var(--accent-blue);
+        }
+
+        .cta-btn.secondary {
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .cta-btn.secondary:hover {
+            background: var(--light-bg);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .mission-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .mission-image {
+                order: -1;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-header h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 60px;
+                padding-right: 0;
+                margin-left: 0;
+            }
+            
+            .timeline-item:nth-child(even) {
+                margin-left: 0;
+                padding-left: 60px;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-year,
+            .timeline-item:nth-child(even) .timeline-year {
+                left: 0;
+                right: auto;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-header {
+                padding: 40px 15px;
+            }
+            
+            .about-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .mission-content {
+                padding: 25px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header (same as contact.html, shortened for brevity) -->
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Electronics Shop & Repair Services</div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a> 
+                <a href="services.html" class="nav-link">Services <span class="badge-new">NEW</span></a>
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products, services, or brands..." class="search-input">
+            </div>
+
+            <div class="auth-state">
+                <div class="logged-out-state" id="logged-out-state">
+                    <a href="login.html" class="auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <div class="logged-in-state" id="logged-in-state" style="display: none;">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="user-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="profile.html" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="orders.html" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="wishlist.html" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="filter-btn" id="filter-btn">
+                <i class="fas fa-filter"></i>
+            </button>
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-pro" id="request-quote-btn"><i class="fas fa-envelope"></i> Request Quote</button>
+            <button class="btn-submit" id="cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></button>
+            
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filter bar and mobile panels (same as other pages) -->
+    <!-- ... -->
+</header>
+
+<main class="main-content">
+    <!-- About Header -->
+    <section class="about-header">
+        <h1>About XS Platform</h1>
+        <p>Your trusted partner for electronics shopping and professional repair services since 2024</p>
+    </section>
+
+    <!-- About Container -->
+    <div class="about-container">
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <div class="mission-content">
+                <h2 class="mission-title">Our Mission</h2>
+                <p class="mission-text">
+                    At XS Platform, we believe technology should enhance your life, not complicate it. 
+                    Our mission is to provide seamless access to cutting-edge electronics and reliable 
+                    repair services, all in one convenient platform.
+                </p>
+                <p class="mission-text">
+                    We're more than just a store – we're a community of tech enthusiasts dedicated to 
+                    helping you get the most out of your devices. Whether you're buying the latest 
+                    smartphone or need expert repair for your laptop, we're here to make technology 
+                    work for you.
+                </p>
+            </div>
+            
+            <div class="mission-image">
+                <i class="fas fa-bullseye"></i>
+            </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="values-section">
+            <div class="section-title">
+                <h2>Our Core Values</h2>
+                <p>The principles that guide everything we do</p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="value-title">Quality & Reliability</h3>
+                    <p class="value-description">
+                        We stand behind every product and service with comprehensive warranties 
+                        and guarantees. Quality is never compromised.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="value-title">Customer First</h3>
+                    <p class="value-description">
+                        Your satisfaction is our priority. We listen, understand, and deliver 
+                        solutions that exceed expectations.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="value-title">Innovation</h3>
+                    <p class="value-description">
+                        We continuously evolve our services and product offerings to stay 
+                        at the forefront of technology trends.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="value-title">Integrity</h3>
+                    <p class="value-description">
+                        Honest pricing, transparent policies, and ethical business practices 
+                        are the foundation of our operations.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">2,500+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number">1,200+</div>
+                    <div class="stat-label">Devices Repaired</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Available</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Section -->
+        <section class="timeline-section">
+            <div class="section-title">
+                <h2>Our Journey</h2>
+                <p>From startup to industry leader</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2024</div>
+                        <h3 class="timeline-title">Company Founded</h3>
+                        <p class="timeline-description">
+                            XS Platform launched with a vision to combine electronics retail 
+                            with professional repair services in one platform.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2025</div>
+                        <h3 class="timeline-title">Service Expansion</h3>
+                        <p class="timeline-description">
+                            Added mobile repair services and expanded our product catalog 
+                            to include smart home devices and accessories.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2026</div>
+                        <h3 class="timeline-title">Nationwide Coverage</h3>
+                        <p class="timeline-description">
+                            Expanded operations to cover major cities nationwide and 
+                            introduced our same-day repair guarantee.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">Present</div>
+                        <h3 class="timeline-title">Industry Leader</h3>
+                        <p class="timeline-description">
+                            Recognized as a top-rated electronics and repair service 
+                            provider with thousands of satisfied customers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section">
+            <div class="section-title">
+                <h2>Meet Our Leadership</h2>
+                <p>The dedicated team behind XS Platform</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="team-info">
+                        <h4 class="team-name">Alex Johnson</h4>
+                        <div class="team-role">CEO & Founder</div>
+                        <p class="team-bio">
+                            With 15+ years in the tech industry, Alex founded XS Platform 
+                            to revolutionize how people buy and service electronics.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-image">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="team-info">
+                        <h4 class="team-name">Sarah Chen</h4>
+                        <div class="team-role">Head of Technical Services</div>
+                        <p class="team-bio">
+                            Certified technician with expertise in device diagnostics 
+                            and repair across all major brands and models.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-image">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="team-info">
+                        <h4 class="team-name">Michael Rodriguez</h4>
+                        <div class="team-role">Operations Director</div>
+                        <p class="team-bio">
+                            Ensures seamless operations and customer experience across 
+                            all our retail and service locations.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 class="cta-title">Ready to Experience XS Platform?</h2>
+            <p class="cta-text">
+                Join thousands of satisfied customers who trust us for their electronics 
+                needs. From shopping to servicing, we've got you covered.
+            </p>
+            <div class="cta-buttons">
+                <a href="products.html" class="cta-btn primary">
+                    <i class="fas fa-shopping-bag"></i> Shop Products
+                </a>
+                <a href="services.html" class="cta-btn secondary">
+                    <i class="fas fa-tools"></i> Book a Service
+                </a>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<script src="header-footer.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Animate stats counter (demo)
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const target = parseInt(stat.textContent.replace(/[^0-9]/g, ''));
+            const prefix = stat.textContent.replace(/[0-9]/g, '').replace(/%/g, '');
+            const suffix = stat.textContent.includes('%') ? '%' : '';
+            
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                stat.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
+            }, 30);
+        });
+    });
+</script>
+</body>
+</html>

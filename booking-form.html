@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Service - XS Platform</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* BOOKING FORM PAGE SPECIFIC STYLES */
+        .booking-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .booking-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .booking-header h1 {
+            color: var(--primary-text);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .booking-header p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .booking-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-bg);
+            color: var(--secondary-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border: 2px solid var(--light-bg);
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-number {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .step.completed .step-number {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .step.completed .step-number::after {
+            content: '✓';
+            font-size: 1.2rem;
+        }
+
+        .step-label {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .step.completed .step-label {
+            color: #4caf50;
+        }
+
+        .steps-line {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: var(--light-bg);
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .step-label {
+                font-size: 0.8rem;
+            }
+            
+            .step-number {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            
+            .steps-line {
+                left: 40px;
+                right: 40px;
+            }
+        }
+
+        .booking-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .booking-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Booking Forms */
+        .booking-forms {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .booking-form-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            display: none;
+        }
+
+        .booking-form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .form-section-header i {
+            font-size: 24px;
+            color: var(--primary-blue);
+            margin-right: 15px;
+        }
+
+        .form-section-header h3 {
+            color: var(--primary-text);
+            margin: 0;
+            font-size: 1.3rem;
+            flex: 1;
+        }
+
+        .form-section-header .step-indicator {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-text);
+            font-weight: 500;
+        }
+
+        .required::after {
+            content: '*';
+            color: #f44336;
+            margin-left: 4px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            color: var(--secondary-text);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Service Selection Cards */
+        .service-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .service-card {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .service-card.selected {
+            border-color: var(--primary-blue);
+            background: #e8f4fd;
+        }
+
+        .service-card .checkmark {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .service-card.selected .checkmark {
+            opacity: 1;
+        }
+
+        .service-icon {
+            font-size: 32px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .service-card h4 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .service-card p {
+            color: var(--secondary-text);
+            margin: 0 0 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .service-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        .service-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-bg);
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        /* Device Selection */
+        .device-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .device-option {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .device-option:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .device-option.selected {
+            border-color: var(--primary-blue);
+            background: #e8f4fd;
+        }
+
+        .device-icon {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .device-option h4 {
+            color: var(--primary-text);
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .device-option p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        /* Calendar Selection */
+        .calendar-container {
+            margin: 20px 0;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: var(--light-bg);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .current-month {
+            font-weight: 600;
+            color: var(--primary-text);
+            font-size: 1.1rem;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .weekday {
+            text-align: center;
+            padding: 10px;
+            color: var(--secondary-text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .day:hover:not(.disabled):not(.selected) {
+            background: var(--light-bg);
+            border-color: var(--accent-blue);
+        }
+
+        .day.selected {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .day.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            background: #f9f9f9;
+        }
+
+        .day.today {
+            border: 2px solid var(--accent-blue);
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .time-slot {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .time-slot:hover {
+            border-color: var(--accent-blue);
+            background: var(--light-bg);
+        }
+
+        .time-slot.selected {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .time-slot.unavailable {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Location Selection */
+        .location-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .location-option {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .location-option:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .location-option.selected {
+            border-color: var(--primary-blue);
+            background: #e8f4fd;
+        }
+
+        .location-icon {
+            font-size: 24px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .location-option h4 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+        }
+
+        .location-option p {
+            color: var(--secondary-text);
+            margin: 0 0 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .location-distance {
+            color: #4caf50;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Booking Summary */
+        .booking-summary {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-header {
+            color: var(--primary-text);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-bg);
+            font-size: 1.3rem;
+        }
+
+        .summary-content {
+            color: var(--secondary-text);
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .summary-item h4 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-item p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .summary-item .price {
+            font-weight: 600;
+            color: var(--primary-text);
+            font-size: 1.1rem;
+        }
+
+        .summary-details {
+            margin: 25px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: var(--secondary-text);
+        }
+
+        .detail-row.total {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-bg);
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .security-badge i {
+            color: #4caf50;
+            font-size: 1.2rem;
+        }
+
+        .book-btn {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .book-btn:hover {
+            background: var(--accent-blue);
+        }
+
+        .book-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .nav-btn-primary, .nav-btn-secondary {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn-secondary {
+            background: white;
+            color: var(--primary-text);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .nav-btn-secondary:hover {
+            background: var(--light-bg);
+        }
+
+        .nav-btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading States */
+        .loading-indicator {
+            text-align: center;
+            padding: 40px;
+            color: var(--secondary-text);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--primary-blue);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            background: #ffeaea;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Service Quick Selection */
+        .quick-service-selection {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .quick-service-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .quick-service-header h3 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+        }
+
+        .quick-service-header p {
+            color: var(--secondary-text);
+            margin: 0;
+        }
+
+        .quick-service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-service-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .quick-service-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .quick-service-card.selected {
+            border-color: var(--primary-blue);
+            background: #e8f4fd;
+        }
+
+        .quick-service-icon {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .quick-service-card h4 {
+            color: var(--primary-text);
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .quick-service-card p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--light-bg);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .booking-container {
+                padding: 15px;
+            }
+            
+            .booking-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .booking-form-section {
+                padding: 20px;
+            }
+            
+            .service-cards, .location-options, .quick-service-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-days .day {
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .booking-summary {
+                position: static;
+                margin-top: 30px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+            }
+            
+            .nav-btn-primary, .nav-btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .booking-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .form-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Customized Header - Same as products page -->
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Premium Electronics Store</div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" id="global-search" placeholder="Search products..." class="search-input">
+            </div>
+
+            <!-- Desktop Auth State -->
+            <div class="auth-state">
+                <!-- Logged Out State (default) -->
+                <div class="logged-out-state" id="logged-out-state">
+                    <a href="login.html" class="auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Logged In State -->
+                <div class="logged-in-state" id="logged-in-state" style="display: none;">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="user-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="profile.html" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="orders.html" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="wishlist.html" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-submit" id="cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></button>
+            
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Search Bar (Hidden by default) -->
+    <div class="mobile-search-bar" id="mobile-search-bar">
+        <div class="mobile-search-container">
+            <input type="text" placeholder="Search..." class="mobile-search-input">
+            <button class="mobile-search-close" id="mobile-search-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Panel (Hidden by default) -->
+    <div class="mobile-menu-panel" id="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <div class="mobile-logo">XS</div>
+            <button class="mobile-menu-close" id="mobile-menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-content">
+            <!-- Mobile Auth State -->
+            <div class="mobile-auth-state">
+                <!-- Mobile Logged Out State -->
+                <div class="mobile-logged-out-state" id="mobile-logged-out-state">
+                    <a href="login.html" class="mobile-auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Mobile Logged In State -->
+                <div class="mobile-logged-in-state" id="mobile-logged-in-state" style="display: none;">
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name" id="mobile-user-name">Welcome!</div>
+                            <div class="mobile-user-email" id="mobile-user-email">user@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-user-menu">
+                        <a href="user-dashboard.html" class="mobile-nav-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="profile.html" class="mobile-nav-link">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="orders.html" class="mobile-nav-link">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                        <a href="wishlist.html" class="mobile-nav-link">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </a>
+                        <div class="mobile-menu-divider"></div>
+                        <button class="mobile-action-btn" id="mobile-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-section">
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="products.html" class="mobile-nav-link">
+                    <i class="fas fa-shopping-bag"></i> Products
+                </a>
+                <a href="services.html" class="mobile-nav-link">
+                    <i class="fas fa-tools"></i> Services
+                </a>
+                <a href="deals.html" class="mobile-nav-link">
+                    <i class="fas fa-tag"></i> Deals
+                </a>
+                <a href="support.html" class="mobile-nav-link">
+                    <i class="fas fa-headset"></i> Support
+                </a>
+            </div>
+            
+            <div class="mobile-actions-section">
+                <button class="mobile-action-btn" id="mobile-wishlist-btn">
+                    <i class="fas fa-heart"></i> Wishlist <span class="mobile-wishlist-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-cart-btn">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="mobile-cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loading-message">Processing your booking...</p>
+    </div>
+
+    <div class="booking-container">
+        <div class="booking-header">
+            <h1><i class="fas fa-calendar-alt"></i> Book a Service</h1>
+            <p>Schedule your device repair or service appointment with our expert technicians</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-message" id="error-message" style="display: none;">
+            <p>Error loading booking information. Please try again later.</p>
+            <button class="btn-pro" id="retry-load-btn">Retry</button>
+        </div>
+
+        <!-- Booking Steps -->
+        <div class="booking-steps">
+            <div class="steps-line"></div>
+            <div class="step active" id="step-service">
+                <div class="step-number">1</div>
+                <div class="step-label">Select Service</div>
+            </div>
+            <div class="step" id="step-details">
+                <div class="step-number">2</div>
+                <div class="step-label">Device Details</div>
+            </div>
+            <div class="step" id="step-schedule">
+                <div class="step-number">3</div>
+                <div class="step-label">Date & Time</div>
+            </div>
+            <div class="step" id="step-review">
+                <div class="step-number">4</div>
+                <div class="step-label">Review & Book</div>
+            </div>
+        </div>
+
+        <!-- Quick Service Selection -->
+        <div class="quick-service-selection">
+            <div class="quick-service-header">
+                <h3>Quick Service Selection</h3>
+                <p>Choose from our most popular services</p>
+            </div>
+            <div class="quick-service-grid" id="quick-service-grid">
+                <!-- Dynamically populated from API -->
+            </div>
+        </div>
+
+        <div class="booking-content">
+            <!-- Left Column: Booking Forms -->
+            <div class="booking-forms">
+                <!-- Step 1: Select Service -->
+                <div class="booking-form-section active" id="service-selection-section">
+                    <div class="form-section-header">
+                        <i class="fas fa-tools"></i>
+                        <h3>Select Service Type</h3>
+                        <div class="step-indicator">Step 1 of 4</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required" for="service-category">Service Category</label>
+                        <select class="form-select" id="service-category">
+                            <option value="">Select a category</option>
+                            <!-- Categories will be populated from API -->
+                        </select>
+                    </div>
+
+                    <div class="service-cards" id="service-cards">
+                        <!-- Services will be loaded dynamically from API -->
+                        <div class="loading-indicator" id="services-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading services...</p>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="nav-btn-secondary" id="back-to-services" style="visibility: hidden;">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="nav-btn-primary" id="next-to-details" disabled>
+                            Continue to Device Details <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Device Details -->
+                <div class="booking-form-section" id="device-details-section">
+                    <div class="form-section-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Device Information</h3>
+                        <div class="step-indicator">Step 2 of 4</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Device Type</label>
+                        <div class="device-selection" id="device-selection">
+                            <!-- Device options will be populated from API -->
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required" for="device-brand">Brand</label>
+                            <select class="form-select" id="device-brand">
+                                <option value="">Select brand</option>
+                                <!-- Brands will be populated based on device type -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label required" for="device-model">Model</label>
+                            <input type="text" class="form-input" id="device-model" placeholder="e.g., iPhone 15, Galaxy S23">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="device-serial">Serial Number (Optional)</label>
+                        <input type="text" class="form-input" id="device-serial" placeholder="If available">
+                        <span class="form-hint">Helps us identify your device and check warranty status</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required" for="issue-description">Issue Description</label>
+                        <textarea class="form-textarea" id="issue-description" placeholder="Describe the problem you're experiencing..."></textarea>
+                        <span class="form-hint">Please be as detailed as possible. Include error messages, when it started, etc.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="additional-notes">Additional Notes (Optional)</label>
+                        <textarea class="form-textarea" id="additional-notes" placeholder="Any other information our technicians should know..."></textarea>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="nav-btn-secondary" id="back-to-service">
+                            <i class="fas fa-arrow-left"></i> Back to Services
+                        </button>
+                        <button class="nav-btn-primary" id="next-to-schedule" disabled>
+                            Continue to Schedule <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Schedule Appointment -->
+                <div class="booking-form-section" id="schedule-section">
+                    <div class="form-section-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Select Date & Time</h3>
+                        <div class="step-indicator">Step 3 of 4</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Select Location</label>
+                        <div class="location-options" id="location-options">
+                            <!-- Locations will be loaded from API -->
+                        </div>
+                    </div>
+
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <div class="calendar-nav">
+                                <button class="nav-btn prev-month">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <div class="current-month" id="current-month"></div>
+                                <button class="nav-btn next-month">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-weekdays">
+                            <div class="weekday">Sun</div>
+                            <div class="weekday">Mon</div>
+                            <div class="weekday">Tue</div>
+                            <div class="weekday">Wed</div>
+                            <div class="weekday">Thu</div>
+                            <div class="weekday">Fri</div>
+                            <div class="weekday">Sat</div>
+                        </div>
+
+                        <div class="calendar-days" id="calendar-days">
+                            <!-- Calendar days will be generated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Select Time Slot</label>
+                        <div class="time-slots" id="time-slots">
+                            <!-- Time slots will be loaded from API -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="preferred-technician">Preferred Technician (Optional)</label>
+                        <select class="form-select" id="preferred-technician">
+                            <option value="">No preference</option>
+                            <!-- Technicians will be loaded from API -->
+                        </select>
+                        <span class="form-hint">We'll try to accommodate your preference based on availability</span>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="nav-btn-secondary" id="back-to-details">
+                            <i class="fas fa-arrow-left"></i> Back to Details
+                        </button>
+                        <button class="nav-btn-primary" id="next-to-review" disabled>
+                            Continue to Review <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review & Book -->
+                <div class="booking-form-section" id="review-section">
+                    <div class="form-section-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3>Review Your Booking</h3>
+                        <div class="step-indicator">Step 4 of 4</div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="review-item" style="background: var(--light-bg); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                            <h4 style="color: var(--primary-text); margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-tools"></i> Service Details
+                            </h4>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-service">Not selected</p>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-price">Price: $--</p>
+                            <button class="nav-btn-secondary" onclick="goToStep(1)" style="margin-top: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-edit"></i> Change Service
+                            </button>
+                        </div>
+
+                        <div class="review-item" style="background: var(--light-bg); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                            <h4 style="color: var(--primary-text); margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-mobile-alt"></i> Device Information
+                            </h4>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-device">Not specified</p>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-issue">No description provided</p>
+                            <button class="nav-btn-secondary" onclick="goToStep(2)" style="margin-top: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-edit"></i> Change Details
+                            </button>
+                        </div>
+
+                        <div class="review-item" style="background: var(--light-bg); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                            <h4 style="color: var(--primary-text); margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-calendar-alt"></i> Appointment Details
+                            </h4>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-date">Not scheduled</p>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-time">No time selected</p>
+                            <p style="margin: 5px 0; color: var(--secondary-text);" id="review-location">No location selected</p>
+                            <button class="nav-btn-secondary" onclick="goToStep(3)" style="margin-top: 10px; padding: 8px 15px; font-size: 0.9rem;">
+                                <i class="fas fa-edit"></i> Change Schedule
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="special-instructions">Special Instructions (Optional)</label>
+                        <textarea class="form-textarea" id="special-instructions" placeholder="Any specific requests or instructions for our technicians..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="reminder-preference">Reminder Preference</label>
+                        <select class="form-select" id="reminder-preference">
+                            <option value="email">Email reminder only</option>
+                            <option value="sms">SMS reminder only</option>
+                            <option value="both" selected>Both email and SMS</option>
+                            <option value="none">No reminders</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="checkbox" id="terms-agree" required>
+                        <label for="terms-agree" style="margin-left: 8px; color: var(--secondary-text);">
+                            I agree to the <a href="terms.html" target="_blank" style="color: var(--accent-blue);">Terms of Service</a> and understand that additional charges may apply if additional issues are found during diagnosis.
+                        </label>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="nav-btn-secondary" id="back-to-schedule">
+                            <i class="fas fa-arrow-left"></i> Back to Schedule
+                        </button>
+                        <button class="nav-btn-primary" id="confirm-booking-btn">
+                            <i class="fas fa-calendar-check"></i> Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Booking Summary -->
+            <div class="booking-summary">
+                <h3 class="summary-header">Booking Summary</h3>
+                
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <h4><i class="fas fa-tools"></i> Selected Service</h4>
+                        <p id="summary-service">Not selected</p>
+                        <p class="price" id="summary-price">$0.00</p>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <h4><i class="fas fa-mobile-alt"></i> Device</h4>
+                        <p id="summary-device">Not specified</p>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <h4><i class="fas fa-calendar-alt"></i> Appointment</h4>
+                        <p id="summary-appointment">Not scheduled</p>
+                        <p id="summary-location">Not selected</p>
+                    </div>
+                    
+                    <div class="summary-details">
+                        <div class="detail-row">
+                            <span>Service Fee</span>
+                            <span id="detail-service-fee">$0.00</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span>Diagnostic Fee</span>
+                            <span id="detail-diagnostic">$0.00</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span>Tax</span>
+                            <span id="detail-tax">$0.00</span>
+                        </div>
+                        
+                        <div class="detail-row total">
+                            <span>Estimated Total</span>
+                            <span id="detail-total">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>Service Guarantee</strong><br>
+                            90-day warranty on all repairs
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" id="book-now-btn" disabled>
+                        <i class="fas fa-calendar-check"></i> Book Appointment
+                    </button>
+                    
+                    <div style="margin-top: 20px; font-size: 0.9rem; color: var(--secondary-text);">
+                        <p><i class="fas fa-clock"></i> Appointment duration: 1-2 hours</p>
+                        <p><i class="fas fa-undo"></i> Free cancellation up to 24 hours before</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<!-- Link to shared JavaScript file -->
+<script src="header-footer.js"></script>
+
+<!-- Booking-specific JavaScript with API Integration -->
+<script>
+    // API Configuration
+    const API_BASE_URL = 'https://api.xsplatform.com';
+    const API_ENDPOINTS = {
+        BOOKING_SERVICES: `${API_BASE_URL}/api/v1/booking/services`,
+        BOOKING_CATEGORIES: `${API_BASE_URL}/api/v1/booking/categories`,
+        BOOKING_DEVICE_TYPES: `${API_BASE_URL}/api/v1/booking/device-types`,
+        BOOKING_BRANDS: `${API_BASE_URL}/api/v1/booking/brands/{deviceType}`,
+        BOOKING_LOCATIONS: `${API_BASE_URL}/api/v1/booking/locations`,
+        BOOKING_TECHNICIANS: `${API_BASE_URL}/api/v1/booking/technicians`,
+        BOOKING_AVAILABILITY: `${API_BASE_URL}/api/v1/booking/availability`,
+        BOOKING_CREATE: `${API_BASE_URL}/api/v1/bookings`,
+        USER_PROFILE: `${API_BASE_URL}/api/v1/user/profile`,
+        USER_BOOKINGS: `${API_BASE_URL}/api/v1/user/bookings`
+    };
+
+    // Global state
+    let currentStep = 1;
+    let bookingData = {
+        service: null,
+        device: {
+            type: null,
+            brand: null,
+            model: null,
+            serial: null,
+            issue: null,
+            notes: null
+        },
+        schedule: {
+            location: null,
+            date: null,
+            time: null,
+            technician: null,
+            instructions: null
+        },
+        preferences: {
+            reminders: 'both',
+            termsAgreed: false
+        }
+    };
+
+    // Data from API
+    let services = [];
+    let categories = [];
+    let deviceTypes = [];
+    let locations = [];
+    let technicians = [];
+    let availability = [];
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Booking form initialized with API integration');
+        
+        // Check if user is logged in
+        if (!isUserLoggedIn()) {
+            showMessage('Please login to book a service');
+            setTimeout(() => {
+                window.location.href = 'login.html?return=booking-form.html';
+            }, 2000);
+            return;
+        }
+        
+        // Load initial data
+        loadBookingData();
+        
+        // Initialize event listeners
+        initEventListeners();
+        initCalendar();
+    });
+
+    // API Helper Functions
+    async function fetchAPI(url, options = {}) {
+        try {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                ...options
+            };
+            
+            const response = await fetch(url, defaultOptions);
+            
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API Fetch Error:', error);
+            throw error;
+        }
+    }
+
+    function getAuthToken() {
+        return localStorage.getItem('xs_auth_token') || '';
+    }
+
+    function isUserLoggedIn() {
+        return !!getAuthToken();
+    }
+
+    // Load booking data
+    async function loadBookingData() {
+        try {
+            showLoading('Loading booking information...');
+            
+            // Load all data in parallel
+            const [servicesData, categoriesData, deviceTypesData, locationsData, techniciansData] = await Promise.all([
+                fetchAPI(API_ENDPOINTS.BOOKING_SERVICES),
+                fetchAPI(API_ENDPOINTS.BOOKING_CATEGORIES),
+                fetchAPI(API_ENDPOINTS.BOOKING_DEVICE_TYPES),
+                fetchAPI(API_ENDPOINTS.BOOKING_LOCATIONS),
+                fetchAPI(API_ENDPOINTS.BOOKING_TECHNICIANS)
+            ]);
+            
+            services = servicesData.services || [];
+            categories = categoriesData.categories || [];
+            deviceTypes = deviceTypesData.deviceTypes || [];
+            locations = locationsData.locations || [];
+            technicians = techniciansData.technicians || [];
+            
+            hideLoading();
+            
+            // Initialize UI
+            initCategories();
+            initQuickServices();
+            initDeviceTypes();
+            initLocations();
+            initTechnicians();
+            
+        } catch (error) {
+            hideLoading();
+            showError('Failed to load booking information');
+        }
+    }
+
+    // Initialize categories
+    function initCategories() {
+        const categorySelect = document.getElementById('service-category');
+        categorySelect.innerHTML = '<option value="">Select a category</option>';
+        
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+        
+        // Load services when category changes
+        categorySelect.addEventListener('change', loadServicesByCategory);
+    }
+
+    // Load services by category
+    async function loadServicesByCategory() {
+        const categoryId = document.getElementById('service-category').value;
+        const servicesContainer = document.getElementById('service-cards');
+        
+        // Show loading
+        servicesContainer.innerHTML = `
+            <div class="loading-indicator" style="grid-column: 1/-1;">
+                <div class="loading-spinner"></div>
+                <p>Loading services...</p>
+            </div>
+        `;
+        
+        try {
+            const url = categoryId ? 
+                `${API_BASE_URL}/api/v1/booking/categories/${categoryId}/services` :
+                API_ENDPOINTS.BOOKING_SERVICES;
+            
+            const data = await fetchAPI(url);
+            const servicesList = data.services || [];
+            
+            renderServices(servicesList);
+            
+        } catch (error) {
+            console.error('Failed to load services:', error);
+            servicesContainer.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--secondary-text);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
+                    <p>Failed to load services. Please try again.</p>
+                    <button class="btn-pro" onclick="loadServicesByCategory()">Retry</button>
+                </div>
+            `;
+        }
+    }
+
+    // Render services
+    function renderServices(servicesList) {
+        const container = document.getElementById('service-cards');
+        
+        if (servicesList.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--secondary-text);">
+                    <i class="fas fa-tools" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <p>No services available for this category</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = '';
+        
+        servicesList.forEach(service => {
+            const card = document.createElement('div');
+            card.className = 'service-card';
+            card.dataset.serviceId = service.id;
+            card.innerHTML = `
+                <div class="checkmark">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="service-icon">
+                    <i class="fas fa-${service.icon || 'tools'}"></i>
+                </div>
+                <h4>${service.name}</h4>
+                <p>${service.description}</p>
+                <div class="service-price">$${service.price.toFixed(2)}</div>
+                <div class="service-meta">
+                    <span><i class="far fa-clock"></i> ${service.duration}</span>
+                    <span><i class="fas fa-shield-alt"></i> ${service.warrantyDays || 90} days warranty</span>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => selectService(service));
+            container.appendChild(card);
+        });
+    }
+
+    // Initialize quick services
+    function initQuickServices() {
+        const container = document.getElementById('quick-service-grid');
+        
+        // Get popular services (first 6)
+        const popularServices = services.slice(0, 6);
+        
+        popularServices.forEach(service => {
+            const card = document.createElement('div');
+            card.className = 'quick-service-card';
+            card.dataset.serviceId = service.id;
+            card.innerHTML = `
+                <div class="quick-service-icon">
+                    <i class="fas fa-${service.icon || 'tools'}"></i>
+                </div>
+                <h4>${service.name}</h4>
+                <p>From $${service.price.toFixed(2)}</p>
+            `;
+            
+            card.addEventListener('click', () => {
+                // Set category and select service
+                document.getElementById('service-category').value = service.categoryId;
+                loadServicesByCategory().then(() => {
+                    // Find and select the service card
+                    const serviceCard = document.querySelector(`.service-card[data-service-id="${service.id}"]`);
+                    if (serviceCard) {
+                        serviceCard.click();
+                    }
+                });
+            });
+            
+            container.appendChild(card);
+        });
+    }
+
+    // Initialize device types
+    function initDeviceTypes() {
+        const container = document.getElementById('device-selection');
+        
+        deviceTypes.forEach(deviceType => {
+            const option = document.createElement('div');
+            option.className = 'device-option';
+            option.dataset.deviceType = deviceType.id;
+            option.innerHTML = `
+                <div class="device-icon">
+                    <i class="fas fa-${deviceType.icon || 'question-circle'}"></i>
+                </div>
+                <h4>${deviceType.name}</h4>
+                <p>${deviceType.description || ''}</p>
+            `;
+            
+            option.addEventListener('click', () => selectDeviceType(deviceType));
+            container.appendChild(option);
+        });
+    }
+
+    // Initialize locations
+    function initLocations() {
+        const container = document.getElementById('location-options');
+        
+        // Get user location (in real app, this would come from user profile or geolocation)
+        const userLat = 40.7128; // NYC latitude for demo
+        const userLng = -74.0060; // NYC longitude for demo
+        
+        locations.forEach(location => {
+            // Calculate distance (simplified for demo)
+            const distance = calculateDistance(userLat, userLng, location.latitude, location.longitude);
+            
+            const option = document.createElement('div');
+            option.className = 'location-option';
+            option.dataset.locationId = location.id;
+            option.innerHTML = `
+                <div class="location-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h4>${location.name}</h4>
+                <p>${location.address}</p>
+                <p><i class="fas fa-clock"></i> ${location.hours}</p>
+                <div class="location-distance">
+                    <i class="fas fa-map-marker-alt"></i> ${distance.toFixed(1)} miles from you
+                </div>
+            `;
+            
+            // Select first location by default
+            if (locations[0] && location.id === locations[0].id) {
+                setTimeout(() => option.click(), 100);
+            }
+            
+            option.addEventListener('click', () => selectLocation(location));
+            container.appendChild(option);
+        });
+    }
+
+    // Calculate distance between coordinates (simplified)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 3958.8; // Earth's radius in miles
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    // Initialize technicians
+    function initTechnicians() {
+        const select = document.getElementById('preferred-technician');
+        
+        technicians.forEach(tech => {
+            const option = document.createElement('option');
+            option.value = tech.id;
+            option.textContent = `${tech.name} (${tech.specialty})`;
+            select.appendChild(option);
+        });
+    }
+
+    // Initialize calendar
+    function initCalendar() {
+        const currentMonthElement = document.getElementById('current-month');
+        const today = new Date();
+        
+        // Set current month
+        updateCalendarDisplay(today);
+        
+        // Add event listeners for navigation
+        document.querySelector('.prev-month').addEventListener('click', () => {
+            today.setMonth(today.getMonth() - 1);
+            updateCalendarDisplay(today);
+            loadAvailability();
+        });
+        
+        document.querySelector('.next-month').addEventListener('click', () => {
+            today.setMonth(today.getMonth() + 1);
+            updateCalendarDisplay(today);
+            loadAvailability();
+        });
+    }
+
+    // Update calendar display
+    function updateCalendarDisplay(date) {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+        document.getElementById('current-month').textContent = 
+            `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+        
+        generateCalendarDays(date);
+    }
+
+    // Generate calendar days
+    function generateCalendarDays(date) {
+        const container = document.getElementById('calendar-days');
+        container.innerHTML = '';
+        
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        
+        // Add empty cells for days before the first day
+        const firstDayIndex = firstDay.getDay();
+        for (let i = 0; i < firstDayIndex; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'day disabled';
+            container.appendChild(emptyDay);
+        }
+        
+        // Add days of the month
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDate = new Date(year, month, day);
+            const dayElement = document.createElement('div');
+            dayElement.className = 'day';
+            dayElement.textContent = day;
+            dayElement.dataset.date = dayDate.toISOString().split('T')[0];
+            
+            // Mark today
+            if (dayDate.toDateString() === today.toDateString()) {
+                dayElement.classList.add('today');
+            }
+            
+            // Disable past days
+            if (dayDate < today) {
+                dayElement.classList.add('disabled');
+            }
+            
+            // Mark selected day
+            if (bookingData.schedule.date && 
+                dayDate.toDateString() === new Date(bookingData.schedule.date).toDateString()) {
+                dayElement.classList.add('selected');
+            }
+            
+            // Add click event for selectable days
+            if (!dayElement.classList.contains('disabled')) {
+                dayElement.addEventListener('click', () => selectDate(dayDate));
+            }
+            
+            container.appendChild(dayElement);
+        }
+    }
+
+    // Load availability
+    async function loadAvailability() {
+        if (!bookingData.schedule.location || !bookingData.service) {
+            return;
+        }
+        
+        try {
+            const params = new URLSearchParams({
+                locationId: bookingData.schedule.location.id,
+                serviceId: bookingData.service.id,
+                date: bookingData.schedule.date || new Date().toISOString().split('T')[0]
+            });
+            
+            const data = await fetchAPI(`${API_ENDPOINTS.BOOKING_AVAILABILITY}?${params}`);
+            availability = data.availability || [];
+            
+            updateTimeSlots();
+            
+        } catch (error) {
+            console.error('Failed to load availability:', error);
+        }
+    }
+
+    // Update time slots
+    function updateTimeSlots() {
+        const container = document.getElementById('time-slots');
+        
+        if (!bookingData.schedule.date) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--secondary-text);">
+                    <i class="far fa-calendar" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p>Select a date to view available time slots</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Get available slots for selected date
+        const selectedDateStr = bookingData.schedule.date.toISOString().split('T')[0];
+        const dateAvailability = availability.find(a => a.date === selectedDateStr);
+        
+        if (!dateAvailability || !dateAvailability.slots || dateAvailability.slots.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--secondary-text);">
+                    <i class="fas fa-calendar-times" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p>No available time slots for this date</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = '';
+        
+        dateAvailability.slots.forEach(slot => {
+            const slotElement = document.createElement('div');
+            slotElement.className = 'time-slot';
+            slotElement.textContent = slot.time;
+            slotElement.dataset.slotId = slot.id;
+            
+            if (slot.available) {
+                slotElement.addEventListener('click', () => selectTimeSlot(slot));
+                
+                if (bookingData.schedule.time && slot.id === bookingData.schedule.time.id) {
+                    slotElement.classList.add('selected');
+                }
+            } else {
+                slotElement.classList.add('unavailable');
+            }
+            
+            container.appendChild(slotElement);
+        });
+    }
+
+    // Select service
+    function selectService(service) {
+        // Update UI
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        document.querySelector(`.service-card[data-service-id="${service.id}"]`).classList.add('selected');
+        
+        // Update quick selection
+        document.querySelectorAll('.quick-service-card').forEach(card => {
+            card.classList.remove('selected');
+            if (card.dataset.serviceId === service.id) {
+                card.classList.add('selected');
+            }
+        });
+        
+        // Store data
+        bookingData.service = service;
+        
+        // Enable next button
+        document.getElementById('next-to-details').disabled = false;
+        
+        // Update summary and availability
+        updateSummary();
+        loadAvailability();
+    }
+
+    // Select device type
+    async function selectDeviceType(deviceType) {
+        // Update UI
+        document.querySelectorAll('.device-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        document.querySelector(`.device-option[data-device-type="${deviceType.id}"]`).classList.add('selected');
+        
+        // Store data
+        bookingData.device.type = deviceType;
+        
+        // Load brands for this device type
+        await loadBrands(deviceType.id);
+        
+        // Validate step
+        validateStep2();
+    }
+
+    // Load brands
+    async function loadBrands(deviceTypeId) {
+        const brandSelect = document.getElementById('device-brand');
+        
+        try {
+            const data = await fetchAPI(API_ENDPOINTS.BOOKING_BRANDS.replace('{deviceType}', deviceTypeId));
+            const brands = data.brands || [];
+            
+            brandSelect.innerHTML = '<option value="">Select brand</option>';
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand.id;
+                option.textContent = brand.name;
+                brandSelect.appendChild(option);
+            });
+            
+        } catch (error) {
+            console.error('Failed to load brands:', error);
+            brandSelect.innerHTML = '<option value="">Select brand</option>';
+        }
+    }
+
+    // Select location
+    function selectLocation(location) {
+        // Update UI
+        document.querySelectorAll('.location-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        document.querySelector(`.location-option[data-location-id="${location.id}"]`).classList.add('selected');
+        
+        // Store data
+        bookingData.schedule.location = location;
+        
+        // Load availability for this location
+        loadAvailability();
+        
+        // Validate step
+        validateStep3();
+    }
+
+    // Select date
+    function selectDate(date) {
+        bookingData.schedule.date = date;
+        generateCalendarDays(date);
+        loadAvailability();
+        validateStep3();
+    }
+
+    // Select time slot
+    function selectTimeSlot(slot) {
+        bookingData.schedule.time = slot;
+        updateTimeSlots();
+        validateStep3();
+    }
+
+    // Validate step 2
+    function validateStep2() {
+        const deviceTypeSelected = bookingData.device.type !== null;
+        const brand = document.getElementById('device-brand').value;
+        const model = document.getElementById('device-model').value.trim();
+        const issue = document.getElementById('issue-description').value.trim();
+        
+        const isValid = deviceTypeSelected && brand && model && issue;
+        document.getElementById('next-to-schedule').disabled = !isValid;
+        
+        // Update booking data
+        if (isValid) {
+            bookingData.device.brand = brand;
+            bookingData.device.model = model;
+            bookingData.device.issue = issue;
+            bookingData.device.serial = document.getElementById('device-serial').value.trim();
+            bookingData.device.notes = document.getElementById('additional-notes').value.trim();
+        }
+        
+        return isValid;
+    }
+
+    // Validate step 3
+    function validateStep3() {
+        const locationSelected = bookingData.schedule.location !== null;
+        const dateSelected = bookingData.schedule.date !== null;
+        const timeSelected = bookingData.schedule.time !== null;
+        
+        const isValid = locationSelected && dateSelected && timeSelected;
+        document.getElementById('next-to-review').disabled = !isValid;
+        
+        // Update booking data
+        if (isValid) {
+            bookingData.schedule.technician = document.getElementById('preferred-technician').value;
+        }
+        
+        return isValid;
+    }
+
+    // Update summary
+    function updateSummary() {
+        // Service
+        if (bookingData.service) {
+            document.getElementById('summary-service').textContent = bookingData.service.name;
+            document.getElementById('summary-price').textContent = `$${bookingData.service.price.toFixed(2)}`;
+            document.getElementById('review-service').textContent = bookingData.service.name;
+            document.getElementById('review-price').textContent = `Price: $${bookingData.service.price.toFixed(2)}`;
+            
+            // Calculate totals
+            const serviceFee = bookingData.service.price;
+            const diagnosticFee = serviceFee > 0 ? 0 : 49.99;
+            const tax = (serviceFee + diagnosticFee) * 0.08;
+            const total = serviceFee + diagnosticFee + tax;
+            
+            document.getElementById('detail-service-fee').textContent = `$${serviceFee.toFixed(2)}`;
+            document.getElementById('detail-diagnostic').textContent = diagnosticFee > 0 ? `$${diagnosticFee.toFixed(2)}` : 'Free';
+            document.getElementById('detail-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('detail-total').textContent = `$${total.toFixed(2)}`;
+        }
+        
+        // Device
+        if (bookingData.device.type) {
+            const deviceType = bookingData.device.type.name;
+            const brand = document.getElementById('device-brand').selectedOptions[0]?.text || '';
+            const model = document.getElementById('device-model').value.trim();
+            
+            if (brand && model) {
+                const deviceText = `${brand} ${model}`;
+                document.getElementById('summary-device').textContent = deviceText;
+                document.getElementById('review-device').textContent = deviceText;
+            }
+            
+            const issue = document.getElementById('issue-description').value.trim();
+            if (issue) {
+                const truncatedIssue = issue.length > 50 ? issue.substring(0, 50) + '...' : issue;
+                document.getElementById('review-issue').textContent = truncatedIssue;
+            }
+        }
+        
+        // Appointment
+        if (bookingData.schedule.date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = bookingData.schedule.date.toLocaleDateString('en-US', options);
+            document.getElementById('summary-appointment').textContent = `${dateStr}`;
+            document.getElementById('review-date').textContent = dateStr;
+            
+            if (bookingData.schedule.time) {
+                const timeStr = `${bookingData.schedule.time.time}`;
+                document.getElementById('summary-appointment').textContent += ` at ${timeStr}`;
+                document.getElementById('review-time').textContent = `${timeStr} (1-2 hours)`;
+            }
+        }
+        
+        // Location
+        if (bookingData.schedule.location) {
+            document.getElementById('summary-location').textContent = bookingData.schedule.location.name;
+            document.getElementById('review-location').textContent = bookingData.schedule.location.address;
+        }
+        
+        // Update book now button
+        const canBook = bookingData.service && bookingData.device.type && 
+                       bookingData.schedule.location && bookingData.schedule.date && bookingData.schedule.time;
+        
+        const bookNowBtn = document.getElementById('book-now-btn');
+        bookNowBtn.disabled = !canBook;
+        if (canBook) {
+            bookNowBtn.onclick = () => goToStep(4);
+        }
+    }
+
+    // Step Navigation
+    function goToStep(stepNumber) {
+        // Update step indicators
+        document.querySelectorAll('.step').forEach(step => {
+            step.classList.remove('active');
+            const stepId = step.id.replace('step-', '');
+            if (['service', 'details', 'schedule', 'review'].indexOf(stepId) < stepNumber) {
+                step.classList.add('completed');
+            } else {
+                step.classList.remove('completed');
+            }
+        });
+        
+        // Show current step as active
+        const stepNames = ['service', 'details', 'schedule', 'review'];
+        document.getElementById(`step-${stepNames[stepNumber - 1]}`).classList.add('active');
+        
+        // Show appropriate form section
+        document.querySelectorAll('.booking-form-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(`${stepNames[stepNumber - 1]}-section`).classList.add('active');
+        
+        // Update summary
+        updateSummary();
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initialize event listeners
+    function initEventListeners() {
+        // Navigation buttons
+        document.getElementById('next-to-details').addEventListener('click', () => goToStep(2));
+        document.getElementById('next-to-schedule').addEventListener('click', () => goToStep(3));
+        document.getElementById('next-to-review').addEventListener('click', () => goToStep(4));
+        
+        document.getElementById('back-to-service').addEventListener('click', () => goToStep(1));
+        document.getElementById('back-to-details').addEventListener('click', () => goToStep(2));
+        document.getElementById('back-to-schedule').addEventListener('click', () => goToStep(3));
+        
+        // Form validation listeners
+        document.getElementById('device-brand').addEventListener('change', validateStep2);
+        document.getElementById('device-model').addEventListener('input', validateStep2);
+        document.getElementById('issue-description').addEventListener('input', validateStep2);
+        
+        // Technician selection
+        document.getElementById('preferred-technician').addEventListener('change', function() {
+            bookingData.schedule.technician = this.value;
+        });
+        
+        // Reminder preference
+        document.getElementById('reminder-preference').addEventListener('change', function() {
+            bookingData.preferences.reminders = this.value;
+        });
+        
+        // Terms agreement
+        document.getElementById('terms-agree').addEventListener('change', function() {
+            bookingData.preferences.termsAgreed = this.checked;
+        });
+        
+        // Confirm booking
+        document.getElementById('confirm-booking-btn').addEventListener('click', confirmBooking);
+        
+        // Retry button
+        document.getElementById('retry-load-btn').addEventListener('click', loadBookingData);
+    }
+
+    // Confirm booking
+    async function confirmBooking() {
+        const termsAgreed = document.getElementById('terms-agree').checked;
+        
+        if (!termsAgreed) {
+            showMessage('Please agree to the terms and conditions');
+            return;
+        }
+        
+        // Prepare booking data
+        const bookingPayload = {
+            serviceId: bookingData.service.id,
+            device: {
+                type: bookingData.device.type.id,
+                brand: bookingData.device.brand,
+                model: bookingData.device.model,
+                serial: bookingData.device.serial,
+                issue: bookingData.device.issue,
+                notes: bookingData.device.notes
+            },
+            schedule: {
+                locationId: bookingData.schedule.location.id,
+                date: bookingData.schedule.date.toISOString().split('T')[0],
+                timeSlotId: bookingData.schedule.time.id,
+                technicianId: bookingData.schedule.technician || null,
+                instructions: document.getElementById('special-instructions').value.trim()
+            },
+            preferences: {
+                reminders: bookingData.preferences.reminders
+            }
+        };
+        
+        try {
+            showLoading('Creating your booking...');
+            
+            const response = await fetchAPI(API_ENDPOINTS.BOOKING_CREATE, {
+                method: 'POST',
+                body: JSON.stringify(bookingPayload)
+            });
+            
+            showMessage('Booking created successfully! Redirecting...');
+            
+            // Store booking ID for confirmation page
+            localStorage.setItem('last_booking_id', response.booking.id);
+            
+            // Redirect to confirmation page
+            setTimeout(() => {
+                window.location.href = 'booking-confirmation.html?id=' + response.booking.id;
+            }, 2000);
+            
+        } catch (error) {
+            hideLoading();
+            showMessage('Failed to create booking. Please try again.');
+        }
+    }
+
+    // UI Helper Functions
+    function showLoading(message) {
+        document.getElementById('loading-overlay').classList.add('active');
+        document.getElementById('loading-message').textContent = message;
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-overlay').classList.remove('active');
+    }
+
+    function showError(message) {
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('error-message').querySelector('p').textContent = message;
+    }
+
+    function showMessage(message) {
+        if (window.XSHeader && window.XSHeader.showMessage) {
+            window.XSHeader.showMessage(message);
+        } else {
+            // Fallback notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--primary-blue);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    }
+
+    // Global goToStep function
+    window.goToStep = goToStep;
+
+    // API Endpoints Documentation for Booking
+    function listBookingAPIEndpoints() {
+        console.log('=== XS Platform Booking API Endpoints ===');
+        console.log('Base URL:', API_BASE_URL);
+        console.log('\nBooking Endpoints:');
+        console.log('- GET  /api/v1/booking/services          - Get all bookable services');
+        console.log('- GET  /api/v1/booking/categories        - Get service categories');
+        console.log('- GET  /api/v1/booking/categories/{id}/services - Get services by category');
+        console.log('- GET  /api/v1/booking/device-types      - Get device types');
+        console.log('- GET  /api/v1/booking/brands/{type}     - Get brands by device type');
+        console.log('- GET  /api/v1/booking/locations         - Get service locations');
+        console.log('- GET  /api/v1/booking/technicians       - Get available technicians');
+        console.log('- GET  /api/v1/booking/availability      - Check booking availability');
+        console.log('- POST /api/v1/bookings                  - Create new booking');
+        console.log('- GET  /api/v1/bookings/{id}             - Get booking details');
+        console.log('- PUT  /api/v1/bookings/{id}             - Update booking');
+        console.log('- DELETE /api/v1/bookings/{id}           - Cancel booking');
+        
+        console.log('\nUser Booking Endpoints:');
+        console.log('- GET  /api/v1/user/bookings             - Get user bookings');
+        console.log('- GET  /api/v1/user/bookings/upcoming    - Get upcoming appointments');
+        console.log('- GET  /api/v1/user/bookings/past        - Get past bookings');
+        
+        console.log('\n==========================================');
+    }
+
+    // Initialize and log endpoints
+    listBookingAPIEndpoints();
+</script>
+</body>
+</html>

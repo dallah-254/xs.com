@@ -1,0 +1,157 @@
+Here are all the API endpoints needed for **index.html**, **header-footer.js**, and **search-results.html**:
+
+## **INDEX.HTML API Endpoints**
+
+No direct API calls needed on homepage. Only:
+1. Static content display
+2. Navigation links to other pages
+
+## **HEADER-FOOTER.JS API Endpoints**
+
+```javascript
+// Authentication Endpoints
+GET    /api/auth/check              // Check if user is logged in
+POST   /api/auth/logout             // Logout user
+
+// User Data Endpoints
+GET    /api/user/profile            // Get user profile data
+GET    /api/cart/count              // Get cart item count
+GET    /api/wishlist/count          // Get wishlist item count
+
+// Search Endpoints
+GET    /api/search/quick?q={query}  // Quick search suggestions
+```
+
+## **SEARCH-RESULTS.HTML API Endpoints**
+
+```javascript
+// Main Search Endpoint
+GET    /api/search?                 // Full search with pagination & filters
+       q={query}&                   // Search query
+       page={page}&                 // Page number
+       limit={limit}&               // Items per page
+       sort={sort}&                 // Sort order
+       category={category}&         // Filter by category
+       type={type}&                 // Filter by type (product/service)
+       price={price}&               // Filter by price range
+       rating={rating}&             // Filter by minimum rating
+       location={location}          // Filter by location
+
+// Optional - Separate endpoints for filtered searches:
+GET    /api/products/search?        // Search only products
+       q={query}&
+       page={page}&
+       category={category}&
+       price={price}&
+       rating={rating}
+       
+GET    /api/services/search?        // Search only services
+       q={query}&
+       page={page}&
+       category={category}&
+       rate={rate}&
+       location={location}
+```
+
+## **API Response Formats**
+
+### **1. Auth Check Response (`/api/auth/check`):**
+```json
+{
+  "authenticated": true,
+  "user": {
+    "id": "user123",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "avatar": "url/to/avatar.jpg"
+  }
+}
+```
+
+### **2. Cart Count Response (`/api/cart/count`):**
+```json
+{
+  "count": 3,
+  "total": 249.99
+}
+```
+
+### **3. Wishlist Count Response (`/api/wishlist/count`):**
+```json
+{
+  "count": 5
+}
+```
+
+### **4. Quick Search Response (`/api/search/quick`):**
+```json
+{
+  "query": "iphone",
+  "suggestions": [
+    "iphone 15",
+    "iphone case",
+    "iphone charger"
+  ],
+  "products": 12,
+  "services": 3
+}
+```
+
+### **5. Full Search Response (`/api/search`):**
+```json
+{
+  "query": "iphone repair",
+  "total": 15,
+  "page": 1,
+  "limit": 12,
+  "pages": 2,
+  "results": [
+    {
+      "id": "prod123",
+      "type": "product",
+      "name": "iPhone 15 Pro",
+      "description": "Latest iPhone model",
+      "price": 999.99,
+      "image": "iphone15.jpg",
+      "rating": 4.5,
+      "category": "electronics",
+      "inStock": true
+    },
+    {
+      "id": "serv456",
+      "type": "service",
+      "name": "iPhone Screen Repair",
+      "description": "Professional screen replacement",
+      "rate": 129.99,
+      "image": "repair-service.jpg",
+      "rating": 4.8,
+      "category": "repair",
+      "location": "local",
+      "duration": "1-2 hours"
+    }
+  ],
+  "filters": {
+    "categories": ["electronics", "repair", "accessories"],
+    "price_ranges": ["0-50", "50-200", "200-500", "500+"],
+    "ratings": [4, 3, 2],
+    "locations": ["local", "shipping"]
+  }
+}
+```
+
+## **Error Response Format (All endpoints):**
+```json
+{
+  "error": true,
+  "message": "Error description",
+  "code": "ERROR_CODE"
+}
+```
+
+## **Next Steps:**
+
+1. **Index Page**: Already done - no API calls needed
+2. **Header**: Already done - auth, cart, wishlist counts implemented
+3. **Search Page**: Already done - search API implemented
+
+**Green light to continue?** I'll move to the next page in our list (login.html & register.html) when you're ready.

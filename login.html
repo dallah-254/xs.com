@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - XS Electronics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #2196f3;
+            --accent-blue: #1976d2;
+            --primary-text: #333333;
+            --secondary-text: #666666;
+            --light-bg: #f5f5f5;
+            --error-red: #dc3545;
+            --success-green: #28a745;
+            --warning-yellow: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-header h1 {
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .logo-header p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            border-left: 4px solid var(--error-red);
+            color: #c62828;
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success-green);
+            color: #2e7d32;
+        }
+
+        .alert.info {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .alert.warning {
+            background: #fff8e1;
+            border-left: 4px solid var(--warning-yellow);
+            color: #ff8f00;
+        }
+
+        .alert i {
+            margin-right: 10px;
+        }
+
+        .login-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-text);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: '*';
+            color: var(--error-red);
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .input-with-icon i:hover {
+            color: var(--primary-blue);
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .remember-me label {
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover {
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: var(--secondary-text);
+        }
+
+        .social-divider::before,
+        .social-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .social-divider span {
+            padding: 0 15px;
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .social-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .social-btn:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .social-btn i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .social-btn span {
+            font-size: 0.8rem;
+            color: var(--primary-text);
+        }
+
+        .social-btn.google i {
+            color: #DB4437;
+        }
+
+        .social-btn.facebook i {
+            color: #4267B2;
+        }
+
+        .social-btn.apple i {
+            color: #000000;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--light-bg);
+            color: var(--secondary-text);
+        }
+
+        .register-link a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .register-link a:hover {
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border-radius: 16px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-bg);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .two-factor-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .two-factor-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .two-factor-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .two-factor-header i {
+            color: var(--primary-blue);
+            font-size: 18px;
+        }
+
+        .two-factor-header h4 {
+            color: var(--primary-text);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .two-factor-code {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .code-input {
+            width: 100%;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .trust-device {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .trust-device input[type="checkbox"] {
+            margin: 0;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .trust-device label {
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .reset-link-sent {
+            text-align: center;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reset-link-sent.active {
+            display: block;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: var(--secondary-text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-home a:hover {
+            color: var(--primary-blue);
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .logo-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .login-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .two-factor-code {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .code-input {
+                height: 45px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+            <p id="loading-text">Logging you in...</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div class="alert error" id="error-alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="error-message"></span>
+        </div>
+
+        <div class="alert success" id="success-alert">
+            <i class="fas fa-check-circle"></i>
+            <span id="success-message"></span>
+        </div>
+
+        <div class="alert info" id="info-alert">
+            <i class="fas fa-info-circle"></i>
+            <span id="info-message"></span>
+        </div>
+
+        <!-- Logo and Header -->
+        <div class="logo-header">
+            <h1>XS Electronics</h1>
+            <p>Login to your customer account</p>
+        </div>
+
+        <!-- Customer Login Form -->
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label class="form-label required" for="email">Email Address</label>
+                <input type="email" class="form-input" id="email" placeholder="john.doe@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required" for="password">Password</label>
+                <div class="input-with-icon">
+                    <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+                    <i class="fas fa-eye" id="toggle-password"></i>
+                </div>
+            </div>
+
+            <div class="login-options">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+                <a href="#" class="forgot-password" id="forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </form>
+
+        <!-- Two-Factor Authentication Section -->
+        <div class="two-factor-section" id="two-factor-section">
+            <div class="two-factor-header">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Two-Factor Authentication</h4>
+            </div>
+            <p style="color: var(--secondary-text); margin-bottom: 15px; font-size: 0.9rem;">
+                Enter the 6-digit code sent to your email
+            </p>
+            
+            <div class="two-factor-code">
+                <input type="text" class="code-input" maxlength="1" data-index="0">
+                <input type="text" class="code-input" maxlength="1" data-index="1">
+                <input type="text" class="code-input" maxlength="1" data-index="2">
+                <input type="text" class="code-input" maxlength="1" data-index="3">
+                <input type="text" class="code-input" maxlength="1" data-index="4">
+                <input type="text" class="code-input" maxlength="1" data-index="5">
+            </div>
+            
+            <div class="trust-device">
+                <input type="checkbox" id="trust-device">
+                <label for="trust-device">Trust this device for 30 days</label>
+            </div>
+
+            <button type="button" class="submit-btn" id="verify-2fa-btn">
+                <i class="fas fa-check-circle"></i> Verify Code
+            </button>
+        </div>
+
+        <!-- Password Reset Link Sent -->
+        <div class="reset-link-sent" id="reset-link-sent">
+            <i class="fas fa-envelope"></i>
+            <h4>Reset Link Sent</h4>
+            <p>We've sent a password reset link to your email address. Please check your inbox.</p>
+        </div>
+
+        <!-- Social Login Divider -->
+        <div class="social-divider">
+            <span>Or sign in with</span>
+        </div>
+
+        <!-- Social Login Options -->
+        <div class="social-login">
+            <button type="button" class="social-btn google" id="google-login">
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+            </button>
+            <button type="button" class="social-btn facebook" id="facebook-login">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </button>
+            <button type="button" class="social-btn apple" id="apple-login">
+                <i class="fab fa-apple"></i>
+                <span>Apple</span>
+            </button>
+        </div>
+
+        <!-- Register Link -->
+        <div class="register-link">
+            Don't have an account? <a href="register.html">Sign up here</a>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="back-home">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_CONFIG = {
+            // Base URL - Update this with your actual API endpoint
+            BASE_URL: 'https://api.xselectronics.com/v1',
+            
+            // Authentication endpoints
+            ENDPOINTS: {
+                CUSTOMER_LOGIN: '/auth/customer/login',
+                CUSTOMER_LOGOUT: '/auth/customer/logout',
+                VERIFY_2FA: '/auth/verify-2fa',
+                FORGOT_PASSWORD: '/auth/forgot-password',
+                RESET_PASSWORD: '/auth/reset-password',
+                SOCIAL_LOGIN: '/auth/social/login',
+                VALIDATE_TOKEN: '/auth/validate-token',
+                REFRESH_TOKEN: '/auth/refresh-token',
+                REGISTER: '/auth/customer/register',
+                GET_USER_PROFILE: '/customer/profile'
+            },
+            
+            // Default headers for API requests
+            HEADERS: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            
+            // Social login providers
+            SOCIAL_PROVIDERS: {
+                GOOGLE: 'google',
+                FACEBOOK: 'facebook',
+                APPLE: 'apple'
+            }
+        };
+
+        // Token Management Service
+        class TokenManager {
+            static getAccessToken() {
+                return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+            }
+            
+            static setAccessToken(token, rememberMe = false) {
+                if (rememberMe) {
+                    localStorage.setItem('access_token', token);
+                } else {
+                    sessionStorage.setItem('access_token', token);
+                }
+            }
+            
+            static getRefreshToken() {
+                return localStorage.getItem('refresh_token');
+            }
+            
+            static setRefreshToken(token) {
+                localStorage.setItem('refresh_token', token);
+            }
+            
+            static getTokenExpiry() {
+                return localStorage.getItem('token_expiry');
+            }
+            
+            static setTokenExpiry(expiry) {
+                localStorage.setItem('token_expiry', expiry);
+            }
+            
+            static getUserData() {
+                const data = localStorage.getItem('user_data');
+                return data ? JSON.parse(data) : null;
+            }
+            
+            static setUserData(data) {
+                localStorage.setItem('user_data', JSON.stringify(data));
+            }
+            
+            static clearAll() {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('token_expiry');
+                localStorage.removeItem('user_data');
+                sessionStorage.removeItem('access_token');
+            }
+            
+            static isTokenValid() {
+                const expiry = this.getTokenExpiry();
+                if (!expiry) return false;
+                
+                const now = new Date().getTime();
+                return now < parseInt(expiry);
+            }
+        }
+
+        // API Service for handling all backend communication
+        class ApiService {
+            static async request(endpoint, method = 'GET', data = null, requiresAuth = true) {
+                const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+                const headers = { ...API_CONFIG.HEADERS };
+                
+                // Add authorization header if required
+                if (requiresAuth) {
+                    const token = TokenManager.getAccessToken();
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+                }
+                
+                const config = {
+                    method,
+                    headers,
+                    credentials: 'include' // Include cookies for session management
+                };
+                
+                // Add request body for POST, PUT, PATCH requests
+                if (data && ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
+                    config.body = JSON.stringify(data);
+                }
+                
+                try {
+                    const response = await fetch(url, config);
+                    
+                    // Handle token expiration (401)
+                    if (response.status === 401 && requiresAuth) {
+                        return await this.refreshTokenAndRetry(endpoint, method, data);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(result.message || `HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    return result;
+                } catch (error) {
+                    console.error('API Request Error:', error);
+                    throw error;
+                }
+            }
+            
+            static async refreshTokenAndRetry(endpoint, method, data) {
+                try {
+                    const refreshToken = TokenManager.getRefreshToken();
+                    if (!refreshToken) {
+                        throw new Error('Session expired. Please login again.');
+                    }
+                    
+                    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.REFRESH_TOKEN}`, {
+                        method: 'POST',
+                        headers: API_CONFIG.HEADERS,
+                        body: JSON.stringify({ refresh_token: refreshToken })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to refresh token');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Update tokens
+                    TokenManager.setAccessToken(result.access_token);
+                    if (result.refresh_token) {
+                        TokenManager.setRefreshToken(result.refresh_token);
+                    }
+                    
+                    // Retry original request
+                    return await this.request(endpoint, method, data);
+                } catch (error) {
+                    TokenManager.clearAll();
+                    throw new Error('Session expired. Please login again.');
+                }
+            }
+            
+            static async customerLogin(email, password, rememberMe = false) {
+                const data = {
+                    email: email.trim(),
+                    password: password,
+                    device_info: {
+                        user_agent: navigator.userAgent,
+                        platform: navigator.platform,
+                        language: navigator.language
+                    }
+                };
+                
+                const result = await this.request(
+                    API_CONFIG.ENDPOINTS.CUSTOMER_LOGIN,
+                    'POST',
+                    data,
+                    false
+                );
+                
+                // Store tokens
+                TokenManager.setAccessToken(result.access_token, rememberMe);
+                if (result.refresh_token) {
+                    TokenManager.setRefreshToken(result.refresh_token);
+                }
+                if (result.expires_in) {
+                    const expiry = new Date().getTime() + (result.expires_in * 1000);
+                    TokenManager.setTokenExpiry(expiry.toString());
+                }
+                
+                // Store user data
+                if (result.user) {
+                    TokenManager.setUserData(result.user);
+                }
+                
+                return result;
+            }
+            
+            static async verifyTwoFactor(code, deviceTrusted = false) {
+                const data = {
+                    code: code,
+                    device_trusted: deviceTrusted
+                };
+                
+                return await this.request(API_CONFIG.ENDPOINTS.VERIFY_2FA, 'POST', data);
+            }
+            
+            static async forgotPassword(email) {
+                const data = {
+                    email: email.trim(),
+                    user_type: 'customer'
+                };
+                
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.FORGOT_PASSWORD,
+                    'POST',
+                    data,
+                    false
+                );
+            }
+            
+            static async socialLogin(provider, accessToken) {
+                const data = {
+                    provider: provider,
+                    access_token: accessToken,
+                    device_info: {
+                        user_agent: navigator.userAgent,
+                        platform: navigator.platform
+                    }
+                };
+                
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.SOCIAL_LOGIN,
+                    'POST',
+                    data,
+                    false
+                );
+            }
+            
+            static async validateSession() {
+                try {
+                    const token = TokenManager.getAccessToken();
+                    if (!token) {
+                        return false;
+                    }
+                    
+                    const response = await this.request(
+                        API_CONFIG.ENDPOINTS.VALIDATE_TOKEN,
+                        'GET'
+                    );
+                    
+                    return response.valid === true;
+                } catch (error) {
+                    return false;
+                }
+            }
+            
+            static async logout() {
+                try {
+                    await this.request(API_CONFIG.ENDPOINTS.CUSTOMER_LOGOUT, 'POST');
+                } finally {
+                    TokenManager.clearAll();
+                }
+            }
+        }
+
+        // Form Validation
+        class FormValidator {
+            static isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email.trim());
+            }
+            
+            static isValidPassword(password) {
+                return password.length >= 6;
+            }
+            
+            static validateLoginForm(email, password) {
+                const errors = [];
+                
+                if (!email || !this.isValidEmail(email)) {
+                    errors.push('Please enter a valid email address');
+                }
+                
+                if (!password || !this.isValidPassword(password)) {
+                    errors.push('Password must be at least 6 characters long');
+                }
+                
+                return {
+                    isValid: errors.length === 0,
+                    errors: errors
+                };
+            }
+        }
+
+        // UI State Manager
+        class UIStateManager {
+            constructor() {
+                this.loadingOverlay = document.getElementById('loading-overlay');
+                this.loadingText = document.getElementById('loading-text');
+                this.errorAlert = document.getElementById('error-alert');
+                this.successAlert = document.getElementById('success-alert');
+                this.infoAlert = document.getElementById('info-alert');
+                this.resetLinkSent = document.getElementById('reset-link-sent');
+                this.twoFactorSection = document.getElementById('two-factor-section');
+                this.loginForm = document.getElementById('login-form');
+                this.codeInputs = this.twoFactorSection.querySelectorAll('.code-input');
+                
+                this.isTwoFactorRequired = false;
+                this.pendingLoginData = null;
+            }
+            
+            showLoading(message = 'Processing...') {
+                this.loadingText.textContent = message;
+                this.loadingOverlay.classList.add('active');
+            }
+            
+            hideLoading() {
+                this.loadingOverlay.classList.remove('active');
+            }
+            
+            showError(message) {
+                this.errorAlert.querySelector('#error-message').textContent = message;
+                this.errorAlert.style.display = 'block';
+                this.successAlert.style.display = 'none';
+                this.infoAlert.style.display = 'none';
+                
+                this.scrollToAlert(this.errorAlert);
+            }
+            
+            showSuccess(message) {
+                this.successAlert.querySelector('#success-message').textContent = message;
+                this.successAlert.style.display = 'block';
+                this.errorAlert.style.display = 'none';
+                this.infoAlert.style.display = 'none';
+                
+                this.scrollToAlert(this.successAlert);
+            }
+            
+            showInfo(message) {
+                this.infoAlert.querySelector('#info-message').textContent = message;
+                this.infoAlert.style.display = 'block';
+                this.errorAlert.style.display = 'none';
+                this.successAlert.style.display = 'none';
+                
+                this.scrollToAlert(this.infoAlert);
+            }
+            
+            hideAllAlerts() {
+                this.errorAlert.style.display = 'none';
+                this.successAlert.style.display = 'none';
+                this.infoAlert.style.display = 'none';
+                this.resetLinkSent.classList.remove('active');
+            }
+            
+            showResetLinkSent() {
+                this.resetLinkSent.classList.add('active');
+                this.hideAllAlerts();
+                this.scrollToAlert(this.resetLinkSent);
+            }
+            
+            showTwoFactorSection() {
+                this.loginForm.style.display = 'none';
+                this.twoFactorSection.classList.add('active');
+                this.hideAllAlerts();
+                
+                // Focus first code input
+                setTimeout(() => {
+                    this.codeInputs[0].focus();
+                }, 100);
+            }
+            
+            hideTwoFactorSection() {
+                this.loginForm.style.display = 'block';
+                this.twoFactorSection.classList.remove('active');
+                this.clearCodeInputs();
+            }
+            
+            clearCodeInputs() {
+                this.codeInputs.forEach(input => input.value = '');
+            }
+            
+            scrollToAlert(element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            setTwoFactorRequired(required, loginData = null) {
+                this.isTwoFactorRequired = required;
+                this.pendingLoginData = loginData;
+                
+                if (required) {
+                    this.showTwoFactorSection();
+                } else {
+                    this.hideTwoFactorSection();
+                }
+            }
+            
+            getTwoFactorCode() {
+                return Array.from(this.codeInputs)
+                    .map(input => input.value)
+                    .join('');
+            }
+        }
+
+        // Main Application Logic
+        class LoginApp {
+            constructor() {
+                this.ui = new UIStateManager();
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.checkExistingSession();
+                this.setupTwoFactorCodeInputs();
+            }
+            
+            bindEvents() {
+                // Form submission
+                document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
+                
+                // Forgot password
+                document.getElementById('forgot-password').addEventListener('click', (e) => this.handleForgotPassword(e));
+                
+                // Password toggle
+                document.getElementById('toggle-password').addEventListener('click', (e) => this.togglePasswordVisibility(e));
+                
+                // Two-factor verification
+                document.getElementById('verify-2fa-btn').addEventListener('click', () => this.handleTwoFactorVerification());
+                
+                // Social login buttons
+                document.getElementById('google-login').addEventListener('click', () => this.handleSocialLogin('google'));
+                document.getElementById('facebook-login').addEventListener('click', () => this.handleSocialLogin('facebook'));
+                document.getElementById('apple-login').addEventListener('click', () => this.handleSocialLogin('apple'));
+            }
+            
+            setupTwoFactorCodeInputs() {
+                this.ui.codeInputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        const value = e.target.value;
+                        
+                        // Only allow digits
+                        if (!/^\d*$/.test(value)) {
+                            e.target.value = '';
+                            return;
+                        }
+                        
+                        // Auto-advance to next input
+                        if (value.length === 1 && index < this.ui.codeInputs.length - 1) {
+                            this.ui.codeInputs[index + 1].focus();
+                        }
+                        
+                        // Auto-verify when all digits entered
+                        if (index === this.ui.codeInputs.length - 1 && value.length === 1) {
+                            const allFilled = Array.from(this.ui.codeInputs).every(input => input.value.length === 1);
+                            if (allFilled) {
+                                setTimeout(() => {
+                                    this.handleTwoFactorVerification();
+                                }, 500);
+                            }
+                        }
+                    });
+                    
+                    // Handle backspace
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                            e.preventDefault();
+                            this.ui.codeInputs[index - 1].focus();
+                        }
+                    });
+                    
+                    // Handle paste
+                    input.addEventListener('paste', (e) => {
+                        e.preventDefault();
+                        const pastedData = e.clipboardData.getData('text').trim();
+                        
+                        if (/^\d{6}$/.test(pastedData)) {
+                            const digits = pastedData.split('');
+                            digits.forEach((digit, digitIndex) => {
+                                if (digitIndex < this.ui.codeInputs.length) {
+                                    this.ui.codeInputs[digitIndex].value = digit;
+                                }
+                            });
+                            
+                            // Focus last input and auto-verify
+                            this.ui.codeInputs[this.ui.codeInputs.length - 1].focus();
+                            
+                            setTimeout(() => {
+                                this.handleTwoFactorVerification();
+                            }, 500);
+                        }
+                    });
+                });
+            }
+            
+            async handleLogin(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('remember-me').checked;
+                
+                // Validate form
+                const validation = FormValidator.validateLoginForm(email, password);
+                if (!validation.isValid) {
+                    this.ui.showError(validation.errors[0]);
+                    return;
+                }
+                
+                this.ui.showLoading('Signing in...');
+                this.ui.hideAllAlerts();
+                
+                try {
+                    const result = await ApiService.customerLogin(email, password, rememberMe);
+                    
+                    // Check if 2FA is required
+                    if (result.requires_two_factor) {
+                        this.ui.setTwoFactorRequired(true, { email, password, rememberMe });
+                        this.ui.showInfo('Two-factor authentication required. Please enter the code sent to your email.');
+                    } else {
+                        // Login successful
+                        this.handleLoginSuccess(result);
+                    }
+                } catch (error) {
+                    this.ui.showError(error.message || 'Login failed. Please check your credentials and try again.');
+                    
+                    // Clear password field for security
+                    document.getElementById('password').value = '';
+                } finally {
+                    this.ui.hideLoading();
+                }
+            }
+            
+            async handleTwoFactorVerification() {
+                const code = this.ui.getTwoFactorCode();
+                const deviceTrusted = document.getElementById('trust-device').checked;
+                
+                if (code.length !== 6) {
+                    this.ui.showError('Please enter a valid 6-digit code');
+                    return;
+                }
+                
+                this.ui.showLoading('Verifying code...');
+                
+                try {
+                    await ApiService.verifyTwoFactor(code, deviceTrusted);
+                    
+                    // Complete login with pending data
+                    if (this.ui.pendingLoginData) {
+                        const { email, password, rememberMe } = this.ui.pendingLoginData;
+                        
+                        const result = await ApiService.customerLogin(email, password, rememberMe);
+                        this.handleLoginSuccess(result);
+                    }
+                } catch (error) {
+                    this.ui.showError(error.message || 'Invalid verification code. Please try again.');
+                    this.ui.clearCodeInputs();
+                    this.ui.codeInputs[0].focus();
+                } finally {
+                    this.ui.hideLoading();
+                }
+            }
+            
+            async handleForgotPassword(event) {
+                event.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                
+                if (!email || !FormValidator.isValidEmail(email)) {
+                    this.ui.showError('Please enter a valid email address');
+                    return;
+                }
+                
+                this.ui.showLoading('Sending reset link...');
+                this.ui.hideAllAlerts();
+                
+                try {
+                    await ApiService.forgotPassword(email);
+                    this.ui.showResetLinkSent();
+                } catch (error) {
+                    this.ui.showError(error.message || 'Failed to send reset link. Please try again.');
+                } finally {
+                    this.ui.hideLoading();
+                }
+            }
+            
+            async handleSocialLogin(provider) {
+                this.ui.showInfo(`Redirecting to ${provider} authentication...`);
+                
+                // In a real implementation, this would redirect to the social login provider
+                // and handle the OAuth callback
+                
+                // For now, show a message about the integration
+                setTimeout(() => {
+                    this.ui.showInfo(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login integration is being configured. Please use email login for now.`);
+                }, 1000);
+            }
+            
+            handleLoginSuccess(result) {
+                this.ui.showSuccess('Login successful! Redirecting...');
+                
+                // Store login timestamp
+                localStorage.setItem('last_login', new Date().toISOString());
+                
+                // Redirect to dashboard after delay
+                setTimeout(() => {
+                    window.location.href = '/customer/dashboard.html';
+                }, 1500);
+            }
+            
+            togglePasswordVisibility(event) {
+                event.preventDefault();
+                const passwordInput = document.getElementById('password');
+                const icon = event.target;
+                
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            }
+            
+            async checkExistingSession() {
+                const isValid = await ApiService.validateSession();
+                
+                if (isValid) {
+                    const userData = TokenManager.getUserData();
+                    if (userData) {
+                        this.ui.showInfo(`Welcome back, ${userData.name || userData.email}! Redirecting...`);
+                        
+                        setTimeout(() => {
+                            window.location.href = '/customer/dashboard.html';
+                        }, 1000);
+                    }
+                }
+            }
+            
+            // Public method for external logout
+            static async logout() {
+                await ApiService.logout();
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.loginApp = new LoginApp();
+        });
+
+        // Global logout function (can be called from other pages)
+        window.logoutUser = async function() {
+            await LoginApp.logout();
+        };
+
+        // Global function to check if user is authenticated
+        window.isAuthenticated = async function() {
+            return await ApiService.validateSession();
+        };
+    </script>
+</body>
+</html>

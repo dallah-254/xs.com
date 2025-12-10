@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XS Platform - Home</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* HOMEPAGE SPECIFIC STYLES ONLY */
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0 0 20px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .hero-btn.primary {
+            background-color: white;
+            color: var(--primary-blue);
+        }
+
+        .hero-btn.secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-btn.primary:hover {
+            background-color: var(--light-bg);
+        }
+
+        .hero-btn.secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Features Grid */
+        .section-title {
+            text-align: center;
+            margin: 40px 0 30px;
+            color: var(--primary-text);
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: var(--secondary-text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            background: var(--light-bg);
+            color: var(--primary-blue);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-text);
+            margin: 0 0 10px;
+        }
+
+        .feature-card p {
+            color: var(--secondary-text);
+            line-height: 1.6;
+            margin: 0 0 20px;
+        }
+
+        .feature-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feature-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Categories Section */
+        .categories {
+            margin-bottom: 50px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            font-size: 40px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            margin: 0 0 10px;
+            color: var(--primary-text);
+        }
+
+        .category-card p {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Quick Links */
+        .quick-links {
+            background: var(--light-bg);
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 50px;
+        }
+
+        .quick-links h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-text);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--primary-text);
+            transition: all 0.2s;
+        }
+
+        .quick-link:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .quick-link:hover i {
+            color: white;
+        }
+
+        .quick-link i {
+            color: var(--accent-blue);
+        }
+
+        /* Responsive adjustments for homepage */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 40px 15px;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .feature-card, .category-card {
+                padding: 20px;
+            }
+            
+            .quick-links {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Electronics Shop & Repair Services</div>
+            <nav class="main-nav">
+                <a href="products.html" class="nav-link">Products</a> 
+                <a href="services.html" class="nav-link">Services <span class="badge-new">NEW</span></a>
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products, services, or brands..." class="search-input">
+            </div>
+
+            <!-- Desktop Auth State -->
+            <div class="auth-state">
+                <!-- Logged Out State (default) -->
+                <div class="logged-out-state" id="logged-out-state">
+                    <a href="login.html" class="auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Logged In State -->
+                <div class="logged-in-state" id="logged-in-state" style="display: none;">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="user-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="profile.html" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="orders.html" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="wishlist.html" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Icon -->
+            <button class="filter-btn" id="filter-btn">
+                <i class="fas fa-filter"></i>
+            </button>
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-pro" id="request-quote-btn"><i class="fas fa-envelope"></i> Request Quote</button>
+            <button class="btn-submit" id="cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></button>
+            
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Search Bar (Hidden by default) -->
+    <div class="mobile-search-bar" id="mobile-search-bar">
+        <div class="mobile-search-container">
+            <input type="text" placeholder="Search..." class="mobile-search-input">
+            <button class="mobile-search-close" id="mobile-search-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Panel (Hidden by default) -->
+    <div class="mobile-menu-panel" id="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <div class="mobile-logo">XS</div>
+            <button class="mobile-menu-close" id="mobile-menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-content">
+            <!-- Mobile Auth State -->
+            <div class="mobile-auth-state">
+                <!-- Mobile Logged Out State -->
+                <div class="mobile-logged-out-state" id="mobile-logged-out-state">
+                    <a href="login.html" class="mobile-auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Mobile Logged In State -->
+                <div class="mobile-logged-in-state" id="mobile-logged-in-state" style="display: none;">
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name" id="mobile-user-name">Welcome!</div>
+                            <div class="mobile-user-email" id="mobile-user-email">user@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-user-menu">
+                        <a href="user-dashboard.html" class="mobile-nav-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="profile.html" class="mobile-nav-link">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="orders.html" class="mobile-nav-link">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                        <a href="wishlist.html" class="mobile-nav-link">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </a>
+                        <div class="mobile-menu-divider"></div>
+                        <button class="mobile-action-btn" id="mobile-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-section">
+                <a href="products.html" class="mobile-nav-link">
+                    <i class="fas fa-shopping-bag"></i> Products
+                </a>
+                <a href="services.html" class="mobile-nav-link">
+                    <i class="fas fa-tools"></i> Services <span class="mobile-badge-new">NEW</span>
+                </a>
+                <a href="deals.html" class="mobile-nav-link">
+                    <i class="fas fa-tag"></i> Deals
+                </a>
+                <a href="support.html" class="mobile-nav-link">
+                    <i class="fas fa-headset"></i> Support
+                </a>
+            </div>
+            
+            <div class="mobile-actions-section">
+                <button class="mobile-action-btn" id="mobile-wishlist-btn">
+                    <i class="fas fa-heart"></i> Wishlist <span class="mobile-wishlist-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-cart-btn">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="mobile-cart-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-quote-btn">
+                    <i class="fas fa-envelope"></i> Request Quote
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Sidebar (Hidden by default) -->
+    <div class="filter-sidebar" id="filter-sidebar">
+        <div class="filter-sidebar-header">
+            <h3>Filters</h3>
+            <button class="filter-sidebar-close" id="filter-sidebar-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="filter-sidebar-content">
+            <div class="filter-group">
+                <label for="sidebar-type-filter">Type (Product/Service)</label>
+                <select class="filter-dropdown" id="sidebar-type-filter">
+                    <option value="">All Types</option>
+                    <option value="product">Product</option>
+                    <option value="service">Service</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-category-filter">Category</label>
+                <select class="filter-dropdown" id="sidebar-category-filter">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="computers">Computers</option>
+                    <option value="phones">Phones</option>
+                    <option value="repair">Repair Services</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-location-filter">Location/Shipping</label>
+                <select class="filter-dropdown" id="sidebar-location-filter">
+                    <option value="">All Locations</option>
+                    <option value="local">Local</option>
+                    <option value="shipping">Shipping Available</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-price-filter">Price/Rate</label>
+                <select class="filter-dropdown" id="sidebar-price-filter">
+                    <option value="">All Prices</option>
+                    <option value="low">Under $50</option>
+                    <option value="medium">$50 - $200</option>
+                    <option value="high">Over $200</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sidebar-rating-filter">Rating</label>
+                <select class="filter-dropdown" id="sidebar-rating-filter">
+                    <option value="">All Ratings</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="3">3+ Stars</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="reset-filters" id="sidebar-reset-filters-btn">
+                    Reset filters <i class="fas fa-redo"></i>
+                </button>
+                <button class="apply-filters" id="apply-filters-btn">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-bar-row">
+        <div class="filter-container">
+            <select class="filter-dropdown" id="type-filter">
+                <option value="">Type (Product/Service)</option>
+                <option value="product">Product</option>
+                <option value="service">Service</option>
+            </select>
+            
+            <select class="filter-dropdown" id="category-filter">
+                <option value="">Category</option>
+                <option value="electronics">Electronics</option>
+                <option value="computers">Computers</option>
+                <option value="phones">Phones</option>
+                <option value="repair">Repair Services</option>
+            </select>
+            
+            <select class="filter-dropdown" id="location-filter">
+                <option value="">Location/Shipping</option>
+                <option value="local">Local</option>
+                <option value="shipping">Shipping Available</option>
+            </select>
+            
+            <select class="filter-dropdown" id="price-filter">
+                <option value="">Price/Rate</option>
+                <option value="low">Under $50</option>
+                <option value="medium">$50 - $200</option>
+                <option value="high">Over $200</option>
+            </select>
+            
+            <select class="filter-dropdown" id="rating-filter">
+                <option value="">Rating</option>
+                <option value="4">4+ Stars</option>
+                <option value="3">3+ Stars</option>
+            </select>
+            
+            <button class="notification-btn" id="notification-btn">
+                <i class="fas fa-bell"></i>
+                <div class="dot"></div>
+            </button>
+            
+            <button class="reset-filters" id="reset-filters-btn">
+                Reset filters <i class="fas fa-redo"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to XS Platform</h1>
+        <p>Your one-stop shop for electronics and professional repair services. From cutting-edge gadgets to expert device repairs, we've got you covered.</p>
+        <div class="hero-buttons">
+            <button class="hero-btn primary" onclick="window.location.href='products.html'">
+                <i class="fas fa-shopping-bag"></i> Shop Products
+            </button>
+            <button class="hero-btn secondary" onclick="window.location.href='services.html'">
+                <i class="fas fa-tools"></i> Book a Service
+            </button>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="section-title">
+            <h2>Why Choose XS Platform?</h2>
+            <p>We combine quality electronics retail with professional repair services for a complete customer experience.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3>Fast Shipping</h3>
+                <p>Get your products delivered quickly with our reliable shipping partners. Free shipping on orders over $100.</p>
+                <a href="shipping.html" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3>Expert Repairs</h3>
+                <p>Professional repair services for all major electronics brands. Book appointments online and get instant quotes.</p>
+                <a href="services.html" class="feature-link">View services <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Quality Guarantee</h3>
+                <p>All products come with a 1-year warranty. Repair services include a 90-day service guarantee.</p>
+                <a href="warranty.html" class="feature-link">Warranty info <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Our customer support team is available around the clock to assist you with any questions or issues.</p>
+                <a href="support.html" class="feature-link">Get support <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="section-title">
+            <h2>Shop by Category</h2>
+            <p>Browse our wide selection of products and services</p>
+        </div>
+        
+        <div class="categories-grid">
+            <a href="products.html?category=electronics" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <h3>Electronics</h3>
+                <p>Smartphones, tablets, laptops, and more</p>
+            </a>
+            
+            <a href="products.html?category=accessories" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <h3>Accessories</h3>
+                <p>Cases, chargers, cables, and peripherals</p>
+            </a>
+            
+            <a href="services.html?type=repair" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Phone Repair</h3>
+                <p>Screen replacement, battery, and more</p>
+            </a>
+            
+            <a href="services.html?type=computer" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <h3>Computer Services</h3>
+                <p>Virus removal, upgrades, and diagnostics</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="quick-links">
+        <h3>Quick Navigation</h3>
+        <div class="links-grid">
+            <a href="cart.html" class="quick-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span>View Cart</span>
+            </a>
+            <a href="order-tracking.html" class="quick-link">
+                <i class="fas fa-truck"></i>
+                <span>Track Order</span>
+            </a>
+            <a href="booking-history.html" class="quick-link">
+                <i class="fas fa-calendar-check"></i>
+                <span>Service Bookings</span>
+            </a>
+            <a href="deals.html" class="quick-link">
+                <i class="fas fa-tag"></i>
+                <span>Special Deals</span>
+            </a>
+            <a href="contact.html" class="quick-link">
+                <i class="fas fa-envelope"></i>
+                <span>Contact Us</span>
+            </a>
+            <a href="faq.html" class="quick-link">
+                <i class="fas fa-question-circle"></i>
+                <span>FAQ</span>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<!-- Link to shared JavaScript file -->
+<script src="header-footer.js"></script>
+
+<!-- Minimal homepage-specific JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Homepage specific code loaded');
+        
+        // Add hover effect to category cards
+        const categoryCards = document.querySelectorAll('.category-card');
+        categoryCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+</body>
+</html>

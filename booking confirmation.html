@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed - XS Platform</title>
+    <link rel="stylesheet" href="header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* BOOKING CONFIRMATION PAGE SPECIFIC STYLES */
+        .confirmation-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .confirmation-header {
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirmation-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 40px;
+            color: white;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confirmation-header h1 {
+            color: var(--primary-text);
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+
+        .confirmation-header p {
+            color: var(--secondary-text);
+            margin: 0 0 25px 0;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .booking-number {
+            display: inline-block;
+            background: var(--light-bg);
+            color: var(--primary-blue);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin: 10px 0;
+            border: 2px dashed var(--accent-blue);
+        }
+
+        .booking-number strong {
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* Loading States */
+        .loading-indicator {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--light-bg);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error States */
+        .error-message {
+            background: #ffeaea;
+            color: #e74c3c;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Confirmation Cards Grid */
+        .confirmation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .confirmation-card.highlight {
+            border: 2px solid var(--primary-blue);
+            background: linear-gradient(135deg, #e8f4fd, #f0f8ff);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .card-header i {
+            font-size: 24px;
+            color: var(--primary-blue);
+            margin-right: 15px;
+        }
+
+        .card-header h3 {
+            color: var(--primary-text);
+            margin: 0;
+            font-size: 1.3rem;
+            flex: 1;
+        }
+
+        .card-badge {
+            background: var(--accent-blue);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-confirmed {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .status-cancelled {
+            background: #f44336;
+            color: white;
+        }
+
+        .card-content {
+            color: var(--secondary-text);
+        }
+
+        /* Appointment Card */
+        .appointment-details {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin: 20px 0;
+            padding: 25px;
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .appointment-details {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+
+        .date-badge {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            min-width: 120px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .date-badge .month {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .date-badge .day {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .date-badge .weekday {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-info h4 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+            font-size: 1.3rem;
+        }
+
+        .appointment-info p {
+            margin: 5px 0;
+            color: var(--secondary-text);
+        }
+
+        .appointment-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .meta-item i {
+            color: var(--accent-blue);
+        }
+
+        /* Service Details */
+        .service-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .service-item:last-child {
+            border-bottom: none;
+        }
+
+        .service-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .service-icon i {
+            font-size: 22px;
+            color: var(--primary-blue);
+        }
+
+        .service-details {
+            flex: 1;
+        }
+
+        .service-details h4 {
+            color: var(--primary-text);
+            margin: 0 0 8px 0;
+        }
+
+        .service-details p {
+            color: var(--secondary-text);
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .service-price {
+            font-weight: 600;
+            color: var(--primary-text);
+            font-size: 1.1rem;
+        }
+
+        /* Preparation List */
+        .preparation-list {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        .preparation-list li {
+            margin-bottom: 12px;
+            color: var(--secondary-text);
+            line-height: 1.5;
+        }
+
+        .preparation-list strong {
+            color: var(--primary-text);
+        }
+
+        /* Important Notes */
+        .important-notes {
+            background: #fff9e6;
+            border-left: 4px solid #ffd600;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .important-notes h4 {
+            color: var(--primary-text);
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .important-notes ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--secondary-text);
+        }
+
+        .important-notes li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            min-width: 200px;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--primary-text);
+            border-color: var(--accent-blue);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--light-bg);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.outline {
+            background: transparent;
+            color: var(--primary-text);
+            border-color: #ddd;
+        }
+
+        .action-btn.outline:hover {
+            background: var(--light-bg);
+            border-color: var(--accent-blue);
+        }
+
+        .action-btn.danger {
+            background: transparent;
+            color: #f44336;
+            border-color: #f44336;
+        }
+
+        .action-btn.danger:hover {
+            background: #ffebee;
+        }
+
+        /* Support Section */
+        .support-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .support-section h3 {
+            color: var(--primary-text);
+            margin: 0 0 25px 0;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .support-item {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .support-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .support-icon {
+            font-size: 32px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .support-item h4 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+        }
+
+        .support-item p {
+            color: var(--secondary-text);
+            margin: 0 0 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .support-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .support-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Email Confirmation */
+        .email-confirmation {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .email-confirmation {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+
+        .email-icon {
+            font-size: 40px;
+            color: #2e7d32;
+            flex-shrink: 0;
+        }
+
+        .email-content {
+            flex: 1;
+        }
+
+        .email-content h4 {
+            color: var(--primary-text);
+            margin: 0 0 10px 0;
+        }
+
+        .email-content p {
+            color: var(--secondary-text);
+            margin: 0;
+        }
+
+        /* QR Code for Check-in */
+        .qr-section {
+            text-align: center;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 2px dashed var(--light-bg);
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .qr-code canvas {
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
+
+        .qr-section p {
+            color: var(--secondary-text);
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Status Timeline */
+        .status-timeline {
+            position: relative;
+            padding: 20px 0;
+            margin: 25px 0;
+        }
+
+        .timeline-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            z-index: 1;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .timeline-step.active .step-icon {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .timeline-step.completed .step-icon {
+            background: #4caf50;
+            color: white;
+        }
+
+        .timeline-step.completed .step-icon::after {
+            content: '✓';
+            font-size: 1.2rem;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 10px;
+        }
+
+        .step-content h4 {
+            color: var(--primary-text);
+            margin: 0 0 5px 0;
+        }
+
+        .step-content p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Payment Summary */
+        .payment-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .payment-details {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row.total {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(0,0,0,0.1);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .confirmation-container {
+                padding: 15px;
+            }
+            
+            .confirmation-header {
+                padding: 30px 20px;
+            }
+            
+            .confirmation-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .confirmation-cards {
+                gap: 20px;
+            }
+            
+            .confirmation-card {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .confirmation-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .success-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+            
+            .booking-number {
+                font-size: 1rem;
+                padding: 8px 20px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .card-badge {
+                align-self: flex-start;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        .toast.success {
+            background: #4caf50;
+        }
+
+        .toast.error {
+            background: #f44336;
+        }
+
+        .toast.info {
+            background: var(--primary-blue);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<!-- Customized Header - Same as products page -->
+<header class="main-header">
+    <div class="header-top-row">
+        <div class="logo-and-nav">
+            <div class="logo">XS</div>
+            <div class="slogan">Premium Electronics Store</div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="deals.html" class="nav-link">Deals</a>
+                <a href="support.html" class="nav-link">Support</a>
+            </nav>
+        </div>
+
+        <div class="search-and-actions">
+            <div class="search-bar-top">
+                <i class="fas fa-search"></i>
+                <input type="text" id="global-search" placeholder="Search products..." class="search-input">
+            </div>
+
+            <!-- Desktop Auth State -->
+            <div class="auth-state">
+                <!-- Logged Out State (default) -->
+                <div class="logged-out-state" id="logged-out-state">
+                    <a href="login.html" class="auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Logged In State -->
+                <div class="logged-in-state" id="logged-in-state" style="display: none;">
+                    <div class="user-profile">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="Open account menu">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="user-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="profile.html" class="dropdown-item">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="orders.html" class="dropdown-item">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="wishlist.html" class="dropdown-item">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-wishlist" id="wishlist-btn">
+                <i class="fas fa-heart"></i> 
+                <span class="wishlist-count">0</span>
+            </button>
+            
+            <button class="btn-submit" id="cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></button>
+            
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-btn" id="mobile-search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Mobile Hamburger Menu -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Search Bar (Hidden by default) -->
+    <div class="mobile-search-bar" id="mobile-search-bar">
+        <div class="mobile-search-container">
+            <input type="text" placeholder="Search..." class="mobile-search-input">
+            <button class="mobile-search-close" id="mobile-search-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu Panel (Hidden by default) -->
+    <div class="mobile-menu-panel" id="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <div class="mobile-logo">XS</div>
+            <button class="mobile-menu-close" id="mobile-menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-content">
+            <!-- Mobile Auth State -->
+            <div class="mobile-auth-state">
+                <!-- Mobile Logged Out State -->
+                <div class="mobile-logged-out-state" id="mobile-logged-out-state">
+                    <a href="login.html" class="mobile-auth-link login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </a>
+                </div>
+                
+                <!-- Mobile Logged In State -->
+                <div class="mobile-logged-in-state" id="mobile-logged-in-state" style="display: none;">
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="mobile-user-details">
+                            <div class="mobile-user-name" id="mobile-user-name">Welcome!</div>
+                            <div class="mobile-user-email" id="mobile-user-email">user@example.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-user-menu">
+                        <a href="user-dashboard.html" class="mobile-nav-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="profile.html" class="mobile-nav-link">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="orders.html" class="mobile-nav-link">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                        <a href="wishlist.html" class="mobile-nav-link">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </a>
+                        <div class="mobile-menu-divider"></div>
+                        <button class="mobile-action-btn" id="mobile-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-section">
+                <a href="index.html" class="mobile-nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="products.html" class="mobile-nav-link">
+                    <i class="fas fa-shopping-bag"></i> Products
+                </a>
+                <a href="services.html" class="mobile-nav-link">
+                    <i class="fas fa-tools"></i> Services
+                </a>
+                <a href="deals.html" class="mobile-nav-link">
+                    <i class="fas fa-tag"></i> Deals
+                </a>
+                <a href="support.html" class="mobile-nav-link">
+                    <i class="fas fa-headset"></i> Support
+                </a>
+            </div>
+            
+            <div class="mobile-actions-section">
+                <button class="mobile-action-btn" id="mobile-wishlist-btn">
+                    <i class="fas fa-heart"></i> Wishlist <span class="mobile-wishlist-count">0</span>
+                </button>
+                <button class="mobile-action-btn" id="mobile-cart-btn">
+                    <i class="fas fa-shopping-cart"></i> Cart <span class="mobile-cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p id="loading-message">Loading booking confirmation...</p>
+    </div>
+
+    <div class="confirmation-container">
+        <!-- Loading State -->
+        <div class="loading-indicator" id="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading your booking confirmation...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-message" id="error-state" style="display: none;">
+            <p id="error-message-text">Error loading booking confirmation.</p>
+            <div class="action-buttons">
+                <button class="btn-pro" id="retry-btn">Retry</button>
+                <a href="user-dashboard.html" class="action-btn secondary">Go to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div id="success-state" style="display: none;">
+            <!-- Success Header -->
+            <div class="confirmation-header">
+                <div class="success-icon" id="status-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h1 id="confirmation-title">Appointment Confirmed!</h1>
+                <p id="confirmation-description">Your service appointment has been successfully scheduled.</p>
+                
+                <div class="booking-number" id="booking-number">
+                    Booking Reference: <strong>Loading...</strong>
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 15px; color: var(--accent-blue);" id="confirmation-time">
+                    <i class="fas fa-clock"></i> Confirmed on Loading...
+                </p>
+            </div>
+
+            <!-- Email Confirmation Notice -->
+            <div class="email-confirmation" id="email-confirmation">
+                <div class="email-icon">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <div class="email-content">
+                    <h4>Check Your Email & SMS</h4>
+                    <p id="contact-info">Confirmation sent to your registered email and phone number.</p>
+                </div>
+            </div>
+
+            <!-- QR Code for Quick Check-in -->
+            <div class="qr-section" id="qr-section">
+                <h4 style="color: var(--primary-text); margin-bottom: 15px;">Quick Check-in QR Code</h4>
+                <div class="qr-code" id="qr-code"></div>
+                <p>Scan this code at our service center for quick check-in</p>
+                <p style="font-size: 0.85rem; color: var(--secondary-text);" id="booking-ref-display">
+                    or show your booking reference: <strong>Loading...</strong>
+                </p>
+            </div>
+
+            <!-- Confirmation Cards Grid -->
+            <div class="confirmation-cards">
+                <!-- Appointment Details Card -->
+                <div class="confirmation-card highlight" id="appointment-card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Appointment Details</h3>
+                        <div class="status-badge" id="status-badge">CONFIRMED</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="appointment-details" id="appointment-details">
+                            <!-- Dynamically populated -->
+                        </div>
+
+                        <!-- Service Status Timeline -->
+                        <div class="status-timeline" id="status-timeline">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service & Device Info Card -->
+                <div class="confirmation-card" id="service-card">
+                    <div class="card-header">
+                        <i class="fas fa-tools"></i>
+                        <h3>Service & Device Details</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="service-details">
+                            <!-- Dynamically populated -->
+                        </div>
+
+                        <div class="important-notes" id="what-to-bring">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price & Payment Card -->
+            <div class="confirmation-card" id="payment-card">
+                <div class="card-header">
+                    <i class="fas fa-receipt"></i>
+                    <h3>Price & Payment Details</h3>
+                </div>
+                <div class="card-content">
+                    <div class="payment-summary" id="payment-summary">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Information -->
+            <div class="important-notes" id="important-notes">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons" id="action-buttons">
+                <a href="booking-history.html" class="action-btn primary">
+                    <i class="fas fa-history"></i> View Booking History
+                </a>
+                <a href="user-dashboard.html" class="action-btn secondary">
+                    <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                </a>
+                <button class="action-btn outline" id="calendar-btn">
+                    <i class="fas fa-calendar-plus"></i> Add to Calendar
+                </button>
+                <button class="action-btn outline" id="print-btn">
+                    <i class="fas fa-print"></i> Print Confirmation
+                </button>
+                <button class="action-btn danger" id="cancel-btn" style="display: none;">
+                    <i class="fas fa-times"></i> Cancel Appointment
+                </button>
+            </div>
+
+            <!-- Support Section -->
+            <div class="support-section">
+                <h3>Need Assistance?</h3>
+                <div class="support-grid">
+                    <div class="support-item">
+                        <div class="support-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h4>Call Us</h4>
+                        <p>Speak directly with our customer service team for immediate assistance.</p>
+                        <a href="tel:+15551234567" class="support-link">
+                            (555) 123-4567 <i class="fas fa-phone"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="support-item">
+                        <div class="support-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4>Live Chat</h4>
+                        <p>Chat with a representative in real-time for quick questions.</p>
+                        <a href="support.html" class="support-link">
+                            Start Chat <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="support-item">
+                        <div class="support-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4>Find Location</h4>
+                        <p>Get directions, hours, and contact info for our service centers.</p>
+                        <a href="locations.html" class="support-link">
+                            View Locations <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="support-item">
+                        <div class="support-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h4>FAQ</h4>
+                        <p>Find answers to common questions about our repair services.</p>
+                        <a href="faq.html" class="support-link">
+                            Browse FAQ <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>XS Platform</h4>
+            <p>Your trusted source for electronics and repair services since 2024.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Shop</h4>
+            <ul class="footer-links">
+                <li><a href="products.html">All Products</a></li>
+                <li><a href="products.html?category=new">New Arrivals</a></li>
+                <li><a href="products.html?category=bestsellers">Best Sellers</a></li>
+                <li><a href="deals.html">Deals & Discounts</a></li>
+                <li><a href="services.html">Repair Services</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Customer Service</h4>
+            <ul class="footer-links">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="support.html">Support Center</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping.html">Shipping Info</a></li>
+                <li><a href="returns.html">Returns & Exchanges</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Account</h4>
+            <ul class="footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Create Account</a></li>
+                <li><a href="user-dashboard.html">My Dashboard</a></li>
+                <li><a href="orders.html">Order History</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="cookies.html">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2024 XS Platform. All rights reserved.
+    </div>
+</footer>
+
+<!-- Link to shared JavaScript file -->
+<script src="header-footer.js"></script>
+
+<!-- Booking Confirmation JavaScript with API Integration -->
+<script>
+    // API Configuration
+    const API_BASE_URL = 'https://api.xsplatform.com';
+    const API_ENDPOINTS = {
+        BOOKING_DETAILS: `${API_BASE_URL}/api/v1/bookings/{id}`,
+        BOOKING_CANCEL: `${API_BASE_URL}/api/v1/bookings/{id}/cancel`,
+        BOOKING_RESCHEDULE: `${API_BASE_URL}/api/v1/bookings/{id}/reschedule`,
+        BOOKING_QR: `${API_BASE_URL}/api/v1/bookings/{id}/qr`,
+        BOOKING_STATUS: `${API_BASE_URL}/api/v1/bookings/{id}/status`,
+        USER_PROFILE: `${API_BASE_URL}/api/v1/user/profile`,
+        USER_CONTACT: `${API_BASE_URL}/api/v1/user/contact-info`
+    };
+
+    // Global state
+    let bookingData = null;
+    let bookingId = null;
+    let userProfile = null;
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Booking confirmation page initialized with API integration');
+        
+        // Check if user is logged in
+        if (!isUserLoggedIn()) {
+            showError('Please login to view booking confirmation');
+            setTimeout(() => {
+                window.location.href = 'login.html?return=' + encodeURIComponent(window.location.href);
+            }, 2000);
+            return;
+        }
+        
+        // Get booking ID from URL
+        bookingId = getBookingIdFromURL();
+        
+        if (!bookingId) {
+            showError('Booking ID not found');
+            return;
+        }
+        
+        // Load booking details
+        loadBookingDetails();
+        
+        // Load user profile
+        loadUserProfile();
+        
+        // Initialize event listeners
+        initEventListeners();
+    });
+
+    // API Helper Functions
+    async function fetchAPI(url, options = {}) {
+        try {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                ...options
+            };
+            
+            const response = await fetch(url, defaultOptions);
+            
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API Fetch Error:', error);
+            throw error;
+        }
+    }
+
+    function getAuthToken() {
+        return localStorage.getItem('xs_auth_token') || '';
+    }
+
+    function isUserLoggedIn() {
+        return !!getAuthToken();
+    }
+
+    function getBookingIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id') || localStorage.getItem('last_booking_id');
+    }
+
+    // Load booking details
+    async function loadBookingDetails() {
+        try {
+            showLoading();
+            
+            const data = await fetchAPI(API_ENDPOINTS.BOOKING_DETAILS.replace('{id}', bookingId));
+            bookingData = data.booking || data;
+            
+            // Load QR code if available
+            loadQRCode();
+            
+            hideLoading();
+            renderBookingConfirmation();
+            
+        } catch (error) {
+            hideLoading();
+            showError('Failed to load booking details');
+        }
+    }
+
+    // Load user profile
+    async function loadUserProfile() {
+        try {
+            const data = await fetchAPI(API_ENDPOINTS.USER_PROFILE);
+            userProfile = data.user || data;
+            
+        } catch (error) {
+            console.error('Failed to load user profile:', error);
+        }
+    }
+
+    // Load QR code
+    async function loadQRCode() {
+        try {
+            const qrData = await fetchAPI(API_ENDPOINTS.BOOKING_QR.replace('{id}', bookingId));
+            renderQRCode(qrData.qrData || bookingId);
+            
+        } catch (error) {
+            console.error('Failed to load QR code:', error);
+            renderQRCode(bookingId); // Fallback to booking ID
+        }
+    }
+
+    // Render booking confirmation
+    function renderBookingConfirmation() {
+        if (!bookingData) return;
+        
+        // Show success state
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('error-state').style.display = 'none';
+        document.getElementById('success-state').style.display = 'block';
+        
+        // Update header
+        updateHeader();
+        
+        // Update appointment details
+        renderAppointmentDetails();
+        
+        // Update service details
+        renderServiceDetails();
+        
+        // Update payment details
+        renderPaymentDetails();
+        
+        // Update important notes
+        renderImportantNotes();
+        
+        // Update contact info
+        updateContactInfo();
+        
+        // Update action buttons based on status
+        updateActionButtons();
+        
+        // Generate timeline
+        renderStatusTimeline();
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Update header
+    function updateHeader() {
+        const status = bookingData.status || 'confirmed';
+        const confirmedAt = new Date(bookingData.createdAt || new Date());
+        
+        // Update icon and title based on status
+        const icon = document.getElementById('status-icon');
+        const title = document.getElementById('confirmation-title');
+        const description = document.getElementById('confirmation-description');
+        const badge = document.getElementById('status-badge');
+        
+        switch (status.toLowerCase()) {
+            case 'confirmed':
+                icon.innerHTML = '<i class="fas fa-calendar-check"></i>';
+                title.textContent = 'Appointment Confirmed!';
+                description.textContent = 'Your service appointment has been successfully scheduled.';
+                badge.textContent = 'CONFIRMED';
+                badge.className = 'status-badge status-confirmed';
+                break;
+                
+            case 'pending':
+                icon.innerHTML = '<i class="fas fa-clock"></i>';
+                icon.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+                title.textContent = 'Appointment Pending';
+                description.textContent = 'Your appointment is awaiting confirmation.';
+                badge.textContent = 'PENDING';
+                badge.className = 'status-badge status-pending';
+                break;
+                
+            case 'cancelled':
+                icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                icon.style.background = 'linear-gradient(135deg, #f44336, #d32f2f)';
+                title.textContent = 'Appointment Cancelled';
+                description.textContent = 'Your appointment has been cancelled.';
+                badge.textContent = 'CANCELLED';
+                badge.className = 'status-badge status-cancelled';
+                break;
+                
+            case 'completed':
+                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                icon.style.background = 'linear-gradient(135deg, #4caf50, #2e7d32)';
+                title.textContent = 'Service Completed!';
+                description.textContent = 'Your device repair has been successfully completed.';
+                badge.textContent = 'COMPLETED';
+                badge.className = 'status-badge status-confirmed';
+                break;
+        }
+        
+        // Update booking number
+        document.getElementById('booking-number').innerHTML = 
+            `Booking Reference: <strong>${bookingData.reference || '#XS-' + bookingId}</strong>`;
+        
+        document.getElementById('booking-ref-display').innerHTML = 
+            `or show your booking reference: <strong>${bookingData.reference || '#XS-' + bookingId}</strong>`;
+        
+        // Update confirmation time
+        document.getElementById('confirmation-time').innerHTML = 
+            `<i class="fas fa-clock"></i> ${getFormattedDate(confirmedAt)}`;
+    }
+
+    // Render appointment details
+    function renderAppointmentDetails() {
+        const container = document.getElementById('appointment-details');
+        const appointmentDate = new Date(bookingData.scheduledDate || bookingData.date);
+        const location = bookingData.location || {};
+        const technician = bookingData.technician || {};
+        
+        const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        container.innerHTML = `
+            <div class="date-badge">
+                <div class="month">${monthNames[appointmentDate.getMonth()]}</div>
+                <div class="day">${appointmentDate.getDate()}</div>
+                <div class="weekday">${weekdayNames[appointmentDate.getDay()]}</div>
+            </div>
+            <div class="appointment-info">
+                <h4>${bookingData.service?.name || 'Service Appointment'}</h4>
+                <p><i class="far fa-clock"></i> <strong>${bookingData.timeSlot || '10:00 AM - 12:00 PM'}</strong> (${bookingData.duration || '1-2 hours'})</p>
+                <p><i class="fas fa-map-marker-alt"></i> <strong>${location.name || 'Service Center'}</strong></p>
+                <p>${location.address || '123 Tech Street, Suite 100, New York, NY 10001'}</p>
+                
+                <div class="appointment-meta">
+                    ${technician.name ? `
+                        <div class="meta-item">
+                            <i class="fas fa-user-check"></i>
+                            <span>Assigned to: <strong>${technician.name}</strong></span>
+                        </div>
+                    ` : ''}
+                    
+                    ${location.phone ? `
+                        <div class="meta-item">
+                            <i class="fas fa-phone"></i>
+                            <span>Center: <strong>${location.phone}</strong></span>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="meta-item">
+                        <i class="fas fa-walking"></i>
+                        <span>Check-in: <strong>10 mins early</strong></span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Render service details
+    function renderServiceDetails() {
+        const container = document.getElementById('service-details');
+        const service = bookingData.service || {};
+        const device = bookingData.device || {};
+        
+        container.innerHTML = `
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-${service.icon || 'tools'}"></i>
+                </div>
+                <div class="service-details">
+                    <h4>${service.name || 'Service'}</h4>
+                    <p>${service.description || 'Professional repair service'}</p>
+                    <div class="service-price">$${(service.price || 0).toFixed(2)}</div>
+                </div>
+            </div>
+            
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="fas fa-${device.typeIcon || 'mobile-alt'}"></i>
+                </div>
+                <div class="service-details">
+                    <h4>Device Information</h4>
+                    <p><strong>Device:</strong> ${device.brand || ''} ${device.model || ''}</p>
+                    ${device.color ? `<p><strong>Color:</strong> ${device.color}</p>` : ''}
+                    ${device.storage ? `<p><strong>Storage:</strong> ${device.storage}</p>` : ''}
+                    ${device.issue ? `<p><strong>Issue:</strong> ${device.issue}</p>` : ''}
+                    ${device.serial ? `<p><strong>Serial:</strong> ${device.serial}</p>` : ''}
+                </div>
+            </div>
+        `;
+        
+        // Update what to bring section
+        const whatToBring = document.getElementById('what-to-bring');
+        whatToBring.innerHTML = `
+            <h4><i class="fas fa-clipboard-list"></i> What to Bring</h4>
+            <ul>
+                <li><strong>Your device</strong> - Please bring the ${device.brand || ''} ${device.model || 'device'} that needs repair</li>
+                <li><strong>Proof of purchase</strong> - Receipt or invoice for warranty verification</li>
+                <li><strong>Photo ID</strong> - Government-issued ID for check-in</li>
+                <li><strong>Accessories</strong> - Charger, case, and any other accessories</li>
+                <li><strong>Backup</strong> - Ensure your data is backed up before the appointment</li>
+            </ul>
+        `;
+    }
+
+    // Render payment details
+    function renderPaymentDetails() {
+        const container = document.getElementById('payment-summary');
+        const service = bookingData.service || {};
+        const payment = bookingData.payment || {};
+        
+        const serviceFee = service.price || 0;
+        const diagnosticFee = serviceFee > 0 ? 0 : 49.99;
+        const tax = (serviceFee + diagnosticFee) * 0.08;
+        const total = serviceFee + diagnosticFee + tax;
+        
+        container.innerHTML = `
+            <div>
+                <h4 style="color: var(--primary-text); margin-bottom: 15px;">Payment Summary</h4>
+                <div class="payment-details">
+                    <div class="detail-row">
+                        <span>${service.name || 'Service'}</span>
+                        <span>$${serviceFee.toFixed(2)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Diagnostic Fee</span>
+                        <span style="color: #4caf50;">${diagnosticFee > 0 ? `$${diagnosticFee.toFixed(2)}` : 'Free'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Estimated Tax (8%)</span>
+                        <span>$${tax.toFixed(2)}</span>
+                    </div>
+                    <div class="detail-row total">
+                        <span>Estimated Total</span>
+                        <span>$${total.toFixed(2)}</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--secondary-text); margin-top: 15px;">
+                    <i class="fas fa-info-circle"></i> Final amount may vary if additional repairs are needed.
+                </p>
+            </div>
+            
+            <div>
+                <h4 style="color: var(--primary-text); margin-bottom: 15px;">Payment Method</h4>
+                <div class="payment-details">
+                    ${payment.method ? `
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="width: 40px; height: 25px; background: #1a1f71; color: white; display: flex; align-items: center; justify-content: center; border-radius: 3px; font-weight: 600; font-size: 0.8rem;">
+                                ${payment.method.toUpperCase()}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">${payment.method} ending in ${payment.last4 || '****'}</div>
+                                <div style="font-size: 0.9rem; color: var(--secondary-text);">${userProfile?.name || 'User'}</div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="color: var(--secondary-text); text-align: center; padding: 20px;">
+                            <i class="fas fa-credit-card fa-2x" style="margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>Payment will be processed after service completion</p>
+                        </div>
+                    `}
+                    <div style="font-size: 0.9rem; color: var(--secondary-text);">
+                        <p><i class="fas fa-credit-card"></i> Payment will be processed after service completion</p>
+                        <p><i class="fas fa-shield-alt"></i> Secured with SSL encryption</p>
+                    </div>
+                </div>
+                
+                <h4 style="color: var(--primary-text); margin: 25px 0 10px 0;">Service Guarantee</h4>
+                <ul style="padding-left: 20px; color: var(--secondary-text); font-size: 0.9rem;">
+                    <li><strong>${service.warrantyDays || 90}-day warranty</strong> on all parts and labor</li>
+                    <li><strong>Free re-check</strong> if issue persists within 30 days</li>
+                    <li><strong>Original parts</strong> or equivalent quality replacements</li>
+                    <li><strong>Data protection</strong> guaranteed during repair</li>
+                </ul>
+            </div>
+        `;
+    }
+
+    // Render important notes
+    function renderImportantNotes() {
+        const container = document.getElementById('important-notes');
+        const location = bookingData.location || {};
+        
+        container.innerHTML = `
+            <h4><i class="fas fa-exclamation-circle"></i> Important Information</h4>
+            <ul>
+                <li><strong>Cancellation Policy:</strong> Free cancellation up to 24 hours before appointment. Late cancellations may incur a $25 fee.</li>
+                <li><strong>Rescheduling:</strong> You can reschedule your appointment up to 2 hours before the scheduled time through your dashboard.</li>
+                <li><strong>What to Expect:</strong> Our technician will perform a diagnostic check first, then discuss any additional findings before proceeding with repairs.</li>
+                <li><strong>Wait Time:</strong> While most repairs take 1-2 hours, complex issues may require more time. We'll keep you updated.</li>
+                <li><strong>COVID-19 Safety:</strong> Our service centers follow strict sanitization protocols. Masks are available upon request.</li>
+                <li><strong>Contact:</strong> For questions, call ${location.phone || '(555) 987-6543'} or email ${location.email || 'support@xsplatform.com'}</li>
+            </ul>
+        `;
+    }
+
+    // Update contact info
+    function updateContactInfo() {
+        const container = document.getElementById('contact-info');
+        
+        if (userProfile) {
+            container.innerHTML = `We've sent a confirmation to <strong>${userProfile.email || 'your email'}</strong> and <strong>${userProfile.phone || 'your phone'}</strong> with all appointment details. You'll receive reminders 24 hours and 1 hour before your appointment.`;
+        } else {
+            container.innerHTML = 'Confirmation sent to your registered email and phone number.';
+        }
+    }
+
+    // Update action buttons
+    function updateActionButtons() {
+        const status = bookingData.status || 'confirmed';
+        const cancelBtn = document.getElementById('cancel-btn');
+        
+        // Show cancel button only for confirmed/pending appointments
+        if (status === 'confirmed' || status === 'pending') {
+            cancelBtn.style.display = 'inline-flex';
+        }
+    }
+
+    // Render status timeline
+    function renderStatusTimeline() {
+        const container = document.getElementById('status-timeline');
+        const status = bookingData.status || 'confirmed';
+        const createdDate = new Date(bookingData.createdAt || new Date());
+        const appointmentDate = new Date(bookingData.scheduledDate || bookingData.date);
+        
+        const steps = [
+            {
+                id: 'booked',
+                title: 'Appointment Booked',
+                date: createdDate,
+                description: 'Your appointment has been confirmed and scheduled.',
+                completed: true,
+                active: false
+            },
+            {
+                id: 'reminders',
+                title: 'Reminders Sent',
+                date: new Date(appointmentDate.getTime() - 24 * 60 * 60 * 1000), // 24 hours before
+                description: 'You\'ll receive a reminder 24 hours before your appointment.',
+                completed: status !== 'cancelled' && new Date() >= new Date(appointmentDate.getTime() - 24 * 60 * 60 * 1000),
+                active: status === 'confirmed' && new Date() < appointmentDate && new Date() >= new Date(appointmentDate.getTime() - 24 * 60 * 60 * 1000)
+            },
+            {
+                id: 'checkin',
+                title: 'Check-in',
+                date: appointmentDate,
+                description: 'Arrive at the service center with your device and ID.',
+                completed: status === 'completed' || (status === 'confirmed' && new Date() >= appointmentDate),
+                active: status === 'confirmed' && new Date() >= appointmentDate && new Date() < new Date(appointmentDate.getTime() + 2 * 60 * 60 * 1000)
+            },
+            {
+                id: 'complete',
+                title: 'Service Complete',
+                date: new Date(appointmentDate.getTime() + 2 * 60 * 60 * 1000), // 2 hours after
+                description: 'Your device will be repaired and ready for pickup.',
+                completed: status === 'completed',
+                active: status === 'completed'
+            }
+        ];
+        
+        container.innerHTML = steps.map(step => `
+            <div class="timeline-step ${step.completed ? 'completed' : ''} ${step.active ? 'active' : ''}">
+                <div class="step-icon">
+                    <i class="fas fa-${getStepIcon(step.id)}"></i>
+                </div>
+                <div class="step-content">
+                    <h4>${step.title}</h4>
+                    <p>${getFormattedDate(step.date)}</p>
+                    <p>${step.description}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Get step icon
+    function getStepIcon(stepId) {
+        const icons = {
+            booked: 'calendar-plus',
+            reminders: 'bell',
+            checkin: 'store',
+            complete: 'tools'
+        };
+        return icons[stepId] || 'circle';
+    }
+
+    // Get formatted date
+    function getFormattedDate(date) {
+        if (!date) return 'Not scheduled';
+        
+        const d = new Date(date);
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+        };
+        
+        return d.toLocaleDateString('en-US', options);
+    }
+
+    // Render QR code
+    function renderQRCode(data) {
+        const container = document.getElementById('qr-code');
+        
+        // Clear container
+        container.innerHTML = '';
+        
+        // Create canvas for QR code
+        const canvas = document.createElement('canvas');
+        canvas.width = 150;
+        canvas.height = 150;
+        const ctx = canvas.getContext('2d');
+        
+        // Generate QR-like pattern
+        generateQRPattern(ctx, canvas.width, canvas.height, data);
+        
+        container.appendChild(canvas);
+    }
+
+    // Generate QR pattern
+    function generateQRPattern(ctx, width, height, data) {
+        // White background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+        
+        // Generate deterministic pattern based on data
+        ctx.fillStyle = '#333333';
+        
+        // Position markers
+        ctx.fillRect(20, 20, 30, 30);
+        ctx.fillRect(width - 50, 20, 30, 30);
+        ctx.fillRect(20, height - 50, 30, 30);
+        
+        // Center
+        ctx.fillRect(width/2 - 10, height/2 - 10, 20, 20);
+        
+        // Generate pattern based on booking ID hash
+        let hash = 0;
+        for (let i = 0; i < data.length; i++) {
+            hash = ((hash << 5) - hash) + data.charCodeAt(i);
+            hash = hash & hash;
+        }
+        
+        // Data pattern
+        for (let i = 0; i < 50; i++) {
+            const x = Math.abs(Math.sin(hash + i) * (width - 4)) + 2;
+            const y = Math.abs(Math.cos(hash + i) * (height - 4)) + 2;
+            
+            // Avoid position markers
+            if (!(x > 15 && x < 55 && y > 15 && y < 55) &&
+                !(x > width - 55 && x < width - 15 && y > 15 && y < 55) &&
+                !(x > 15 && x < 55 && y > height - 55 && y < height - 15) &&
+                !(x > width/2 - 15 && x < width/2 + 15 && y > height/2 - 15 && y < height/2 + 15)) {
+                ctx.fillRect(x, y, 3, 3);
+            }
+        }
+    }
+
+    // Initialize event listeners
+    function initEventListeners() {
+        // Add to calendar button
+        document.getElementById('calendar-btn').addEventListener('click', addToCalendar);
+        
+        // Print button
+        document.getElementById('print-btn').addEventListener('click', printConfirmation);
+        
+        // Cancel button
+        document.getElementById('cancel-btn').addEventListener('click', cancelBooking);
+        
+        // Retry button
+        document.getElementById('retry-btn').addEventListener('click', loadBookingDetails);
+    }
+
+    // Add to calendar
+    async function addToCalendar() {
+        if (!bookingData) return;
+        
+        const appointmentDate = new Date(bookingData.scheduledDate || bookingData.date);
+        const location = bookingData.location || {};
+        const service = bookingData.service || {};
+        
+        const eventDetails = {
+            title: `XS Platform - ${service.name || 'Service Appointment'}`,
+            description: `Service appointment at XS Service Center\nBooking Ref: ${bookingData.reference || '#XS-' + bookingId}\nLocation: ${location.name || 'Service Center'}\nPhone: ${location.phone || '(555) 987-6543'}\nService: ${service.name}\nDevice: ${bookingData.device?.brand || ''} ${bookingData.device?.model || ''}`,
+            location: location.address || 'Service Center',
+            startTime: appointmentDate.toISOString(),
+            endTime: new Date(appointmentDate.getTime() + 2 * 60 * 60 * 1000).toISOString() // +2 hours
+        };
+        
+        // Create calendar event
+        const calendarEvent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${eventDetails.title.replace(/,/g, '\\,')}
+DESCRIPTION:${eventDetails.description.replace(/,/g, '\\,').replace(/\n/g, '\\n')}
+LOCATION:${eventDetails.location.replace(/,/g, '\\,')}
+DTSTART:${formatDateForCalendar(eventDetails.startTime)}
+DTEND:${formatDateForCalendar(eventDetails.endTime)}
+UID:${bookingId}@xsplatform.com
+END:VEVENT
+END:VCALENDAR`;
+        
+        // Create download link
+        const blob = new Blob([calendarEvent], { type: 'text/calendar' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `xs-booking-${bookingId}.ics`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        showToast('Calendar event downloaded. Import it to your calendar app.', 'success');
+    }
+
+    // Format date for calendar
+    function formatDateForCalendar(dateString) {
+        const date = new Date(dateString);
+        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    }
+
+    // Print confirmation
+    function printConfirmation() {
+        const printContent = document.querySelector('.confirmation-container').cloneNode(true);
+        
+        // Remove action buttons and some elements for print
+        const elementsToRemove = printContent.querySelectorAll('.action-buttons, .support-section, button, .mobile-only, .qr-section, .email-confirmation');
+        elementsToRemove.forEach(el => el.remove());
+        
+        // Create print window
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Booking Confirmation - XS Platform</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+                    .print-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #2c3e50; padding-bottom: 20px; }
+                    .success-icon { color: #4caf50; font-size: 40px; margin-bottom: 15px; }
+                    h1 { color: #2c3e50; margin: 0 0 10px 0; }
+                    .booking-number { background: #f5f5f5; padding: 10px 20px; border-radius: 5px; display: inline-block; margin: 15px 0; font-size: 1.1rem; }
+                    .confirmation-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; break-inside: avoid; }
+                    .appointment-details { display: flex; align-items: center; gap: 20px; margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+                    .date-badge { text-align: center; padding: 15px; background: white; border-radius: 8px; min-width: 100px; border: 1px solid #ddd; }
+                    .timeline-step { margin-bottom: 20px; }
+                    .service-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+                    .important-notes { background: #fff9e6; border-left: 4px solid #ffd600; padding: 15px; margin: 20px 0; border-radius: 4px; }
+                    @media print {
+                        body { margin: 0; padding: 20px; }
+                        .no-print { display: none; }
+                        .confirmation-card { break-inside: avoid; page-break-inside: avoid; }
+                        @page { margin: 20mm; }
+                    }
+                </style>
+            </head>
+            <body>
+                ${printContent.innerHTML}
+                <div style="text-align: center; margin-top: 40px; font-size: 0.9em; color: #666; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <p>Thank you for choosing XS Platform for your repair needs</p>
+                    <p>For questions, call (555) 987-6543 or email support@xsplatform.com</p>
+                    <p>Printed on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+                </div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        
+        // Wait for content to load then print
+        setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+    }
+
+    // Cancel booking
+    async function cancelBooking() {
+        if (!confirm('Are you sure you want to cancel this appointment? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            showLoading('Cancelling appointment...');
+            
+            await fetchAPI(API_ENDPOINTS.BOOKING_CANCEL.replace('{id}', bookingId), {
+                method: 'POST'
+            });
+            
+            // Update local state
+            bookingData.status = 'cancelled';
+            
+            // Re-render confirmation
+            renderBookingConfirmation();
+            
+            showToast('Appointment cancelled successfully.', 'success');
+            
+        } catch (error) {
+            hideLoading();
+            showToast('Failed to cancel appointment. Please try again.', 'error');
+        }
+    }
+
+    // UI Helper Functions
+    function showLoading(message = 'Loading...') {
+        document.getElementById('loading-overlay').classList.add('active');
+        document.getElementById('loading-message').textContent = message;
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-overlay').classList.remove('active');
+    }
+
+    function showError(message) {
+        document.getElementById('error-state').style.display = 'block';
+        document.getElementById('error-message-text').textContent = message;
+        document.getElementById('loading-state').style.display = 'none';
+    }
+
+    function showToast(message, type = 'info') {
+        // Remove existing toasts
+        const existingToasts = document.querySelectorAll('.toast');
+        existingToasts.forEach(toast => toast.remove());
+        
+        // Create new toast
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // API Endpoints Documentation for Booking Confirmation
+    function listBookingConfirmationAPIEndpoints() {
+        console.log('=== XS Platform Booking Confirmation API Endpoints ===');
+        console.log('Base URL:', API_BASE_URL);
+        console.log('\nBooking Details:');
+        console.log('- GET  /api/v1/bookings/{id}          - Get booking details');
+        console.log('- PUT  /api/v1/bookings/{id}          - Update booking');
+        console.log('- GET  /api/v1/bookings/{id}/qr       - Generate QR code for check-in');
+        console.log('- GET  /api/v1/bookings/{id}/status   - Get booking status');
+        
+        console.log('\nBooking Actions:');
+        console.log('- POST /api/v1/bookings/{id}/cancel   - Cancel booking');
+        console.log('- POST /api/v1/bookings/{id}/reschedule - Reschedule booking');
+        console.log('- POST /api/v1/bookings/{id}/confirm  - Confirm booking');
+        
+        console.log('\nBooking Reminders:');
+        console.log('- GET  /api/v1/bookings/{id}/reminders - Get booking reminders');
+        console.log('- POST /api/v1/bookings/{id}/reminders - Create reminder');
+        
+        console.log('\n=====================================================');
+    }
+
+    // Initialize and log endpoints
+    listBookingConfirmationAPIEndpoints();
+</script>
+</body>
+</html>
