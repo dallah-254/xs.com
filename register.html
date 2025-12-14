@@ -27,7 +27,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -118,6 +118,43 @@
 
         .kenya-flag i {
             color: var(--kenya-red);
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 40px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            border-left: 4px solid var(--error-red);
+            color: #c62828;
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success-green);
+            color: #2e7d32;
+        }
+
+        .alert.info {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .alert.warning {
+            background: #fff8e1;
+            border-left: 4px solid var(--warning-yellow);
+            color: #ff8f00;
+        }
+
+        .alert i {
+            margin-right: 10px;
         }
 
         /* Registration Steps */
@@ -434,37 +471,6 @@
             transform: translateY(-2px);
         }
 
-        /* Alert Messages */
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 40px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .alert.error {
-            background: #ffebee;
-            border-left: 4px solid var(--error-red);
-            color: #c62828;
-        }
-
-        .alert.success {
-            background: #e8f5e9;
-            border-left: 4px solid var(--success-green);
-            color: #2e7d32;
-        }
-
-        .alert.info {
-            background: #e3f2fd;
-            border-left: 4px solid var(--primary-blue);
-            color: var(--primary-blue);
-        }
-
-        .alert i {
-            margin-right: 10px;
-        }
-
         /* Loading Overlay */
         .loading-overlay {
             display: none;
@@ -607,34 +613,108 @@
             color: #f44336;
         }
 
-        /* Kenya Counties */
-        .county-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+        /* Email Validation */
+        .validation-feedback {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+            min-height: 20px;
         }
 
-        .county-option {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+        .validation-feedback.valid {
+            color: #4caf50;
+        }
+
+        .validation-feedback.invalid {
+            color: #f44336;
+        }
+
+        /* Verification Modal */
+        .verification-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .verification-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .verification-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .verification-header {
+            padding: 30px;
             text-align: center;
+            background: linear-gradient(135deg, var(--kenya-green), var(--primary-blue));
+            color: white;
+        }
+
+        .verification-header i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .verification-body {
+            padding: 30px;
+        }
+
+        .verification-body p {
+            color: var(--secondary-text);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .verification-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .verification-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.9rem;
         }
 
-        .county-option:hover {
-            border-color: var(--primary-blue);
+        .verification-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .verification-btn.primary:hover {
+            background: var(--accent-blue);
+        }
+
+        .verification-btn.secondary {
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .verification-btn.secondary:hover {
             background: #f0f8ff;
-        }
-
-        .county-option.selected {
-            border-color: var(--kenya-green);
-            background: rgba(0, 102, 0, 0.1);
-            color: var(--kenya-green);
-            font-weight: 600;
         }
     </style>
 </head>
@@ -717,6 +797,7 @@
                 <div class="form-group">
                     <label class="form-label required" for="email">Email Address</label>
                     <input type="email" class="form-input" id="email" placeholder="john.mwangi@example.com" required>
+                    <div class="validation-feedback" id="email-validation"></div>
                     <span class="form-hint" style="font-size: 0.85rem; color: var(--secondary-text); margin-top: 5px; display: block;">
                         We'll send a verification email to this address
                     </span>
@@ -732,6 +813,7 @@
                             <input type="tel" class="form-input" id="phone" placeholder="7XX XXX XXX" pattern="[0-9]{9}" maxlength="9" required>
                         </div>
                     </div>
+                    <div class="validation-feedback" id="phone-validation"></div>
                     <span class="form-hint" style="font-size: 0.85rem; color: var(--secondary-text); margin-top: 5px; display: block;">
                         Enter your 9-digit Safaricom, Airtel, or Telkom number (without 0)
                     </span>
@@ -740,6 +822,7 @@
                 <div class="form-group">
                     <label class="form-label" for="id-number">National ID Number (Optional)</label>
                     <input type="text" class="form-input" id="id-number" placeholder="XXXXXXXXXX" maxlength="10">
+                    <div class="validation-feedback" id="id-validation"></div>
                     <span class="form-hint" style="font-size: 0.85rem; color: var(--secondary-text); margin-top: 5px; display: block;">
                         Required for certain services and age verification
                     </span>
@@ -828,8 +911,9 @@
                 <div class="form-group">
                     <label class="form-label required" for="username">Username</label>
                     <input type="text" class="form-input" id="username" placeholder="johnmwangi" required>
+                    <div class="validation-feedback" id="username-validation"></div>
                     <span class="form-hint" style="font-size: 0.85rem; color: var(--secondary-text); margin-top: 5px; display: block;">
-                        This will be your public profile name
+                        This will be your public profile name (3-20 characters, letters, numbers, underscores only)
                     </span>
                 </div>
 
@@ -884,6 +968,7 @@
                 <div class="form-group">
                     <label class="form-label" for="referral">Referral Code (Optional)</label>
                     <input type="text" class="form-input" id="referral" placeholder="Enter referral code if any">
+                    <div class="validation-feedback" id="referral-validation"></div>
                 </div>
 
                 <div class="terms-group">
@@ -928,26 +1013,107 @@
         </div>
     </div>
 
+    <!-- Verification Success Modal -->
+    <div class="verification-modal" id="verification-modal">
+        <div class="verification-content">
+            <div class="verification-header">
+                <i class="fas fa-check-circle"></i>
+                <h2>Account Created Successfully!</h2>
+            </div>
+            <div class="verification-body">
+                <p id="verification-message">
+                    Your account has been created successfully! We've sent a verification email to your email address.
+                    Please check your inbox and click the verification link to activate your account.
+                </p>
+                <p style="font-size: 0.9rem; color: var(--secondary-text); margin-top: 15px;">
+                    You'll be redirected to the login page shortly...
+                </p>
+                <div class="verification-actions">
+                    <button class="verification-btn secondary" onclick="window.location.href='login.html'">
+                        Go to Login
+                    </button>
+                    <button class="verification-btn primary" onclick="window.location.href='index.html'">
+                        Go to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // API Configuration for Kenya
-        const API_CONFIG = {
-            BASE_URL: 'https://api.xselectronics.co.ke/v1',
+        // API Configuration - Shared with login page
+const API_CONFIG = {
+    BASE_URL: 'https://xs-auth-logic4.onrender.com/api',
             
             ENDPOINTS: {
+                // Customer registration
                 CUSTOMER_REGISTER: '/auth/customer/register',
+                VERIFY_EMAIL: '/auth/verify-email',
+                RESEND_VERIFICATION: '/auth/resend-verification',
+                
+                // Validation endpoints
                 VALIDATE_EMAIL: '/auth/validate-email',
                 VALIDATE_PHONE: '/auth/validate-phone',
-                VERIFY_EMAIL: '/auth/verify-email',
-                VERIFY_PHONE: '/auth/verify-phone',
-                CHECK_USERNAME: '/auth/check-username',
+                VALIDATE_USERNAME: '/auth/validate-username',
+                VALIDATE_REFERRAL: '/auth/validate-referral',
+                
+                // Location endpoints
                 GET_COUNTIES: '/locations/counties',
-                GET_TOWNS: '/locations/towns'
+                GET_TOWNS: '/locations/towns',
+                VALIDATE_LOCATION: '/locations/validate',
+                
+                // Authentication (shared with login)
+                CUSTOMER_LOGIN: '/auth/customer/login',
+                CUSTOMER_LOGOUT: '/auth/customer/logout',
+                VERIFY_2FA: '/auth/verify-2fa',
+                FORGOT_PASSWORD: '/auth/forgot-password',
+                RESET_PASSWORD: '/auth/reset-password',
+                SOCIAL_LOGIN: '/auth/social/login',
+                VALIDATE_TOKEN: '/auth/validate-token',
+                REFRESH_TOKEN: '/auth/refresh-token'
             },
             
             HEADERS: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'X-Platform': 'web',
                 'X-Country-Code': 'KE'
+            },
+            
+            // Token configuration (shared with login)
+            TOKEN_CONFIG: {
+                ACCESS_TOKEN_KEY: 'xs_access_token',
+                REFRESH_TOKEN_KEY: 'xs_refresh_token',
+                USER_DATA_KEY: 'xs_user_data',
+                TOKEN_EXPIRY_KEY: 'xs_token_expiry',
+                REMEMBER_ME_KEY: 'xs_remember_me'
+            },
+            
+            // Validation rules
+            VALIDATION_RULES: {
+                USERNAME: {
+                    MIN_LENGTH: 3,
+                    MAX_LENGTH: 20,
+                    PATTERN: /^[a-zA-Z0-9_]+$/
+                },
+                PASSWORD: {
+                    MIN_LENGTH: 8,
+                    REQUIRE_UPPERCASE: true,
+                    REQUIRE_LOWERCASE: true,
+                    REQUIRE_NUMBER: true,
+                    REQUIRE_SPECIAL: true,
+                    SPECIAL_CHARS: /[@$!%*?&]/
+                },
+                PHONE: {
+                    PATTERN: /^[0-9]{9}$/,
+                    VALID_PREFIXES: ['7', '1']
+                },
+                EMAIL: {
+                    PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                },
+                ID_NUMBER: {
+                    PATTERN: /^[0-9]{8,10}$/
+                }
             }
         };
 
@@ -969,8 +1135,7 @@
             "kisumu": ["Milimani", "Kisumu Town", "Kondele", "Nyalenda", "Kanyakwar", "Mamboleo"],
             "nakuru": ["Milimani", "Lanet", "Free Area", "Kiamunyi", "London", "Section 58"],
             "kiambu": ["Thika", "Kiambu Town", "Ruiru", "Kikuyu", "Limuru", "Githunguri"],
-            "kakamega": ["Kakamega Town", "Mutungu", "Shinyalu", "Malava", "Navakholo"],
-            "nairobi": ["Westlands", "Kilimani", "Karen", "Lavington", "Parklands", "Upper Hill"]
+            "kakamega": ["Kakamega Town", "Mutungu", "Shinyalu", "Malava", "Navakholo"]
         };
 
         // Form Data Storage
@@ -996,578 +1161,930 @@
         const backBtn = document.getElementById('back-btn');
         const cancelBtn = document.getElementById('cancel-btn');
         const submitBtn = document.getElementById('submit-btn');
+        const verificationModal = document.getElementById('verification-modal');
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            initForm();
-            setupEventListeners();
-            updateStepProgress();
-            
-            // Auto-suggest towns based on county
-            const countySelect = document.getElementById('county');
-            const townInput = document.getElementById('town');
-            
-            countySelect.addEventListener('change', function() {
-                const county = this.value;
-                if (KENYA_TOWNS[county]) {
-                    // Create datalist for town suggestions
-                    const datalistId = `towns-${county}`;
-                    let datalist = document.getElementById(datalistId);
+        // API Service (shared with login)
+        class ApiService {
+            static async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
+                const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+                const headers = { ...API_CONFIG.HEADERS };
+                
+                // Add authorization header if required
+                if (requiresAuth) {
+                    const token = localStorage.getItem(API_CONFIG.TOKEN_CONFIG.ACCESS_TOKEN_KEY) || 
+                                  sessionStorage.getItem(API_CONFIG.TOKEN_CONFIG.ACCESS_TOKEN_KEY);
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+                }
+                
+                const config = {
+                    method,
+                    headers,
+                    credentials: 'include'
+                };
+                
+                // Add request body for POST, PUT, PATCH requests
+                if (data && ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
+                    config.body = JSON.stringify(data);
+                }
+                
+                try {
+                    const response = await fetch(url, config);
                     
-                    if (!datalist) {
-                        datalist = document.createElement('datalist');
-                        datalist.id = datalistId;
-                        document.body.appendChild(datalist);
-                        
-                        KENYA_TOWNS[county].forEach(town => {
-                            const option = document.createElement('option');
-                            option.value = town;
-                            datalist.appendChild(option);
-                        });
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
                     }
                     
+                    return await response.json();
+                } catch (error) {
+                    console.error('API Request Error:', error);
+                    throw error;
+                }
+            }
+            
+            static async customerRegister(userData) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.CUSTOMER_REGISTER,
+                    'POST',
+                    userData,
+                    false
+                );
+            }
+            
+            static async validateEmail(email) {
+                return await this.request(
+                    `${API_CONFIG.ENDPOINTS.VALIDATE_EMAIL}?email=${encodeURIComponent(email)}`,
+                    'GET',
+                    null,
+                    false
+                );
+            }
+            
+            static async validatePhone(phone) {
+                return await this.request(
+                    `${API_CONFIG.ENDPOINTS.VALIDATE_PHONE}?phone=${encodeURIComponent(phone)}`,
+                    'GET',
+                    null,
+                    false
+                );
+            }
+            
+            static async validateUsername(username) {
+                return await this.request(
+                    `${API_CONFIG.ENDPOINTS.VALIDATE_USERNAME}?username=${encodeURIComponent(username)}`,
+                    'GET',
+                    null,
+                    false
+                );
+            }
+            
+            static async validateReferral(code) {
+                return await this.request(
+                    `${API_CONFIG.ENDPOINTS.VALIDATE_REFERRAL}?code=${encodeURIComponent(code)}`,
+                    'GET',
+                    null,
+                    false
+                );
+            }
+            
+            static async getCounties() {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.GET_COUNTIES,
+                    'GET',
+                    null,
+                    false
+                );
+            }
+            
+            static async getTowns(county) {
+                return await this.request(
+                    `${API_CONFIG.ENDPOINTS.GET_TOWNS}?county=${encodeURIComponent(county)}`,
+                    'GET',
+                    null,
+                    false
+                );
+            }
+        }
+
+        // Form Validator
+        class FormValidator {
+            static isValidEmail(email) {
+                return API_CONFIG.VALIDATION_RULES.EMAIL.PATTERN.test(email.trim());
+            }
+            
+            static isValidPhone(phone) {
+                const cleaned = phone.replace(/\s/g, '');
+                if (!API_CONFIG.VALIDATION_RULES.PHONE.PATTERN.test(cleaned)) {
+                    return false;
+                }
+                return API_CONFIG.VALIDATION_RULES.PHONE.VALID_PREFIXES.includes(cleaned[0]);
+            }
+            
+            static isValidUsername(username) {
+                if (username.length < API_CONFIG.VALIDATION_RULES.USERNAME.MIN_LENGTH || 
+                    username.length > API_CONFIG.VALIDATION_RULES.USERNAME.MAX_LENGTH) {
+                    return false;
+                }
+                return API_CONFIG.VALIDATION_RULES.USERNAME.PATTERN.test(username);
+            }
+            
+            static isValidPassword(password) {
+                if (password.length < API_CONFIG.VALIDATION_RULES.PASSWORD.MIN_LENGTH) {
+                    return false;
+                }
+                
+                const checks = {
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /[0-9]/.test(password),
+                    special: API_CONFIG.VALIDATION_RULES.PASSWORD.SPECIAL_CHARS.test(password)
+                };
+                
+                return Object.values(checks).every(check => check);
+            }
+            
+            static isValidIDNumber(idNumber) {
+                if (!idNumber) return true; // Optional field
+                return API_CONFIG.VALIDATION_RULES.ID_NUMBER.PATTERN.test(idNumber);
+            }
+            
+            static validateStep1(data) {
+                const errors = [];
+                
+                // Name validation
+                if (!data.firstName || data.firstName.length < 2) {
+                    errors.push('First name must be at least 2 characters');
+                }
+                
+                if (!data.lastName || data.lastName.length < 2) {
+                    errors.push('Last name must be at least 2 characters');
+                }
+                
+                // Email validation
+                if (!data.email || !this.isValidEmail(data.email)) {
+                    errors.push('Please enter a valid email address');
+                }
+                
+                // Phone validation
+                if (!data.phone || !this.isValidPhone(data.phone)) {
+                    errors.push('Please enter a valid Kenya phone number (9 digits starting with 7 or 1)');
+                }
+                
+                // Location validation
+                if (!data.county) {
+                    errors.push('Please select your county');
+                }
+                
+                if (!data.town || data.town.length < 2) {
+                    errors.push('Please enter your town or area');
+                }
+                
+                // ID validation
+                if (data.idNumber && !this.isValidIDNumber(data.idNumber)) {
+                    errors.push('National ID must be 8 or 10 digits');
+                }
+                
+                return {
+                    isValid: errors.length === 0,
+                    errors: errors
+                };
+            }
+            
+            static validateStep2(data) {
+                const errors = [];
+                
+                // Username validation
+                if (!data.username || !this.isValidUsername(data.username)) {
+                    errors.push('Username must be 3-20 characters and contain only letters, numbers, and underscores');
+                }
+                
+                // Password validation
+                if (!data.password || !this.isValidPassword(data.password)) {
+                    errors.push('Password must be at least 8 characters with uppercase, lowercase, number, and special character');
+                }
+                
+                if (data.password !== data.confirmPassword) {
+                    errors.push('Passwords do not match');
+                }
+                
+                // Terms validation
+                if (!data.termsAgreed) {
+                    errors.push('You must agree to the Terms of Service and Privacy Policy');
+                }
+                
+                if (!data.ageConsent) {
+                    errors.push('You must confirm you are 18 years or older');
+                }
+                
+                return {
+                    isValid: errors.length === 0,
+                    errors: errors
+                };
+            }
+        }
+
+        // UI State Manager
+        class UIStateManager {
+            constructor() {
+                this.loadingOverlay = document.getElementById('loading-overlay');
+                this.loadingText = document.getElementById('loading-text');
+                this.errorAlert = document.getElementById('error-alert');
+                this.successAlert = document.getElementById('success-alert');
+                this.infoAlert = document.getElementById('info-alert');
+                
+                this.isLoading = false;
+                this.validationTimeouts = {};
+            }
+            
+            showLoading(message = 'Processing...') {
+                this.loadingText.textContent = message;
+                this.loadingOverlay.classList.add('active');
+                this.isLoading = true;
+            }
+            
+            hideLoading() {
+                this.loadingOverlay.classList.remove('active');
+                this.isLoading = false;
+            }
+            
+            showError(message) {
+                this.errorAlert.querySelector('#error-message').textContent = message;
+                this.errorAlert.style.display = 'block';
+                this.successAlert.style.display = 'none';
+                this.infoAlert.style.display = 'none';
+                
+                this.scrollToAlert(this.errorAlert);
+            }
+            
+            showSuccess(message) {
+                this.successAlert.querySelector('#success-message').textContent = message;
+                this.successAlert.style.display = 'block';
+                this.errorAlert.style.display = 'none';
+                this.infoAlert.style.display = 'none';
+                
+                this.scrollToAlert(this.successAlert);
+            }
+            
+            showInfo(message) {
+                this.infoAlert.querySelector('#info-message').textContent = message;
+                this.infoAlert.style.display = 'block';
+                this.errorAlert.style.display = 'none';
+                this.successAlert.style.display = 'none';
+                
+                this.scrollToAlert(this.infoAlert);
+            }
+            
+            hideAllAlerts() {
+                this.errorAlert.style.display = 'none';
+                this.successAlert.style.display = 'none';
+                this.infoAlert.style.display = 'none';
+            }
+            
+            scrollToAlert(element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            showVerificationModal(message) {
+                const modal = document.getElementById('verification-modal');
+                const messageElement = document.getElementById('verification-message');
+                
+                if (message) {
+                    messageElement.textContent = message;
+                }
+                
+                modal.classList.add('active');
+            }
+            
+            updateValidationFeedback(elementId, isValid, message) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+                
+                element.textContent = message;
+                element.className = 'validation-feedback';
+                
+                if (isValid === true) {
+                    element.classList.add('valid');
+                    element.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                } else if (isValid === false) {
+                    element.classList.add('invalid');
+                    element.innerHTML = `<i class="fas fa-times-circle"></i> ${message}`;
+                }
+            }
+            
+            clearValidationFeedback(elementId) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = '';
+                    element.className = 'validation-feedback';
+                }
+            }
+            
+            debounceValidation(fn, delay) {
+                return (...args) => {
+                    clearTimeout(this.validationTimeouts[fn.name]);
+                    this.validationTimeouts[fn.name] = setTimeout(() => fn(...args), delay);
+                };
+            }
+        }
+
+        // Password Strength Checker
+        class PasswordStrengthChecker {
+            static checkStrength(password) {
+                let strength = 0;
+                const requirements = {
+                    length: password.length >= API_CONFIG.VALIDATION_RULES.PASSWORD.MIN_LENGTH,
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /[0-9]/.test(password),
+                    special: API_CONFIG.VALIDATION_RULES.PASSWORD.SPECIAL_CHARS.test(password)
+                };
+                
+                // Update requirement indicators
+                Object.keys(requirements).forEach(req => {
+                    const element = document.getElementById(`req-${req}`);
+                    if (element) {
+                        if (requirements[req]) {
+                            element.classList.add('valid');
+                            element.classList.remove('invalid');
+                            element.querySelector('i').className = 'fas fa-check-circle';
+                            strength++;
+                        } else {
+                            element.classList.add('invalid');
+                            element.classList.remove('valid');
+                            element.querySelector('i').className = 'fas fa-times-circle';
+                        }
+                    }
+                });
+                
+                // Show/hide requirements panel
+                const requirementsPanel = document.getElementById('password-requirements');
+                if (password.length > 0) {
+                    requirementsPanel.classList.add('active');
+                } else {
+                    requirementsPanel.classList.remove('active');
+                }
+                
+                // Calculate strength percentage
+                const percentage = (strength / 5) * 100;
+                let strengthLevel = 'Weak';
+                let color = '#f44336';
+                
+                if (percentage >= 80) {
+                    strengthLevel = 'Strong';
+                    color = '#4caf50';
+                } else if (percentage >= 60) {
+                    strengthLevel = 'Good';
+                    color = '#ff9800';
+                }
+                
+                // Update UI
+                const strengthBar = document.getElementById('strength-bar');
+                const strengthText = document.getElementById('strength-text');
+                
+                if (strengthBar && strengthText) {
+                    strengthBar.style.width = `${percentage}%`;
+                    strengthBar.style.background = color;
+                    strengthText.textContent = `Password strength: ${strengthLevel}`;
+                    strengthText.style.color = color;
+                }
+                
+                return { strength: percentage, level: strengthLevel, requirements };
+            }
+            
+            static checkMatch(password, confirmPassword) {
+                const matchElement = document.getElementById('password-match');
+                
+                if (confirmPassword.length === 0) {
+                    matchElement.textContent = '';
+                    return true;
+                }
+                
+                if (password === confirmPassword) {
+                    matchElement.textContent = '✓ Passwords match';
+                    matchElement.style.color = '#4caf50';
+                    return true;
+                } else {
+                    matchElement.textContent = '✗ Passwords do not match';
+                    matchElement.style.color = '#f44336';
+                    return false;
+                }
+            }
+        }
+
+        // Main Application
+        class RegistrationApp {
+            constructor() {
+                this.ui = new UIStateManager();
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.setupRealTimeValidation();
+                this.updateStepProgress();
+            }
+            
+            bindEvents() {
+                // Navigation buttons
+                nextBtn.addEventListener('click', () => this.goToStep(2));
+                backBtn.addEventListener('click', () => this.goToStep(1));
+                
+                // Cancel button
+                cancelBtn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to cancel registration? All entered data will be lost.')) {
+                        window.location.href = 'index.html';
+                    }
+                });
+                
+                // Form submission
+                step2Form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitRegistration();
+                });
+                
+                // Password toggles
+                document.getElementById('toggle-password').addEventListener('click', (e) => this.togglePasswordVisibility('password', e));
+                document.getElementById('toggle-confirm-password').addEventListener('click', (e) => this.togglePasswordVisibility('confirm-password', e));
+                
+                // County change for town suggestions
+                document.getElementById('county').addEventListener('change', (e) => this.updateTownSuggestions(e.target.value));
+                
+                // Enter key navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        if (currentStep === 1 && !nextBtn.disabled) {
+                            e.preventDefault();
+                            nextBtn.click();
+                        } else if (currentStep === 2 && !submitBtn.disabled) {
+                            e.preventDefault();
+                            submitBtn.click();
+                        }
+                    }
+                });
+            }
+            
+            setupRealTimeValidation() {
+                // Step 1 validation
+                const step1Inputs = ['first-name', 'last-name', 'email', 'phone', 'id-number', 'county', 'town'];
+                step1Inputs.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.addEventListener('input', () => this.validateStep1());
+                        input.addEventListener('blur', () => this.validateStep1(true));
+                    }
+                });
+                
+                // Step 2 validation
+                const step2Inputs = ['username', 'password', 'confirm-password', 'referral'];
+                step2Inputs.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.addEventListener('input', () => this.validateStep2());
+                        input.addEventListener('blur', () => this.validateStep2(true));
+                    }
+                });
+                
+                // Password strength real-time check
+                document.getElementById('password').addEventListener('input', (e) => {
+                    PasswordStrengthChecker.checkStrength(e.target.value);
+                    this.validateStep2();
+                });
+                
+                // Password match check
+                document.getElementById('confirm-password').addEventListener('input', () => {
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    PasswordStrengthChecker.checkMatch(password, confirmPassword);
+                    this.validateStep2();
+                });
+                
+                // Terms validation
+                document.getElementById('terms-agree').addEventListener('change', () => this.validateStep2());
+                document.getElementById('age-consent').addEventListener('change', () => this.validateStep2());
+                
+                // Email validation with debounce
+                const emailInput = document.getElementById('email');
+                if (emailInput) {
+                    const debouncedEmailValidation = this.ui.debounceValidation(() => {
+                        this.validateEmail(emailInput.value);
+                    }, 500);
+                    emailInput.addEventListener('input', debouncedEmailValidation);
+                }
+                
+                // Phone validation with debounce
+                const phoneInput = document.getElementById('phone');
+                if (phoneInput) {
+                    const debouncedPhoneValidation = this.ui.debounceValidation(() => {
+                        this.validatePhone(phoneInput.value);
+                    }, 500);
+                    phoneInput.addEventListener('input', debouncedPhoneValidation);
+                }
+                
+                // Username validation with debounce
+                const usernameInput = document.getElementById('username');
+                if (usernameInput) {
+                    const debouncedUsernameValidation = this.ui.debounceValidation(() => {
+                        this.validateUsername(usernameInput.value);
+                    }, 500);
+                    usernameInput.addEventListener('input', debouncedUsernameValidation);
+                }
+            }
+            
+            goToStep(step) {
+                if (step === 2 && !this.validateStep1(true)) {
+                    return;
+                }
+                
+                currentStep = step;
+                
+                // Update forms visibility
+                step1Form.classList.remove('active');
+                step2Form.classList.remove('active');
+                
+                if (step === 1) {
+                    step1Form.classList.add('active');
+                } else {
+                    step2Form.classList.add('active');
+                }
+                
+                // Update steps UI
+                stepElements.forEach((stepEl, index) => {
+                    stepEl.classList.remove('active', 'completed');
+                    if (index + 1 < step) {
+                        stepEl.classList.add('completed');
+                        stepEl.querySelector('.step-circle i').style.display = 'block';
+                        stepEl.querySelector('.step-circle span').style.display = 'none';
+                    } else if (index + 1 === step) {
+                        stepEl.classList.add('active');
+                    }
+                });
+                
+                this.updateStepProgress();
+                
+                // Scroll to top of form
+                document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Validate the current step
+                if (step === 1) {
+                    this.validateStep1();
+                } else {
+                    this.validateStep2();
+                }
+            }
+            
+            updateStepProgress() {
+                const progress = ((currentStep - 1) * 100) + '%';
+                stepProgress.style.width = progress;
+            }
+            
+            validateStep1(showErrors = false) {
+                const data = this.collectStep1Data();
+                const validation = FormValidator.validateStep1(data);
+                
+                // Update button state
+                nextBtn.disabled = !validation.isValid;
+                
+                // Show errors if requested
+                if (!validation.isValid && showErrors && validation.errors.length > 0) {
+                    this.ui.showError(validation.errors[0]);
+                } else if (validation.isValid) {
+                    this.ui.hideAllAlerts();
+                }
+                
+                return validation.isValid;
+            }
+            
+            validateStep2(showErrors = false) {
+                const data = this.collectStep2Data();
+                const validation = FormValidator.validateStep2(data);
+                
+                // Update button state
+                submitBtn.disabled = !validation.isValid;
+                
+                // Show errors if requested
+                if (!validation.isValid && showErrors && validation.errors.length > 0) {
+                    this.ui.showError(validation.errors[0]);
+                } else if (validation.isValid) {
+                    this.ui.hideAllAlerts();
+                }
+                
+                return validation.isValid;
+            }
+            
+            async validateEmail(email) {
+                if (!email || !FormValidator.isValidEmail(email)) {
+                    this.ui.updateValidationFeedback('email-validation', false, 'Invalid email format');
+                    return;
+                }
+                
+                this.ui.updateValidationFeedback('email-validation', null, 'Checking availability...');
+                
+                try {
+                    const result = await ApiService.validateEmail(email);
+                    
+                    if (result.available) {
+                        this.ui.updateValidationFeedback('email-validation', true, 'Email is available');
+                    } else {
+                        this.ui.updateValidationFeedback('email-validation', false, 'Email already registered');
+                    }
+                } catch (error) {
+                    this.ui.updateValidationFeedback('email-validation', false, 'Unable to verify email');
+                }
+            }
+            
+            async validatePhone(phone) {
+                const cleaned = phone.replace(/\s/g, '');
+                
+                if (!cleaned || !FormValidator.isValidPhone(cleaned)) {
+                    this.ui.updateValidationFeedback('phone-validation', false, 'Invalid phone number');
+                    return;
+                }
+                
+                this.ui.updateValidationFeedback('phone-validation', null, 'Checking availability...');
+                
+                try {
+                    const result = await ApiService.validatePhone(`+254${cleaned}`);
+                    
+                    if (result.available) {
+                        this.ui.updateValidationFeedback('phone-validation', true, 'Phone number is available');
+                    } else {
+                        this.ui.updateValidationFeedback('phone-validation', false, 'Phone number already registered');
+                    }
+                } catch (error) {
+                    this.ui.updateValidationFeedback('phone-validation', false, 'Unable to verify phone number');
+                }
+            }
+            
+            async validateUsername(username) {
+                if (!username || !FormValidator.isValidUsername(username)) {
+                    this.ui.updateValidationFeedback('username-validation', false, 'Invalid username format');
+                    return;
+                }
+                
+                this.ui.updateValidationFeedback('username-validation', null, 'Checking availability...');
+                
+                try {
+                    const result = await ApiService.validateUsername(username);
+                    
+                    if (result.available) {
+                        this.ui.updateValidationFeedback('username-validation', true, 'Username is available');
+                    } else {
+                        this.ui.updateValidationFeedback('username-validation', false, 'Username already taken');
+                    }
+                } catch (error) {
+                    this.ui.updateValidationFeedback('username-validation', false, 'Unable to verify username');
+                }
+            }
+            
+            async validateReferral(code) {
+                if (!code) {
+                    this.ui.clearValidationFeedback('referral-validation');
+                    return;
+                }
+                
+                try {
+                    const result = await ApiService.validateReferral(code);
+                    
+                    if (result.valid) {
+                        this.ui.updateValidationFeedback('referral-validation', true, 'Valid referral code');
+                    } else {
+                        this.ui.updateValidationFeedback('referral-validation', false, 'Invalid referral code');
+                    }
+                } catch (error) {
+                    this.ui.updateValidationFeedback('referral-validation', false, 'Unable to verify referral code');
+                }
+            }
+            
+            collectStep1Data() {
+                return {
+                    firstName: document.getElementById('first-name').value.trim(),
+                    lastName: document.getElementById('last-name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.replace(/\s/g, ''),
+                    idNumber: document.getElementById('id-number').value.trim(),
+                    county: document.getElementById('county').value,
+                    town: document.getElementById('town').value.trim(),
+                    address: document.getElementById('address').value.trim()
+                };
+            }
+            
+            collectStep2Data() {
+                return {
+                    username: document.getElementById('username').value.trim(),
+                    password: document.getElementById('password').value,
+                    confirmPassword: document.getElementById('confirm-password').value,
+                    referralCode: document.getElementById('referral').value.trim(),
+                    marketingConsent: document.getElementById('marketing-consent').checked,
+                    termsAgreed: document.getElementById('terms-agree').checked,
+                    ageConsent: document.getElementById('age-consent').checked
+                };
+            }
+            
+            saveRegistrationData() {
+                registrationData.step1 = this.collectStep1Data();
+                registrationData.step2 = this.collectStep2Data();
+                
+                // Store in sessionStorage for persistence during registration
+                sessionStorage.setItem('xs_registration_data', JSON.stringify(registrationData));
+            }
+            
+            loadRegistrationData() {
+                const savedData = sessionStorage.getItem('xs_registration_data');
+                if (savedData) {
+                    registrationData = JSON.parse(savedData);
+                    
+                    // Populate step 1 form
+                    if (registrationData.step1) {
+                        document.getElementById('first-name').value = registrationData.step1.firstName || '';
+                        document.getElementById('last-name').value = registrationData.step1.lastName || '';
+                        document.getElementById('email').value = registrationData.step1.email || '';
+                        
+                        if (registrationData.step1.phone) {
+                            document.getElementById('phone').value = registrationData.step1.phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+                        }
+                        
+                        document.getElementById('id-number').value = registrationData.step1.idNumber || '';
+                        document.getElementById('county').value = registrationData.step1.county || '';
+                        document.getElementById('town').value = registrationData.step1.town || '';
+                        document.getElementById('address').value = registrationData.step1.address || '';
+                    }
+                    
+                    // Populate step 2 form
+                    if (registrationData.step2) {
+                        document.getElementById('username').value = registrationData.step2.username || '';
+                        document.getElementById('referral').value = registrationData.step2.referralCode || '';
+                        document.getElementById('marketing-consent').checked = registrationData.step2.marketingConsent || false;
+                        document.getElementById('terms-agree').checked = registrationData.step2.termsAgreed || false;
+                        document.getElementById('age-consent').checked = registrationData.step2.ageConsent || false;
+                    }
+                    
+                    // Validate forms after loading
+                    this.validateStep1();
+                    this.validateStep2();
+                }
+            }
+            
+            async submitRegistration() {
+                // Final validation
+                if (!this.validateStep1(true) || !this.validateStep2(true)) {
+                    return;
+                }
+                
+                this.saveRegistrationData();
+                
+                // Prepare user data for API
+                const userData = {
+                    // Personal details
+                    firstName: registrationData.step1.firstName,
+                    lastName: registrationData.step1.lastName,
+                    email: registrationData.step1.email,
+                    phone: `+254${registrationData.step1.phone}`,
+                    idNumber: registrationData.step1.idNumber || undefined,
+                    
+                    // Location
+                    county: registrationData.step1.county,
+                    town: registrationData.step1.town,
+                    address: registrationData.step1.address || undefined,
+                    country: 'KE',
+                    
+                    // Account details
+                    username: registrationData.step2.username,
+                    password: registrationData.step2.password,
+                    
+                    // Preferences
+                    referralCode: registrationData.step2.referralCode || undefined,
+                    marketingConsent: registrationData.step2.marketingConsent,
+                    termsAgreed: registrationData.step2.termsAgreed,
+                    ageConsent: registrationData.step2.ageConsent,
+                    
+                    // Device info
+                    deviceInfo: {
+                        userAgent: navigator.userAgent,
+                        platform: navigator.platform,
+                        language: navigator.language,
+                        screenResolution: `${window.screen.width}x${window.screen.height}`,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    },
+                    
+                    // Registration metadata
+                    registrationSource: 'web',
+                    registrationTimestamp: new Date().toISOString(),
+                    ipAddress: '0.0.0.0' // Will be populated by backend
+                };
+                
+                this.ui.showLoading('Creating your account...');
+                this.ui.hideAllAlerts();
+                
+                try {
+                    // Call registration API
+                    const result = await ApiService.customerRegister(userData);
+                    
+                    // Clear saved registration data
+                    sessionStorage.removeItem('xs_registration_data');
+                    
+                    // Store temporary data for login page
+                    localStorage.setItem('xs_registration_success', 'true');
+                    localStorage.setItem('xs_user_temp_data', JSON.stringify({
+                        email: userData.email,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName
+                    }));
+                    
+                    // Show success modal
+                    this.ui.hideLoading();
+                    this.ui.showVerificationModal(result.message || 'Your account has been created successfully! Please check your email for verification instructions.');
+                    
+                    // Auto-redirect to login page after delay
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 8000);
+                    
+                } catch (error) {
+                    this.ui.hideLoading();
+                    this.ui.showError(error.message || 'Registration failed. Please try again.');
+                    
+                    // Scroll to error
+                    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            updateTownSuggestions(county) {
+                const townInput = document.getElementById('town');
+                const datalistId = `towns-${county}`;
+                
+                // Remove existing datalist
+                const existingDatalist = document.getElementById(datalistId);
+                if (existingDatalist) {
+                    existingDatalist.remove();
+                }
+                
+                // Create new datalist if we have suggestions for this county
+                if (KENYA_TOWNS[county]) {
+                    const datalist = document.createElement('datalist');
+                    datalist.id = datalistId;
+                    
+                    KENYA_TOWNS[county].forEach(town => {
+                        const option = document.createElement('option');
+                        option.value = town;
+                        datalist.appendChild(option);
+                    });
+                    
+                    document.body.appendChild(datalist);
                     townInput.setAttribute('list', datalistId);
                 } else {
                     townInput.removeAttribute('list');
                 }
-            });
-        });
+            }
+            
+            togglePasswordVisibility(inputId, event) {
+                event.preventDefault();
+                const passwordInput = document.getElementById(inputId);
+                const icon = event.target;
+                
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            }
+            
+            // Format phone number as user types
+            formatPhoneNumber() {
+                const phoneInput = document.getElementById('phone');
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 9) value = value.slice(0, 9);
+                    
+                    // Format as XXX XXX XXX
+                    if (value.length > 0) {
+                        if (value.length <= 3) {
+                            value = value;
+                        } else if (value.length <= 6) {
+                            value = `${value.slice(0, 3)} ${value.slice(3)}`;
+                        } else {
+                            value = `${value.slice(0, 3)} ${value.slice(3, 6)} ${value.slice(6, 9)}`;
+                        }
+                    }
+                    
+                    e.target.value = value;
+                });
+            }
+        }
 
-        function initForm() {
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.registrationApp = new RegistrationApp();
+            
+            // Load any saved registration data
+            window.registrationApp.loadRegistrationData();
+            
             // Format phone number input
-            const phoneInput = document.getElementById('phone');
-            phoneInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length > 9) value = value.slice(0, 9);
-                
-                // Format as XXX XXX XXX
-                if (value.length > 0) {
-                    if (value.length <= 3) {
-                        value = value;
-                    } else if (value.length <= 6) {
-                        value = `${value.slice(0, 3)} ${value.slice(3)}`;
-                    } else {
-                        value = `${value.slice(0, 3)} ${value.slice(3, 6)} ${value.slice(6, 9)}`;
-                    }
-                }
-                
-                e.target.value = value;
-            });
-
-            // Setup password toggle
-            setupPasswordToggle('password', 'toggle-password');
-            setupPasswordToggle('confirm-password', 'toggle-confirm-password');
-
-            // Setup password strength checker
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirm-password');
+            window.registrationApp.formatPhoneNumber();
             
-            passwordInput.addEventListener('input', function() {
-                checkPasswordStrength(this.value);
-                checkPasswordMatch();
-                validateStep2();
-            });
-            
-            confirmPasswordInput.addEventListener('input', function() {
-                checkPasswordMatch();
-                validateStep2();
-            });
-        }
-
-        function setupEventListeners() {
-            // Next button
-            nextBtn.addEventListener('click', function() {
-                if (validateStep1()) {
-                    saveStep1Data();
-                    goToStep(2);
-                }
-            });
-
-            // Back button
-            backBtn.addEventListener('click', function() {
-                saveStep2Data();
-                goToStep(1);
-            });
-
-            // Cancel button
-            cancelBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to cancel registration? All entered data will be lost.')) {
-                    window.location.href = 'index.html';
-                }
-            });
-
-            // Form submission
-            step2Form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (validateStep2()) {
-                    saveStep2Data();
-                    submitRegistration();
-                }
-            });
-
-            // Real-time validation for step 1
-            const step1Inputs = step1Form.querySelectorAll('input, select, textarea');
-            step1Inputs.forEach(input => {
-                input.addEventListener('input', validateStep1);
-                input.addEventListener('change', validateStep1);
-            });
-
-            // Real-time validation for step 2
-            const step2Inputs = step2Form.querySelectorAll('input');
-            step2Inputs.forEach(input => {
-                input.addEventListener('input', validateStep2);
-                input.addEventListener('change', validateStep2);
-            });
-
-            // Terms validation
-            document.getElementById('terms-agree').addEventListener('change', validateStep2);
-            document.getElementById('age-consent').addEventListener('change', validateStep2);
-        }
-
-        function setupPasswordToggle(inputId, buttonId) {
-            const input = document.getElementById(inputId);
-            const button = document.getElementById(buttonId);
-            
-            if (input && button) {
-                button.addEventListener('click', function() {
-                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                    input.setAttribute('type', type);
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
-                });
-            }
-        }
-
-        function goToStep(step) {
-            currentStep = step;
-            
-            // Update forms visibility
-            step1Form.classList.remove('active');
-            step2Form.classList.remove('active');
-            
-            if (step === 1) {
-                step1Form.classList.add('active');
-            } else {
-                step2Form.classList.add('active');
-            }
-            
-            // Update steps UI
-            stepElements.forEach((stepEl, index) => {
-                stepEl.classList.remove('active', 'completed');
-                if (index + 1 < step) {
-                    stepEl.classList.add('completed');
-                    stepEl.querySelector('.step-circle i').style.display = 'block';
-                    stepEl.querySelector('.step-circle span').style.display = 'none';
-                } else if (index + 1 === step) {
-                    stepEl.classList.add('active');
-                }
-            });
-            
-            updateStepProgress();
-            
-            // Scroll to top of form
-            document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function updateStepProgress() {
-            const progress = ((currentStep - 1) * 100) + '%';
-            stepProgress.style.width = progress;
-        }
-
-        function validateStep1() {
-            const firstName = document.getElementById('first-name').value.trim();
-            const lastName = document.getElementById('last-name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.replace(/\s/g, '');
-            const county = document.getElementById('county').value;
-            const town = document.getElementById('town').value.trim();
-            
-            let isValid = true;
-            let errors = [];
-            
-            // Name validation
-            if (!firstName || firstName.length < 2) {
-                isValid = false;
-                errors.push('First name must be at least 2 characters');
-            }
-            
-            if (!lastName || lastName.length < 2) {
-                isValid = false;
-                errors.push('Last name must be at least 2 characters');
-            }
-            
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email || !emailRegex.test(email)) {
-                isValid = false;
-                errors.push('Please enter a valid email address');
-            }
-            
-            // Phone validation for Kenya
-            const phoneRegex = /^[0-9]{9}$/;
-            if (!phone || !phoneRegex.test(phone)) {
-                isValid = false;
-                errors.push('Please enter a valid 9-digit Kenya phone number');
-            } else {
-                // Check if it starts with valid Kenya prefix
-                const validPrefixes = ['7', '1'];
-                if (!validPrefixes.includes(phone[0])) {
-                    isValid = false;
-                    errors.push('Phone number must start with 7 or 1');
-                }
-            }
-            
-            // Location validation
-            if (!county) {
-                isValid = false;
-                errors.push('Please select your county');
-            }
-            
-            if (!town || town.length < 2) {
-                isValid = false;
-                errors.push('Please enter your town or area');
-            }
-            
-            // ID validation (if provided)
-            const idNumber = document.getElementById('id-number').value.trim();
-            if (idNumber && idNumber.length !== 8 && idNumber.length !== 10) {
-                isValid = false;
-                errors.push('National ID must be 8 or 10 digits');
-            }
-            
-            // Update button state
-            nextBtn.disabled = !isValid;
-            
-            // Show errors if any
-            if (!isValid && errors.length > 0) {
-                showError(errors[0]);
-            } else {
-                hideAlerts();
-            }
-            
-            return isValid;
-        }
-
-        function validateStep2() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const termsAgreed = document.getElementById('terms-agree').checked;
-            const ageConsent = document.getElementById('age-consent').checked;
-            
-            let isValid = true;
-            let errors = [];
-            
-            // Username validation
-            if (!username || username.length < 3) {
-                isValid = false;
-                errors.push('');
-            } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                isValid = false;
-                errors.push('Username can only contain letters, numbers, and underscores');
-            }
-            
-            // Password validation
-            const passwordStrength = checkPasswordStrength(password);
-            if (passwordStrength.strength < 60) {
-                isValid = false;
-                errors.push('Password strength must be Good or higher');
-            }
-            
-            if (password !== confirmPassword) {
-                isValid = false;
-                errors.push('Passwords do not match');
-            }
-            
-            // Terms validation
-            if (!termsAgreed) {
-                isValid = false;
-                errors.push('You must agree to the Terms of Service and Privacy Policy');
-            }
-            
-            if (!ageConsent) {
-                isValid = false;
-                errors.push('You must confirm you are 18 years or older');
-            }
-            
-            // Update button state
-            submitBtn.disabled = !isValid;
-            
-            // Show errors if any
-            if (!isValid && errors.length > 0) {
-                showError(errors[0]);
-            } else {
-                hideAlerts();
-            }
-            
-            return isValid;
-        }
-
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            const requirements = {
-                length: password.length >= 8,
-                uppercase: /[A-Z]/.test(password),
-                lowercase: /[a-z]/.test(password),
-                number: /[0-9]/.test(password),
-                special: /[@$!%*?&]/.test(password)
-            };
-            
-            // Update requirement indicators
-            Object.keys(requirements).forEach(req => {
-                const element = document.getElementById(`req-${req}`);
-                if (element) {
-                    if (requirements[req]) {
-                        element.classList.add('valid');
-                        element.classList.remove('invalid');
-                        element.querySelector('i').className = 'fas fa-check-circle';
-                        strength++;
-                    } else {
-                        element.classList.add('invalid');
-                        element.classList.remove('valid');
-                        element.querySelector('i').className = 'fas fa-times-circle';
-                    }
-                }
-            });
-            
-            // Show/hide requirements panel
-            const requirementsPanel = document.getElementById('password-requirements');
-            if (password.length > 0) {
-                requirementsPanel.classList.add('active');
-            } else {
-                requirementsPanel.classList.remove('active');
-            }
-            
-            // Calculate strength percentage
-            const percentage = (strength / 5) * 100;
-            let strengthLevel = 'Weak';
-            let color = '#f44336';
-            
-            if (percentage >= 80) {
-                strengthLevel = 'Strong';
-                color = '#4caf50';
-            } else if (percentage >= 60) {
-                strengthLevel = 'Good';
-                color = '#ff9800';
-            }
-            
-            // Update UI
-            const strengthBar = document.getElementById('strength-bar');
-            const strengthText = document.getElementById('strength-text');
-            
-            if (strengthBar && strengthText) {
-                strengthBar.style.width = `${percentage}%`;
-                strengthBar.style.background = color;
-                strengthText.textContent = `Password strength: ${strengthLevel}`;
-                strengthText.style.color = color;
-            }
-            
-            return { strength: percentage, level: strengthLevel, requirements };
-        }
-
-        function checkPasswordMatch() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const matchElement = document.getElementById('password-match');
-            
-            if (confirmPassword.length === 0) {
-                matchElement.textContent = '';
-                return true;
-            }
-            
-            if (password === confirmPassword) {
-                matchElement.textContent = '✓ Passwords match';
-                matchElement.style.color = '#4caf50';
-                return true;
-            } else {
-                matchElement.textContent = '✗ Passwords do not match';
-                matchElement.style.color = '#f44336';
-                return false;
-            }
-        }
-
-        function saveStep1Data() {
-            registrationData.step1 = {
-                firstName: document.getElementById('first-name').value.trim(),
-                lastName: document.getElementById('last-name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                phone: '+254' + document.getElementById('phone').value.replace(/\s/g, ''),
-                idNumber: document.getElementById('id-number').value.trim(),
-                county: document.getElementById('county').value,
-                town: document.getElementById('town').value.trim(),
-                address: document.getElementById('address').value.trim()
-            };
-            
-            // Store in localStorage for persistence
-            localStorage.setItem('xs_registration_step1', JSON.stringify(registrationData.step1));
-        }
-
-        function saveStep2Data() {
-            registrationData.step2 = {
-                username: document.getElementById('username').value.trim(),
-                password: document.getElementById('password').value,
-                referralCode: document.getElementById('referral').value.trim(),
-                marketingConsent: document.getElementById('marketing-consent').checked,
-                termsAgreed: document.getElementById('terms-agree').checked,
-                ageConsent: document.getElementById('age-consent').checked
-            };
-            
-            // Store in localStorage for persistence
-            localStorage.setItem('xs_registration_step2', JSON.stringify(registrationData.step2));
-        }
-
-        function loadSavedData() {
-            const savedStep1 = localStorage.getItem('xs_registration_step1');
-            const savedStep2 = localStorage.getItem('xs_registration_step2');
-            
-            if (savedStep1) {
-                registrationData.step1 = JSON.parse(savedStep1);
-                // Populate step 1 form
-                document.getElementById('first-name').value = registrationData.step1.firstName || '';
-                document.getElementById('last-name').value = registrationData.step1.lastName || '';
-                document.getElementById('email').value = registrationData.step1.email || '';
-                
-                if (registrationData.step1.phone) {
-                    const phoneWithoutCode = registrationData.step1.phone.replace('+254', '');
-                    document.getElementById('phone').value = phoneWithoutCode.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
-                }
-                
-                document.getElementById('id-number').value = registrationData.step1.idNumber || '';
-                document.getElementById('county').value = registrationData.step1.county || '';
-                document.getElementById('town').value = registrationData.step1.town || '';
-                document.getElementById('address').value = registrationData.step1.address || '';
-            }
-            
-            if (savedStep2) {
-                registrationData.step2 = JSON.parse(savedStep2);
-                // Populate step 2 form
-                document.getElementById('username').value = registrationData.step2.username || '';
-                document.getElementById('referral').value = registrationData.step2.referralCode || '';
-                document.getElementById('marketing-consent').checked = registrationData.step2.marketingConsent || false;
-                document.getElementById('terms-agree').checked = registrationData.step2.termsAgreed || false;
-                document.getElementById('age-consent').checked = registrationData.step2.ageConsent || false;
-            }
-        }
-
-        async function submitRegistration() {
-            loadingText.textContent = 'Creating your account...';
-            loadingOverlay.classList.add('active');
-            hideAlerts();
-            
-            // Combine all data
-            const userData = {
-                ...registrationData.step1,
-                ...registrationData.step2,
-                country: 'KE',
-                registrationSource: 'web',
-                deviceInfo: {
-                    userAgent: navigator.userAgent,
-                    platform: navigator.platform,
-                    language: navigator.language
-                }
-            };
-            
-            try {
-                // Remove password from data to be stored
-                const { password, ...userDataWithoutPassword } = userData;
-                
-                // Make API call
-                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CUSTOMER_REGISTER}`, {
-                    method: 'POST',
-                    headers: API_CONFIG.HEADERS,
-                    body: JSON.stringify(userData)
-                });
-                
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.message || 'Registration failed');
-                }
-                
-                // Clear saved registration data
-                localStorage.removeItem('xs_registration_step1');
-                localStorage.removeItem('xs_registration_step2');
-                
-                // Store user data for auto-login
-                localStorage.setItem('xs_user_temp_data', JSON.stringify(userDataWithoutPassword));
-                localStorage.setItem('xs_registration_success', 'true');
-                
-                // Show success message
-                showSuccess('Account created successfully! Please check your email for verification.');
-                
-                // Redirect to verification page or login
-                setTimeout(() => {
-                    window.location.href = 'registration-success.html';
-                }, 3000);
-                
-            } catch (error) {
-                showError(error.message || 'Registration failed. Please try again.');
-                
-                // Scroll to error
-                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } finally {
-                loadingOverlay.classList.remove('active');
-            }
-        }
-
-        // Alert functions
-        function showError(message) {
-            errorAlert.querySelector('#error-message').textContent = message;
-            errorAlert.style.display = 'block';
-            successAlert.style.display = 'none';
-            infoAlert.style.display = 'none';
-            
-            // Scroll to error
-            errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function showSuccess(message) {
-            successAlert.querySelector('#success-message').textContent = message;
-            successAlert.style.display = 'block';
-            errorAlert.style.display = 'none';
-            infoAlert.style.display = 'none';
-        }
-
-        function showInfo(message) {
-            infoAlert.querySelector('#info-message').textContent = message;
-            infoAlert.style.display = 'block';
-            errorAlert.style.display = 'none';
-            successAlert.style.display = 'none';
-        }
-
-        function hideAlerts() {
-            errorAlert.style.display = 'none';
-            successAlert.style.display = 'none';
-            infoAlert.style.display = 'none';
-        }
-
-        // Load any saved data on page load
-        loadSavedData();
-        
-        // Validate initial state
-        validateStep1();
-        validateStep2();
-        
-        // Auto-focus first input
-        document.getElementById('first-name').focus();
-
-        // Add keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Enter to submit current step
-            if (e.key === 'Enter' && !e.shiftKey) {
-                if (currentStep === 1 && !nextBtn.disabled) {
-                    e.preventDefault();
-                    nextBtn.click();
-                } else if (currentStep === 2 && !submitBtn.disabled) {
-                    e.preventDefault();
-                    submitBtn.click();
-                }
-            }
-            
-            // Escape to cancel
-            if (e.key === 'Escape') {
-                cancelBtn.click();
-            }
+            // Auto-focus first input
+            document.getElementById('first-name').focus();
         });
     </script>
 </body>

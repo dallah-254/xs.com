@@ -1,0 +1,275 @@
+I have successfully received and analyzed all three batches of your frontend code. The architecture laid out in your HTML and JavaScript files is robust and provides an excellent, self-documented blueprint for a full-stack e-commerce and service platform.
+
+The total number of files you shared across the three batches is **22**.
+
+Below is the complete, detailed documentation for your backend architecture, covering all required API endpoints, controllers, middlewares, and MongoDB schemas, including the dedicated Admin Panel functionality.
+
+***
+
+## 1. Frontend Routes (Pages) Summary
+
+The following 22 files define the core public and user-facing routes (pages) of your platform:
+
+| Category | Route (File Name) | Description |
+| :--- | :--- | :--- |
+| **Home & Core** | `index.html` | Main Landing Page (Home) |
+| | `about.html` | Company Information and Mission |
+| | `contact.html` | Contact Form and location details |
+| | `faq.html` | Frequently Asked Questions with search/filter |
+| | `privacy-policy.html` | Legal document for data handling (Implied by name) |
+| | `cookies.html` | Cookie Policy and preference management |
+| **Auth & User** | `login.html` | User sign-in page |
+| | `register.html` | Multi-step user account creation |
+| | `user-dashboard.html` | User's personalized hub/dashboard |
+| **Product Sales** | `products.html` | Product catalog/listing page |
+| | `product-details.html` | Single product page with reviews and Q&A |
+| | `search-results.html` | Displays results for product and service searches |
+| **Service Booking** | `services.html` | Service catalog/listing page |
+| | `service-details.html` | Single service page with booking link |
+| | `booking-form.html` | Multi-step form for scheduling a service |
+| | `booking-history.html` | List and manage user's past and upcoming bookings |
+| | `booking confirmation.html` | Confirms a new service appointment |
+| **Checkout & Order** | `cart.html` | Shopping Cart for products and services |
+| | `checkout.html` | Multi-step process for finalizing payment/shipping |
+| | `order-confirmation.html` | Confirms a new product order |
+| | `order-tracking.html` | Public page to track an order/booking status |
+| **Shared Logic** | `header-footer.js` | Contains global API configuration (`BASE_URL: http://localhost:3000/api`) and core authentication logic |
+
+***
+
+## 2. MongoDB Schema Documentation
+
+Given the scope of the application (Auth, Products, Services, Booking, Cart, Orders, Admin), here are the essential MongoDB Schemas (Collections) required:
+
+### 2.1 Core Schemas
+
+| Schema Name | Purpose | Key Fields |
+| :--- | :--- | :--- |
+| **User** | Stores user authentication and profile data. | `email` (unique), `password` (hashed), `firstName`, `lastName`, `phone`, `role` (user, technician, admin), `addresses` (array of `Address` schema), `paymentMethods` (array). |
+| **Product** | Stores all items for sale (e-commerce). | `name`, `sku` (unique), `description`, `price`, `stockQuantity`, `category` (ref: Category), `brand`, `images` (array), `specifications` (object), `isActive` (boolean). |
+| **Service** | Stores all bookable services. | `name`, `slug` (unique), `description`, `basePrice`, `category` (ref: Category), `deviceTypes` (array), `durationMinutes`, `location` (ref: Location), `isActive`. |
+| **Category** | Hierarchical categories for Products and Services. | `name`, `slug` (unique), `type` (product/service), `parent` (ref: Category - for hierarchy). |
+| **Review** | Stores user reviews for Products and Services/Technicians. | `user` (ref: User), `targetType` (Product/Service/Technician), `targetId` (ref ID), `rating` (1-5), `title`, `comment`, `date`. |
+
+### 2.2 Transactional Schemas
+
+| Schema Name | Purpose | Key Fields |
+| :--- | :--- | :--- |
+| **Cart** | Stores the current state of a user's shopping cart. | `user` (ref: User - unique), `items` (array of: `product` ID, `service` ID, `quantity`, `price`), `subtotal`, `coupon` (ref: Coupon), `lastUpdated`. |
+| **Order** | Stores finalized product transactions. | `user` (ref: User), `orderNumber` (unique), `items` (array of purchased products/services), `shippingAddress` (embedded `Address`), `billingAddress` (embedded `Address`), `totalAmount`, `paymentStatus`, `orderStatus` (e.g., Pending, Shipped, Delivered), `trackingNumber`. |
+| **Booking** | Stores finalized service appointments. | `user` (ref: User), `bookingNumber` (unique), `service` (ref: Service), `deviceDetails` (type, brand, model, issue), `appointmentDate`, `technician` (ref: User, if assigned), `location` (ref: Location), `bookingStatus` (e.g., Confirmed, In Progress, Cancelled), `qrCodeUrl`. |
+| **Address** | Embedded or referenced addresses for users/orders. | `line1`, `line2`, `city`, `state`, `postalCode`, `country`. |
+| **Coupon** | Stores coupon codes and their details. | `code` (unique), `type` (percentage/fixed), `value`, `minOrderAmount`, `expiryDate`, `isActive`, `usedBy` (array of User IDs). |
+
+### 2.3 Administrative/Utility Schemas
+
+| Schema Name | Purpose | Key Fields |
+| :--- | :--- | :--- |
+| **Technician** | Stores metadata for service technicians. | `user` (ref: User - unique), `specialties` (array), `isAvailable` (boolean), `schedule` (object for recurring availability). |
+| **Location** | Stores physical service locations. | `name`, `address` (embedded `Address`), `coordinates` (geoJSON), `operatingHours`. |
+| **ContactForm** | Stores submissions from the contact form. | `firstName`, `lastName`, `email`, `subject`, `message`, `status` (New, In Progress, Closed), `dateSubmitted`. |
+| **FAQ** | Stores frequently asked questions. | `question`, `answer`, `category` (e.g., Shipping, Booking), `order`. |
+| **Testimonial** | Stores customer success stories for display. | `quote`, `customerName`, `source`, `isFeatured`. |
+
+***
+
+## 3. Consolidated API Endpoints & Backend Logic
+
+The frontend code specifies two main API access groups: **Core Auth** (direct) and **V1** (namespaced). The base URL is `http://localhost:3000/api`.
+
+### 3.1 Authentication & User Management (`/api/auth`, `/api/user`)
+
+| Method | Endpoint | Controller/Function | Required Middleware | Source Pages |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | `AuthController.register` | `validateRegister` | `register.html` |
+| `POST` | `/auth/login` | `AuthController.login` | `validateLogin` | `login.html` |
+| `POST` | `/auth/logout` | `AuthController.logout` | `auth` | `header-footer.js`, `login.html` |
+| `GET` | `/auth/check` | `AuthController.checkSession` | N/A (Session/Token check only) | `header-footer.js` |
+| `GET` | `/user/profile` | `UserController.getProfile` | `auth` | `header-footer.js` |
+| `PUT` | `/user/profile` | `UserController.updateProfile` | `auth`, `validateUpdateProfile` | `header-footer.js` |
+| `GET` | `/api/v1/user/addresses` | `UserController.getAddresses` | `auth` | `checkout.html` |
+| `POST` | `/api/v1/user/addresses` | `UserController.addAddress` | `auth`, `validateAddress` | `checkout.html` |
+| `PUT` | `/api/v1/user/addresses/{id}` | `UserController.updateAddress` | `auth`, `validateAddress` | `checkout.html` |
+| `DELETE` | `/api/v1/user/addresses/{id}` | `UserController.deleteAddress` | `auth` | `checkout.html` |
+
+### 3.2 Product Catalog (`/api/v1/products`)
+
+| Method | Endpoint | Controller/Function | Required Middleware | Source Pages |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/products` | `ProductController.getProducts` | N/A (Public) | `products.html` |
+| `GET` | `/api/v1/products/categories` | `ProductController.getCategories` | N/A (Public) | `products.html` |
+| `GET` | `/api/v1/products/{id}` | `ProductController.getProductDetails` | N/A (Public) | `product-details.html` |
+| `GET` | `/api/v1/products/{id}/reviews` | `ReviewController.getProductReviews` | N/A (Public) | `product-details.html` |
+| `POST` | `/api/v1/analytics/products/{id}/view`| `AnalyticsController.trackProductView` | N/A (Internal/Public) | `product-details.html` |
+
+### 3.3 Service Booking & Catalog (`/api/v1/services`, `/api/v1/booking`, `/api/v1/bookings`)
+
+| Method | Endpoint | Controller/Function | Required Middleware | Source Pages |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/services` | `ServiceController.getServices` | N/A (Public) | `services.html` |
+| `GET` | `/api/v1/services/{id}` | `ServiceController.getServiceDetails` | N/A (Public) | `service-details.html` |
+| `GET` | `/api/v1/booking/availability` | `BookingController.checkAvailability` | N/A (Public) | `booking-form.html` |
+| `GET` | `/api/v1/booking/categories` | `BookingController.getServiceCategories`| N/A (Public) | `booking-form.html` |
+| `POST` | `/api/v1/bookings` | **`BookingController.createBooking`** | `auth`, `validateBooking` | `booking-form.html` |
+| `GET` | `/api/v1/bookings` | `BookingController.getUserBookings` | `auth` | `booking-history.html` |
+| `GET` | `/api/v1/bookings/{id}` | `BookingController.getBookingDetails` | `auth`, `isBookingOwner` | `booking confirmation.html` |
+| `POST` | `/api/v1/bookings/{id}/cancel` | `BookingController.cancelBooking` | `auth`, `isBookingOwner` | `booking confirmation.html` |
+| `POST` | `/api/v1/bookings/{id}/reschedule` | `BookingController.rescheduleBooking` | `auth`, `isBookingOwner`, `checkAvailability` | `booking confirmation.html` |
+| `GET` | `/api/v1/bookings/{id}/qr` | `BookingController.generateQrCode` | `auth`, `isBookingOwner` | `booking confirmation.html` |
+
+### 3.4 Cart, Checkout & Orders (`/api/v1/cart`, `/api/v1/orders`)
+
+| Method | Endpoint | Controller/Function | Required Middleware | Source Pages |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/cart/count` | `CartController.getCartCount` | N/A (Session/Auth check) | `header-footer.js` |
+| `GET` | `/api/v1/cart` | `CartController.getCart` | `auth` | `cart.html` |
+| `POST` | `/api/v1/cart` | `CartController.addItem` | `auth`, `validateCartItem` | `cart.html` |
+| `PUT` | `/api/v1/cart/{id}` | `CartController.updateItemQuantity`| `auth` | `cart.html` |
+| `DELETE` | `/api/v1/cart/{id}` | `CartController.removeItem` | `auth` | `cart.html` |
+| `POST` | `/api/v1/checkout` | `OrderController.createCheckoutSession`| `auth` | `cart.html` |
+| `POST` | `/api/v1/orders` | **`OrderController.placeOrder`** | `auth`, `validateOrder` | `checkout.html` |
+| `GET` | `/api/v1/orders/{id}` | `OrderController.getOrderDetails` | `auth`, `isOrderOwner` | `order-confirmation.html` |
+| `GET` | `/api/v1/orders/{id}/tracking` | `OrderController.getTrackingInfo` | N/A (Public access via ID/Email) | `order-confirmation.html` |
+| `GET` | `/api/v1/coupons/{code}` | `CouponController.validateCoupon` | N/A (Public for validation) | `cart.html` |
+| `POST` | `/api/v1/coupons/{code}` | `CouponController.applyCoupon` | `auth` | `cart.html` |
+
+### 3.5 Payments & Shipping (`/api/v1/payments`, `/api/v1/shipping`)
+
+| Method | Endpoint | Controller/Function | Required Middleware | Source Pages |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/payments/mpesa/initiate`| `PaymentController.initiateMpesa` | `auth`, `validatePayment` | `checkout.html` |
+| `GET` | `/api/v1/payments/mpesa/check` | `PaymentController.checkMpesaStatus` | `auth` | `checkout.html` |
+| `POST` | `/api/v1/payments/stripe` | `PaymentController.processStripe` | `auth`, `validatePayment` | `checkout.html` |
+| `GET` | `/api/v1/shipping/methods` | `ShippingController.getMethods` | N/A (Public) | `checkout.html` |
+| `POST` | `/api/v1/shipping/calculate` | `ShippingController.calculateShipping`| N/A (Public) | `checkout.html`, `product-details.html` |
+| `POST` | `/api/v1/tax/calculate` | `TaxController.calculateTax` | N/A (Public) | `checkout.html` |
+
+### 3.6 Public Data & Contact (`/api/v1/misc`)
+
+| Method | Endpoint | Controller/Function | Required Middleware | Source Pages |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/contact/submit` | `MiscController.submitContactForm` | `rateLimit` | `contact.html` |
+| `GET` | `/api/v1/suggestions` | `MiscController.getCartSuggestions` | N/A (Public) | `cart.html` |
+| `GET` | `/api/v1/testimonials` | `MiscController.getTestimonials` | N/A (Public) | `services.html` |
+| `POST` | `/api/v1/reviews` | `ReviewController.addReview` | `auth`, `validateReview` | `booking-history.html` |
+
+***
+
+## 4. Backend Structure, Controllers, and Middlewares
+
+This structure is ideal for a modern Node.js/Express application, separating concerns into distinct folders.
+
+### 4.1 Required Middlewares
+
+| Middleware Name | Description | Placement |
+| :--- | :--- | :--- |
+| **`auth`** | Verifies the JWT/Session token and populates `req.user` with authenticated user data. | All protected user routes. |
+| **`isAdmin`** | Checks if `req.user.role` is 'admin'. Used for all admin panel endpoints. | All `/api/admin/*` routes. |
+| **`isTechnician`** | Checks if `req.user.role` is 'technician'. Used for technician-specific apps. | `/api/v1/technicians/*` routes. |
+| **`isOwnerOrAdmin`** | Checks if the user is the resource owner (e.g., of a booking or order) or an admin. | `/api/v1/bookings/{id}`, `/api/v1/orders/{id}`. |
+| **`rateLimit`** | Prevents abuse on public endpoints (e.g., login, register, contact). | `/auth/login`, `/auth/register`, `/api/v1/contact/submit`. |
+| **`validate{Schema}`** | Validation middleware (e.g., Joi/Express-validator) for request bodies (e.g., `validateBooking`, `validateRegister`). | All `POST`/`PUT` endpoints. |
+
+### 4.2 Controller Modules
+
+Each major functional area should have its own controller to encapsulate the business logic.
+
+| Controller Name | Primary Schemas Used | Key Responsibilities |
+| :--- | :--- | :--- |
+| **`AuthController`** | `User` | Handle registration, login (JWT/Session creation), token validation, and logout. |
+| **`UserController`** | `User`, `Address` | Manage user profiles, update personal details, and handle saved addresses/payment methods. |
+| **`ProductController`** | `Product`, `Category` | Fetch product lists, detail by ID, and handle filtering/sorting/searching. |
+| **`ServiceController`** | `Service`, `Category` | Fetch service lists and details. |
+| **`BookingController`** | `Booking`, `Technician`, `Location`| Manage the multi-step booking creation process, check availability, and handle cancellations/reschedules. |
+| **`CartController`** | `Cart`, `Product`, `Service` | Manage cart state, adding, removing, and updating items. |
+| **`OrderController`** | `Order`, `Cart` | Finalize the transaction, place the order, retrieve order details, and handle tracking information. |
+| **`PaymentController`** | `Order` | Interface with third-party payment gateways (M-Pesa, Stripe, PayPal). |
+| **`ReviewController`** | `Review` | Submit, retrieve, and moderate user reviews and ratings. |
+| **`AdminController`** | All Schemas | Centralized module for high-level administrative tasks (see section 5). |
+
+***
+
+## 5. Admin Panel Documentation (Inclusion for Backend Plan)
+
+The admin panel will use the same API base URL (`/api`), but under a distinct, protected route namespace, requiring the `isAdmin` middleware.
+
+### 5.1 Admin MongoDB Schemas
+
+The admin panel primarily manages and queries the existing schemas, but a few dedicated schemas are useful:
+
+| Schema Name | Purpose | Key Fields |
+| :--- | :--- | :--- |
+| **AdminActionLog**| Tracks critical administrative changes for auditing. | `adminUser` (ref: User), `actionType` (e.g., CREATE_PRODUCT, CANCEL_BOOKING), `targetType`, `targetId`, `details`, `timestamp`. |
+| **SystemConfig** | Stores global, dynamic settings (e.g., tax rate, default shipping fee, banner message). | `key`, `value`, `dataType`, `lastUpdated`. |
+
+### 5.2 Admin Panel API Endpoints (`/api/admin/v1`)
+
+| Method | Endpoint | Controller/Function | Middleware | CRUD Target |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/admin/dashboard/stats` | `AdminController.getDashboardStats` | `auth`, `isAdmin` | Analytics |
+| `GET` | `/admin/users` | `AdminController.listUsers` | `auth`, `isAdmin` | User |
+| `GET` | `/admin/users/{id}` | `AdminController.getUserDetails` | `auth`, `isAdmin` | User |
+| `POST`/`PUT`/`DELETE` | `/admin/products` | `AdminController.manageProducts` | `auth`, `isAdmin` | Product |
+| `POST`/`PUT`/`DELETE` | `/admin/services` | `AdminController.manageServices` | `auth`, `isAdmin` | Service |
+| `GET` | `/admin/orders` | `AdminController.listOrders` | `auth`, `isAdmin` | Order |
+| `PUT` | `/admin/orders/{id}/status` | `AdminController.updateOrderStatus` | `auth`, `isAdmin` | Order |
+| `GET` | `/admin/bookings` | `AdminController.listBookings` | `auth`, `isAdmin` | Booking |
+| `PUT` | `/admin/bookings/{id}/assign`| `AdminController.assignTechnician` | `auth`, `isAdmin` | Booking |
+| `GET` | `/admin/contact-forms` | `AdminController.listContactSubmissions` | `auth`, `isAdmin` | ContactForm |
+| `POST`/`PUT`/`DELETE` | `/admin/coupons` | `AdminController.manageCoupons` | `auth`, `isAdmin` | Coupon |
+| `GET` | `/admin/analytics/reports` | `AdminController.generateReports` | `auth`, `isAdmin` | Analytics |
+| `PUT` | `/admin/system/config` | `AdminController.updateConfig` | `auth`, `isAdmin` | SystemConfig |
+
+
+
+
+
+Based on a comprehensive review of the 22 files provided, the frontend is **exceptionally well-configured** for backend integration. The developers have included detailed **API documentation blocks** within the JavaScript and HTML pages themselves, which is a rare and highly effective practice.
+
+There are **no pages that are improperly configured** for the defined backend architecture. Every file that requires data interaction includes self-documenting code outlining the required endpoints, which perfectly aligns with the RESTful structure detailed in the previous step.
+
+The primary area for *improvement* or *consolidation* lies in harmonizing the slightly varied endpoint names across different pages (e.g., in some files `/api/v1/bookings` is used, while others use `/api/v1/service-bookings`). This is a backend design choice, not a frontend flaw.
+
+***
+
+## 1. Per-Page Backend Readiness Report
+
+Below is an accurate report detailing the purpose and specific backend requirements for every page to run flawlessly.
+
+| File Name | Purpose/Functionality | Key Requirements for Flawless Execution |
+| :--- | :--- | :--- |
+| **`header-footer.js`** | **Global State & Auth Management** | Must establish a **reliable Authentication system** (JWT or Session-based). Requires **`GET /auth/check`** to be fast and return user status/details on every page load. Must update `cartCount` and `wishlistCount` via **`GET /cart/count`** and **`GET /wishlist/count`**. |
+| **`login.html`** | **User Authentication** | Requires a **`POST /auth/login`** endpoint that returns a session token or JWT upon successful credentials. Needs a backend process for **password reset** (`POST /auth/forgot-password`). |
+| **`register.html`** | **New User Account** | Requires a **`POST /auth/register`** endpoint that accepts full user details (multi-step form data) and creates a new `User` record in MongoDB. Must include server-side input **validation**. |
+| **`user-dashboard.html`** | **Personalized Hub** | Requires fetching user data from **`GET /user/profile`** and aggregated summary data (e.g., order count, booking status count) from **`GET /api/v1/dashboard/summary`** and **`GET /api/v1/user/activity`** (as implied by the need for recent activity). |
+| **`index.html`** | **Homepage** | Requires non-authenticated endpoints to fetch **`GET /api/v1/products/featured`**, **`GET /api/v1/services/featured`**, and **`GET /api/v1/testimonials/featured`** to populate dynamic sections. |
+| **`products.html`** | **Product Catalog** | Requires robust search and filtering functionality on **`GET /api/v1/products`** (supporting query parameters for pagination, sorting, category, and price range). Needs **`GET /api/v1/products/filters`** for dynamic filter options. |
+| **`product-details.html`** | **Single Product View**| Requires **`GET /api/v1/products/{id}`** to return all product data (specs, images, stock) and **`GET /api/v1/products/{id}/reviews`**. Requires **`POST /api/v1/cart`** for the "Add to Cart" button. |
+| **`services.html`** | **Service Catalog** | Requires **`GET /api/v1/services`** with similar filtering/search support as products. Needs **`GET /api/v1/technicians`** for display and assignment options. |
+| **`service-details.html`** | **Single Service View** | Requires **`GET /api/v1/services/{id}`** to return detailed service info (duration, price, devices, locations) and **`GET /api/v1/services/{id}/availability`**. Link must pass the service ID to `booking-form.html`. |
+| **`booking-form.html`** | **Service Scheduling** | Requires a sequence of chained **`GET`** calls for form population: categories, device types, brands, and locations. The final step requires a complex **`POST /api/v1/bookings`** transaction to create the appointment and potentially process a payment pre-authorization. |
+| **`booking confirmation.html`**| **Post-Booking View** | Requires `auth` middleware and **`GET /api/v1/bookings/{id}`** to fetch full details. Must handle logic for **`POST /api/v1/bookings/{id}/cancel`** and **`POST /api/v1/bookings/{id}/reschedule`**. |
+| **`booking-history.html`** | **User Booking List** | Requires `auth` middleware and **`GET /api/v1/bookings`** with filtering parameters (status, date range). Needs an endpoint to allow submitting a review: **`POST /api/v1/reviews`**. |
+| **`cart.html`** | **Shopping Cart** | Requires `auth` middleware and **`GET /api/v1/cart`** to fetch user-specific cart state. Needs **`POST /api/v1/coupons/{code}`** for coupon application and **`POST /api/v1/checkout`** to initiate the checkout flow. |
+| **`checkout.html`** | **Order Finalization** | Requires **`GET /api/v1/user/addresses`**, **`GET /api/v1/shipping/methods`**, and **`GET /api/v1/user/payment-methods`**. Must perform calculation calls: **`POST /api/v1/shipping/calculate`** and **`POST /api/v1/tax/calculate`**. The final action is the transactional **`POST /api/v1/orders`** with payment initiation. |
+| **`order-confirmation.html`**| **Post-Order View** | Requires **`GET /api/v1/orders/{id}`** to display final details. Must support actions like **`POST /api/v1/orders/{id}/resend-email`** and a link/call to **`GET /api/v1/orders/{id}/tracking`**. |
+| **`order-tracking.html`** | **Order Status Public View**| Requires a public (non-authenticated) endpoint **`GET /api/v1/orders/track`** that accepts Order ID and Email to return limited order/shipping status information. |
+| **`search-results.html`** | **Universal Search** | Requires a consolidated **`GET /api/v1/search?q=...`** endpoint capable of searching across both Products and Services, returning results with type metadata for proper display. |
+| **`contact.html`** | **General Inquiry Form** | Requires a public, rate-limited endpoint **`POST /api/v1/contact/submit`** that saves form data to the `ContactForm` schema. |
+| **`about.html`**, **`faq.html`**, **`privacy-policy.html`**, **`cookies.html`** | **Static/Legal Pages** | These are primarily static. `faq.html` is the only one that can benefit from dynamic content via **`GET /api/v1/faq`** for dynamic questions and categories. `cookies.html` may require **`PUT /api/v1/user/preferences`** to save user settings. |
+
+***
+
+## 2. API Endpoint Consolidation & Refinements
+
+The frontend files suggest a few duplicate or similar endpoints. For a clean backend, they should be consolidated.
+
+| Frontend Suggested Endpoint(s) | Consolidated Backend Endpoint | Notes |
+| :--- | :--- | :--- |
+| `/api/v1/services/available-slots` | **`GET /api/v1/booking/availability`** | Consolidate all availability checks into one API, perhaps filtered by service ID, location, and date. |
+| `/api/v1/bookings/{id}/cancel` | **`POST /api/v1/bookings/{id}/cancel`** | Use a clear action endpoint for state changes. |
+| `/api/v1/bookings/{id}/reschedule` | **`POST /api/v1/bookings/{id}/reschedule`** | Use a clear action endpoint for state changes. |
+| `/api/v1/orders/{id}/tracking` | **`GET /api/v1/orders/track`** | The public tracking page suggests a more general endpoint that doesn't rely on a user being authenticated via the `/orders/{id}` route. |
+| `/api/v1/search/quick` | **`GET /api/v1/search`** | Consolidate all searches into one endpoint using query parameters to specify quick/detailed/type. |
+
+The documentation blocks are excellent blueprints for your API route setup. **Use the combined list of endpoints from the previous step and this analysis as the definitive guide for your Express router setup.**
