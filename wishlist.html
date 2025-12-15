@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart - XS Platform Kenya</title>
+    <title>My Wishlist - XS Platform Kenya</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* EXACT SAME CSS AS USER DASHBOARD - NO CHANGES */
+        /* EXACT SAME CSS AS CART PAGE - NO CHANGES */
         :root {
             --primary-blue: #2196f3;
             --accent-blue: #0d8bf2;
@@ -34,7 +34,7 @@
             min-height: 100vh;
         }
 
-        /* Header Styles - SAME AS DASHBOARD */
+        /* Header Styles - SAME AS CART */
         .main-header {
             background: white;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
@@ -521,7 +521,7 @@
             padding: 30px;
         }
 
-        .cart-container {
+        .wishlist-container {
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -544,244 +544,215 @@
             font-size: 1.1rem;
         }
 
-        /* Cart Layout */
-        .cart-layout {
+        /* Wishlist Layout */
+        .wishlist-grid {
             display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
-        @media (max-width: 992px) {
-            .cart-layout {
+        @media (max-width: 768px) {
+            .wishlist-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* Cart Items */
-        .cart-items {
+        /* Wishlist Item Card */
+        .wishlist-item {
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .cart-item {
-            display: grid;
-            grid-template-columns: 100px 1fr auto;
-            gap: 20px;
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            align-items: center;
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
         }
 
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
-        .cart-item-image {
-            width: 100px;
-            height: 100px;
+        .wishlist-item-image {
+            width: 100%;
+            height: 200px;
             background: var(--light-bg);
-            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
         }
 
-        .cart-item-image img {
+        .wishlist-item-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
         }
 
-        .cart-item-details {
-            flex: 1;
+        .wishlist-item:hover .wishlist-item-image img {
+            transform: scale(1.05);
         }
 
-        .cart-item-title {
-            color: var(--primary-text);
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
+        .wishlist-item-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--kenya-red);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
-        .cart-item-sku {
+        .wishlist-item-content {
+            padding: 20px;
+        }
+
+        .wishlist-item-header {
+            margin-bottom: 15px;
+        }
+
+        .wishlist-item-title {
+            color: var(--primary-text);
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .wishlist-item-sku {
             color: var(--secondary-text);
             font-size: 0.85rem;
             margin: 0 0 10px 0;
         }
 
-        .cart-item-price {
-            font-weight: 600;
-            color: var(--primary-text);
-            font-size: 1.1rem;
+        .wishlist-item-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
         }
 
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .quantity-btn {
-            background: none;
-            border: none;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--primary-text);
-            transition: background 0.2s;
-        }
-
-        .quantity-btn:hover {
-            background: var(--light-bg);
-        }
-
-        .quantity-input {
-            width: 50px;
-            height: 40px;
-            border: none;
-            text-align: center;
-            font-size: 1rem;
-            color: var(--primary-text);
-            background: white;
-        }
-
-        .remove-btn {
-            background: none;
-            border: none;
-            color: var(--error);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-
-        .remove-btn:hover {
-            background: #ffebee;
-        }
-
-        /* Cart Summary */
-        .cart-summary {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            padding: 25px;
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-        }
-
-        .summary-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .summary-header h2 {
-            color: var(--primary-text);
-            margin: 0;
-            font-size: 1.4rem;
-        }
-
-        .summary-details {
-            margin-bottom: 25px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+        .wishlist-item-price .original-price {
+            font-size: 0.9rem;
             color: var(--secondary-text);
+            text-decoration: line-through;
+            margin-right: 10px;
         }
 
-        .summary-row.total {
-            font-size: 1.2rem;
+        .wishlist-item-price .discount {
+            font-size: 0.9rem;
+            color: var(--success);
             font-weight: 600;
-            color: var(--primary-text);
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
+            margin-left: 10px;
         }
 
-        .summary-actions {
+        .wishlist-item-stock {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
 
-        .checkout-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary-blue);
-            color: white;
+        .stock-in {
+            color: var(--success);
+        }
+
+        .stock-out {
+            color: var(--error);
+        }
+
+        .stock-low {
+            color: var(--warning);
+        }
+
+        .wishlist-item-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            min-width: 120px;
         }
 
-        .checkout-btn:hover {
+        .action-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
             background: var(--accent-blue);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
         }
 
-        .continue-shopping-btn {
-            width: 100%;
-            padding: 15px;
+        .action-btn.secondary {
             background: white;
             color: var(--primary-text);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .continue-shopping-btn:hover {
+        .action-btn.secondary:hover {
             background: var(--light-bg);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
         }
 
-        /* Empty Cart */
-        .empty-cart {
+        .action-btn.danger {
+            background: white;
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .action-btn.danger:hover {
+            background: #ffebee;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Empty Wishlist */
+        .empty-wishlist {
             text-align: center;
             padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
         }
 
-        .empty-cart-icon {
+        .empty-wishlist-icon {
             font-size: 80px;
             color: var(--light-bg);
             margin-bottom: 20px;
         }
 
-        .empty-cart h2 {
+        .empty-wishlist h2 {
             color: var(--primary-text);
             margin: 0 0 10px 0;
             font-size: 1.8rem;
         }
 
-        .empty-cart p {
+        .empty-wishlist p {
             color: var(--secondary-text);
             margin: 0 0 30px 0;
             max-width: 400px;
@@ -952,40 +923,26 @@
                 padding: 20px;
             }
             
-            .cart-item {
-                grid-template-columns: 80px 1fr;
-                grid-template-rows: auto auto;
-                gap: 15px;
+            .wishlist-item-actions {
+                flex-direction: column;
             }
             
-            .cart-item-actions {
-                grid-column: 1 / -1;
-                justify-content: space-between;
-            }
-            
-            .cart-summary {
-                position: relative;
-                top: 0;
+            .action-btn {
+                width: 100%;
             }
         }
 
         @media (max-width: 480px) {
-            .cart-item {
-                grid-template-columns: 1fr;
-                text-align: center;
+            .wishlist-item-content {
+                padding: 15px;
             }
             
-            .cart-item-image {
-                margin: 0 auto;
+            .wishlist-item-title {
+                font-size: 1.1rem;
             }
             
-            .cart-item-actions {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .quantity-control {
-                justify-content: center;
+            .wishlist-item-price {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -1030,7 +987,7 @@
                                 <a href="user-dashboard.html?tab=orders" class="dropdown-item">
                                     <i class="fas fa-box"></i> My Orders
                                 </a>
-                                <a href="user-dashboard.html?tab=wishlist" class="dropdown-item">
+                                <a href="wishlist.html" class="dropdown-item">
                                     <i class="fas fa-heart"></i> Wishlist
                                 </a>
                                 <div class="dropdown-divider"></div>
@@ -1097,7 +1054,7 @@
                             <a href="user-dashboard.html?tab=orders" class="mobile-nav-link" onclick="closeMobileMenu();">
                                 <i class="fas fa-box"></i> My Orders
                             </a>
-                            <a href="user-dashboard.html?tab=wishlist" class="mobile-nav-link" onclick="closeMobileMenu();">
+                            <a href="wishlist.html" class="mobile-nav-link" onclick="closeMobileMenu();">
                                 <i class="fas fa-heart"></i> Wishlist
                             </a>
                             <div class="mobile-menu-divider"></div>
@@ -1162,90 +1119,52 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="cart-container">
+        <div class="wishlist-container">
             <!-- Alert Area -->
             <div id="alert-area"></div>
 
             <!-- Page Header -->
             <div class="page-header">
-                <h1>Shopping Cart <span id="cart-items-count"></span></h1>
-                <p>Review your items and proceed to checkout</p>
+                <h1>My Wishlist <span id="wishlist-items-count"></span></h1>
+                <p>Save your favorite items for later purchase</p>
             </div>
 
-            <!-- Cart Content -->
-            <div id="cart-content">
+            <!-- Wishlist Content -->
+            <div id="wishlist-content">
                 <!-- Loading State -->
-                <div id="cart-loading">
-                    <div class="empty-cart">
+                <div id="wishlist-loading">
+                    <div class="empty-wishlist">
                         <div class="loading-spinner" style="width: 60px; height: 60px; margin: 0 auto 30px;"></div>
-                        <h2>Loading Cart...</h2>
-                        <p>Please wait while we load your cart items</p>
+                        <h2>Loading Wishlist...</h2>
+                        <p>Please wait while we load your wishlist items</p>
                     </div>
                 </div>
 
-                <!-- Empty Cart State (Hidden by default) -->
-                <div id="empty-cart" class="empty-cart" style="display: none;">
-                    <div class="empty-cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
+                <!-- Empty Wishlist State (Hidden by default) -->
+                <div id="empty-wishlist" class="empty-wishlist" style="display: none;">
+                    <div class="empty-wishlist-icon">
+                        <i class="fas fa-heart"></i>
                     </div>
-                    <h2>Your Cart is Empty</h2>
-                    <p>Looks like you haven't added any items to your cart yet. Start shopping to fill it up!</p>
-                    <button class="checkout-btn" onclick="window.location.href='products.html'">
-                        <i class="fas fa-shopping-bag"></i> Start Shopping
+                    <h2>Your Wishlist is Empty</h2>
+                    <p>You haven't added any items to your wishlist yet. Start exploring our products to add your favorites!</p>
+                    <button class="action-btn primary" onclick="window.location.href='products.html'">
+                        <i class="fas fa-shopping-bag"></i> Browse Products
                     </button>
                 </div>
 
-                <!-- Cart with Items (Hidden by default) -->
-                <div id="cart-with-items" style="display: none;">
-                    <div class="cart-layout">
-                        <!-- Cart Items Section -->
-                        <div class="cart-items-section">
-                            <div class="cart-items" id="cart-items-list">
-                                <!-- Cart items loaded dynamically -->
-                            </div>
-                        </div>
-
-                        <!-- Cart Summary Section -->
-                        <div class="cart-summary">
-                            <div class="summary-header">
-                                <h2>Order Summary</h2>
-                            </div>
-                            
-                            <div class="summary-details">
-                                <div class="summary-row">
-                                    <span>Subtotal</span>
-                                    <span id="cart-subtotal">$0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Shipping</span>
-                                    <span id="cart-shipping">$0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Tax</span>
-                                    <span id="cart-tax">$0.00</span>
-                                </div>
-                                <div class="summary-row total">
-                                    <span>Total</span>
-                                    <span id="cart-total">$0.00</span>
-                                </div>
-                            </div>
-                            
-                            <div class="summary-actions">
-                                <button class="checkout-btn" id="checkout-btn" onclick="cart.checkout()">
-                                    <i class="fas fa-lock"></i> Proceed to Checkout
-                                </button>
-                                <button class="continue-shopping-btn" onclick="window.location.href='products.html'">
-                                    Continue Shopping
-                                </button>
-                            </div>
-                            
-                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                                <div style="display: flex; align-items: center; gap: 10px; color: var(--success);">
-                                    <i class="fas fa-shield-alt"></i>
-                                    <span style="font-size: 0.9rem;">Secure checkout • 100% safe & encrypted</span>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Wishlist with Items (Hidden by default) -->
+                <div id="wishlist-with-items" style="display: none;">
+                    <div class="wishlist-grid" id="wishlist-items-list">
+                        <!-- Wishlist items loaded dynamically -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="action-btn secondary" onclick="window.location.href='products.html'">
+                            <i class="fas fa-plus"></i> Add More Items
+                        </button>
+                        <button class="action-btn secondary" onclick="wishlist.clearWishlist()" style="margin-left: 10px;">
+                            <i class="fas fa-trash"></i> Clear Wishlist
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1282,7 +1201,7 @@
                     <li><a href="user-dashboard.html">My Dashboard</a></li>
                     <li><a href="user-dashboard.html?tab=profile">My Profile</a></li>
                     <li><a href="user-dashboard.html?tab=orders">Order History</a></li>
-                    <li><a href="user-dashboard.html?tab=wishlist">Wishlist</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
                 </ul>
             </div>
             
@@ -1305,12 +1224,12 @@
     </footer>
 
     <script>
-        // DUAL BACKEND API CONFIGURATION
+        // DUAL BACKEND API CONFIGURATION - UPDATED FOR WISHLIST
         const API_CONFIG = {
             // Auth backend URL (for authentication)
             AUTH_BASE_URL: 'https://xs-auth-logic4.onrender.com/api',
             
-            // Customer data backend URL (for cart, wishlist, etc.)
+            // Customer data backend URL (for wishlist, cart, etc.)
             CUSTOMER_BACKEND_URL: 'https://localhost:5001/api', // REPLACE WITH ACTUAL URL
             
             ENDPOINTS: {
@@ -1319,39 +1238,26 @@
                 REFRESH_TOKEN: '/auth/refresh-token',
                 CUSTOMER_LOGOUT: '/auth/customer/logout',
                 
-                // ========== CART ENDPOINTS (CUSTOMER BACKEND via Proxy) ==========
-                GET_CART: '/proxy/cart',
-                GET_CART_COUNT: '/proxy/cart/count',
-                ADD_TO_CART: '/proxy/cart/add',
-                UPDATE_CART_ITEM: '/proxy/cart/items/:id',
-                REMOVE_FROM_CART: '/proxy/cart/items/:id',
-                CLEAR_CART: '/proxy/cart/clear',
-                CALCULATE_CART_TOTALS: '/proxy/cart/totals',
-                
-                // ========== WISHLIST ENDPOINTS ==========
+                // ========== WISHLIST ENDPOINTS (CUSTOMER BACKEND via Proxy) ==========
                 GET_WISHLIST: '/proxy/wishlist',
                 GET_WISHLIST_COUNT: '/proxy/wishlist/count',
                 ADD_TO_WISHLIST: '/proxy/wishlist',
                 REMOVE_FROM_WISHLIST: '/proxy/wishlist/:id',
+                CLEAR_WISHLIST: '/proxy/wishlist/clear',
                 MOVE_TO_CART: '/proxy/wishlist/:id/move-to-cart',
+                CHECK_ITEM_IN_WISHLIST: '/proxy/wishlist/:id/check',
+                
+                // ========== CART ENDPOINTS ==========
+                GET_CART: '/proxy/cart',
+                GET_CART_COUNT: '/proxy/cart/count',
+                ADD_TO_CART: '/proxy/cart/add',
                 
                 // ========== PROFILE ENDPOINTS ==========
                 GET_PROFILE: '/proxy/customer/profile',
                 
                 // ========== PRODUCT ENDPOINTS ==========
                 GET_PRODUCT: '/proxy/products/:id',
-                
-                // ========== CHECKOUT ENDPOINTS ==========
-                CREATE_CHECKOUT_SESSION: '/proxy/checkout/create-session',
-                CREATE_GUEST_ORDER: '/proxy/checkout/guest-order',
-                
-                // ========== ADDRESS ENDPOINTS ==========
-                GET_ADDRESSES: '/proxy/addresses',
-                GET_DEFAULT_ADDRESS: '/proxy/addresses/default',
-                
-                // ========== PAYMENT METHODS ENDPOINTS ==========
-                GET_PAYMENT_METHODS: '/proxy/payment-methods',
-                GET_DEFAULT_PAYMENT: '/proxy/payment-methods/default'
+                GET_PRODUCTS_BATCH: '/proxy/products/batch'
             },
             
             HEADERS: {
@@ -1371,7 +1277,7 @@
             }
         };
 
-        // Token Manager (SAME AS DASHBOARD)
+        // Token Manager (SAME AS CART PAGE)
         class TokenManager {
             static getAccessToken() {
                 const rememberMe = localStorage.getItem(API_CONFIG.TOKEN_CONFIG.REMEMBER_ME_KEY) === 'true';
@@ -1426,7 +1332,7 @@
             }
         }
 
-        // API Service (SAME AS DASHBOARD but with cart-specific methods)
+        // API Service - UPDATED WITH WISHLIST METHODS
         class ApiService {
             static async request(endpoint, method = 'GET', data = null, requiresAuth = true, isAuthEndpoint = false) {
                 let baseUrl;
@@ -1444,12 +1350,9 @@
                     if (token) {
                         headers['Authorization'] = `Bearer ${token}`;
                     } else {
-                        // For cart operations, we might allow guest access
-                        if (endpoint.includes('/cart') && method === 'GET') {
-                            // Allow guest cart access
-                            headers['X-Guest-Session'] = this.getGuestSessionId();
-                        } else {
-                            throw new Error('No authentication token found');
+                        // For wishlist operations, require authentication
+                        if (endpoint.includes('/wishlist') && !endpoint.includes('/check')) {
+                            throw new Error('Authentication required for wishlist operations');
                         }
                     }
                 }
@@ -1548,15 +1451,6 @@
                 }
             }
             
-            static getGuestSessionId() {
-                let guestId = localStorage.getItem('xs_guest_session_id');
-                if (!guestId) {
-                    guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('xs_guest_session_id', guestId);
-                }
-                return guestId;
-            }
-            
             static decodeJWT(token) {
                 try {
                     if (!token) return null;
@@ -1577,7 +1471,6 @@
                     await this.request(API_CONFIG.ENDPOINTS.CUSTOMER_LOGOUT, 'POST', null, true, true);
                 } finally {
                     TokenManager.clearAll();
-                    localStorage.removeItem('xs_guest_session_id');
                 }
             }
             
@@ -1605,53 +1498,11 @@
                 }
             }
             
-            // ========== CART METHODS ==========
-            static async getCart() {
-                try {
-                    return await this.request(API_CONFIG.ENDPOINTS.GET_CART, 'GET', null, false);
-                } catch (error) {
-                    // If we get an auth error, try without auth for guest cart
-                    if (error.message.includes('No authentication token')) {
-                        return await this.request(API_CONFIG.ENDPOINTS.GET_CART, 'GET', null, false);
-                    }
-                    throw error;
-                }
-            }
-            
-            static async getCartCount() {
-                try {
-                    const response = await this.request(API_CONFIG.ENDPOINTS.GET_CART_COUNT, 'GET', null, false);
-                    return response.count || 0;
-                } catch (error) {
-                    console.error('Error getting cart count:', error);
-                    return 0;
-                }
-            }
-            
-            static async updateCartItem(itemId, quantity) {
-                return await this.request(
-                    API_CONFIG.ENDPOINTS.UPDATE_CART_ITEM.replace(':id', itemId),
-                    'PUT',
-                    { quantity }
-                );
-            }
-            
-            static async removeFromCart(itemId) {
-                return await this.request(
-                    API_CONFIG.ENDPOINTS.REMOVE_FROM_CART.replace(':id', itemId),
-                    'DELETE'
-                );
-            }
-            
-            static async clearCart() {
-                return await this.request(API_CONFIG.ENDPOINTS.CLEAR_CART, 'DELETE');
-            }
-            
-            static async calculateCartTotals() {
-                return await this.request(API_CONFIG.ENDPOINTS.CALCULATE_CART_TOTALS, 'GET');
-            }
-            
             // ========== WISHLIST METHODS ==========
+            static async getWishlist() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_WISHLIST, 'GET');
+            }
+            
             static async getWishlistCount() {
                 try {
                     const response = await this.request(API_CONFIG.ENDPOINTS.GET_WISHLIST_COUNT, 'GET');
@@ -1662,31 +1513,90 @@
                 }
             }
             
+            static async addToWishlist(productId) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.ADD_TO_WISHLIST,
+                    'POST',
+                    { product_id: productId }
+                );
+            }
+            
+            static async removeFromWishlist(itemId) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.REMOVE_FROM_WISHLIST.replace(':id', itemId),
+                    'DELETE'
+                );
+            }
+            
+            static async clearWishlist() {
+                return await this.request(API_CONFIG.ENDPOINTS.CLEAR_WISHLIST, 'DELETE');
+            }
+            
+            static async moveToCart(itemId) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.MOVE_TO_CART.replace(':id', itemId),
+                    'POST'
+                );
+            }
+            
+            static async checkItemInWishlist(productId) {
+                try {
+                    const response = await this.request(
+                        API_CONFIG.ENDPOINTS.CHECK_ITEM_IN_WISHLIST.replace(':id', productId),
+                        'GET'
+                    );
+                    return response.exists || false;
+                } catch (error) {
+                    console.error('Error checking wishlist item:', error);
+                    return false;
+                }
+            }
+            
+            // ========== CART METHODS ==========
+            static async getCartCount() {
+                try {
+                    const response = await this.request(API_CONFIG.ENDPOINTS.GET_CART_COUNT, 'GET');
+                    return response.count || 0;
+                } catch (error) {
+                    console.error('Error getting cart count:', error);
+                    return 0;
+                }
+            }
+            
+            static async addToCart(productId, quantity = 1) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.ADD_TO_CART,
+                    'POST',
+                    { product_id: productId, quantity }
+                );
+            }
+            
+            // ========== PRODUCT METHODS ==========
+            static async getProduct(productId) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.GET_PRODUCT.replace(':id', productId),
+                    'GET'
+                );
+            }
+            
+            static async getProductsBatch(productIds) {
+                return await this.request(
+                    API_CONFIG.ENDPOINTS.GET_PRODUCTS_BATCH,
+                    'POST',
+                    { product_ids: productIds }
+                );
+            }
+            
             // ========== PROFILE METHODS ==========
             static async getProfile() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_PROFILE);
             }
-            
-            // ========== CHECKOUT METHODS ==========
-            static async createCheckoutSession(cartData) {
-                return await this.request(API_CONFIG.ENDPOINTS.CREATE_CHECKOUT_SESSION, 'POST', cartData);
-            }
-            
-            static async createGuestOrder(orderData) {
-                return await this.request(API_CONFIG.ENDPOINTS.CREATE_GUEST_ORDER, 'POST', orderData, false);
-            }
         }
 
-        // Cart Application
-        class CartApp {
+        // Wishlist Application
+        class WishlistApp {
             constructor() {
-                this.cartItems = [];
-                this.cartTotals = {
-                    subtotal: 0,
-                    shipping: 0,
-                    tax: 0,
-                    total: 0
-                };
+                this.wishlistItems = [];
                 this.isAuthenticated = false;
                 this.init();
             }
@@ -1694,7 +1604,7 @@
             async init() {
                 this.setupEventListeners();
                 await this.checkAuthentication();
-                await this.loadCart();
+                await this.loadWishlist();
                 this.updateHeaderCounts();
             }
             
@@ -1732,7 +1642,23 @@
                     notLoggedInState.style.display = 'block';
                     mobileLoggedInState.style.display = 'none';
                     mobileNotLoggedInState.style.display = 'block';
+                    
+                    // Redirect to login if trying to access wishlist
+                    this.redirectToLogin();
                 }
+            }
+            
+            redirectToLogin() {
+                setTimeout(() => {
+                    if (!this.isAuthenticated && window.location.pathname.includes('wishlist')) {
+                        const proceed = confirm('Please login to access your wishlist. Would you like to login now?');
+                        if (proceed) {
+                            window.location.href = 'login.html?redirect=wishlist.html';
+                        } else {
+                            window.location.href = 'products.html';
+                        }
+                    }
+                }, 1000);
             }
             
             async loadUserData() {
@@ -1808,131 +1734,171 @@
                 window.location.href = `products.html?search=${encodeURIComponent(query)}`;
             }
             
-            async loadCart() {
+            async loadWishlist() {
+                if (!this.isAuthenticated) {
+                    this.showLoginRequired();
+                    return;
+                }
+                
                 try {
                     // Show loading state
-                    document.getElementById('cart-loading').style.display = 'block';
-                    document.getElementById('empty-cart').style.display = 'none';
-                    document.getElementById('cart-with-items').style.display = 'none';
+                    document.getElementById('wishlist-loading').style.display = 'block';
+                    document.getElementById('empty-wishlist').style.display = 'none';
+                    document.getElementById('wishlist-with-items').style.display = 'none';
                     
-                    const response = await ApiService.getCart();
-                    this.cartItems = response.items || [];
+                    const response = await ApiService.getWishlist();
+                    this.wishlistItems = response.items || [];
                     
-                    if (this.cartItems.length === 0) {
-                        this.showEmptyCart();
+                    if (this.wishlistItems.length === 0) {
+                        this.showEmptyWishlist();
                     } else {
-                        this.showCartItems();
-                        await this.calculateTotals();
+                        await this.showWishlistItems();
                     }
                     
-                    document.getElementById('cart-loading').style.display = 'none';
+                    document.getElementById('wishlist-loading').style.display = 'none';
                     
                 } catch (error) {
-                    console.error('Error loading cart:', error);
-                    document.getElementById('cart-loading').style.display = 'none';
+                    console.error('Error loading wishlist:', error);
+                    document.getElementById('wishlist-loading').style.display = 'none';
                     
-                    // If it's an auth error and we're not logged in, show empty cart
-                    if (error.message.includes('No authentication token') && !this.isAuthenticated) {
-                        this.showEmptyCart();
+                    if (error.message.includes('Authentication required')) {
+                        this.showLoginRequired();
+                    } else if (error.message.includes('Session expired')) {
+                        this.showAlert('Session expired. Please login again.', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'login.html?redirect=wishlist.html';
+                        }, 2000);
                     } else {
-                        this.showAlert('Failed to load cart. Please try again.', 'error');
+                        this.showAlert('Failed to load wishlist. Please try again.', 'error');
                     }
                 }
             }
             
-            showEmptyCart() {
-                document.getElementById('empty-cart').style.display = 'block';
-                document.getElementById('cart-with-items').style.display = 'none';
-                document.getElementById('cart-items-count').textContent = '';
-            }
-            
-            showCartItems() {
-                const cartItemsList = document.getElementById('cart-items-list');
-                const itemCount = this.cartItems.length;
-                
-                // Update cart count in header
-                document.getElementById('cart-items-count').textContent = `(${itemCount} item${itemCount !== 1 ? 's' : ''})`;
-                
-                // Render cart items
-                cartItemsList.innerHTML = this.cartItems.map(item => `
-                    <div class="cart-item" data-id="${item.id}">
-                        <div class="cart-item-image">
-                            ${item.image ? 
-                                `<img src="${item.image}" alt="${item.name}">` :
-                                `<i class="fas fa-box" style="font-size: 40px; color: var(--secondary-text);"></i>`
-                            }
+            showLoginRequired() {
+                const wishlistContent = document.getElementById('wishlist-content');
+                wishlistContent.innerHTML = `
+                    <div class="empty-wishlist">
+                        <div class="empty-wishlist-icon">
+                            <i class="fas fa-lock"></i>
                         </div>
-                        <div class="cart-item-details">
-                            <h3 class="cart-item-title">${item.name || 'Product'}</h3>
-                            ${item.sku ? `<p class="cart-item-sku">SKU: ${item.sku}</p>` : ''}
-                            <div class="cart-item-price">$${(item.price || 0).toFixed(2)}</div>
-                        </div>
-                        <div class="cart-item-actions">
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="cart.updateQuantity('${item.id}', ${item.quantity - 1})">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" class="quantity-input" value="${item.quantity}" 
-                                       min="1" max="99" 
-                                       onchange="cart.updateQuantity('${item.id}', this.value)">
-                                <button class="quantity-btn" onclick="cart.updateQuantity('${item.id}', ${item.quantity + 1})">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <button class="remove-btn" onclick="cart.removeItem('${item.id}')">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </div>
+                        <h2>Login Required</h2>
+                        <p>Please login to access your wishlist. You can save items while logged in and access them from any device.</p>
+                        <button class="action-btn primary" onclick="window.location.href='login.html?redirect=wishlist.html'">
+                            <i class="fas fa-sign-in-alt"></i> Login Now
+                        </button>
                     </div>
-                `).join('');
-                
-                document.getElementById('empty-cart').style.display = 'none';
-                document.getElementById('cart-with-items').style.display = 'block';
+                `;
             }
             
-            async updateQuantity(itemId, newQuantity) {
+            showEmptyWishlist() {
+                document.getElementById('empty-wishlist').style.display = 'block';
+                document.getElementById('wishlist-with-items').style.display = 'none';
+                document.getElementById('wishlist-items-count').textContent = '';
+            }
+            
+            async showWishlistItems() {
+                const wishlistItemsList = document.getElementById('wishlist-items-list');
+                const itemCount = this.wishlistItems.length;
+                
+                // Update wishlist count in header
+                document.getElementById('wishlist-items-count').textContent = `(${itemCount} item${itemCount !== 1 ? 's' : ''})`;
+                
+                // Get detailed product information
+                const productIds = this.wishlistItems.map(item => item.product_id);
+                let products = [];
+                
                 try {
-                    newQuantity = parseInt(newQuantity);
-                    if (newQuantity < 1) newQuantity = 1;
-                    if (newQuantity > 99) newQuantity = 99;
-                    
-                    await ApiService.updateCartItem(itemId, newQuantity);
-                    
-                    // Update local cart
-                    const item = this.cartItems.find(i => i.id === itemId);
-                    if (item) {
-                        item.quantity = newQuantity;
-                    }
-                    
-                    await this.calculateTotals();
-                    this.updateHeaderCounts();
-                    
+                    const response = await ApiService.getProductsBatch(productIds);
+                    products = response.products || [];
                 } catch (error) {
-                    console.error('Error updating quantity:', error);
-                    this.showAlert('Failed to update quantity', 'error');
-                    // Reload cart to get correct state
-                    await this.loadCart();
+                    console.error('Error loading product details:', error);
+                    // Fallback to basic item data
+                    products = this.wishlistItems;
+                }
+                
+                // Render wishlist items
+                wishlistItemsList.innerHTML = products.map((product, index) => {
+                    const wishlistItem = this.wishlistItems[index] || {};
+                    const itemId = wishlistItem.id || product.id;
+                    const hasDiscount = product.original_price && product.original_price > product.price;
+                    const discountPercentage = hasDiscount 
+                        ? Math.round((1 - product.price / product.original_price) * 100)
+                        : 0;
+                    const stockStatus = this.getStockStatus(product.stock_quantity);
+                    
+                    return `
+                        <div class="wishlist-item" data-id="${itemId}">
+                            <div class="wishlist-item-image">
+                                ${product.image ? 
+                                    `<img src="${product.image}" alt="${product.name}">` :
+                                    `<i class="fas fa-box" style="font-size: 60px; color: var(--secondary-text);"></i>`
+                                }
+                                ${hasDiscount ? `<span class="wishlist-item-badge">-${discountPercentage}%</span>` : ''}
+                            </div>
+                            <div class="wishlist-item-content">
+                                <div class="wishlist-item-header">
+                                    <h3 class="wishlist-item-title">${product.name || 'Product'}</h3>
+                                    ${product.sku ? `<p class="wishlist-item-sku">SKU: ${product.sku}</p>` : ''}
+                                </div>
+                                
+                                <div class="wishlist-item-price">
+                                    ${hasDiscount ? 
+                                        `<span class="original-price">$${product.original_price.toFixed(2)}</span>` : 
+                                        ''
+                                    }
+                                    <span>$${product.price.toFixed(2)}</span>
+                                    ${hasDiscount ? `<span class="discount">Save ${discountPercentage}%</span>` : ''}
+                                </div>
+                                
+                                <div class="wishlist-item-stock">
+                                    <i class="fas fa-${stockStatus.icon}"></i>
+                                    <span class="stock-${stockStatus.class}">${stockStatus.text}</span>
+                                </div>
+                                
+                                <div class="wishlist-item-actions">
+                                    <button class="action-btn primary" onclick="wishlist.moveToCart('${itemId}')" ${product.stock_quantity <= 0 ? 'disabled' : ''}>
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                    <button class="action-btn danger" onclick="wishlist.removeItem('${itemId}')">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('empty-wishlist').style.display = 'none';
+                document.getElementById('wishlist-with-items').style.display = 'block';
+            }
+            
+            getStockStatus(stockQuantity) {
+                if (stockQuantity > 10) {
+                    return { icon: 'check-circle', class: 'in', text: 'In Stock' };
+                } else if (stockQuantity > 0) {
+                    return { icon: 'exclamation-triangle', class: 'low', text: `Low Stock (${stockQuantity} left)` };
+                } else {
+                    return { icon: 'times-circle', class: 'out', text: 'Out of Stock' };
                 }
             }
             
             async removeItem(itemId) {
-                if (!confirm('Remove this item from cart?')) return;
+                if (!confirm('Remove this item from wishlist?')) return;
                 
                 try {
-                    await ApiService.removeFromCart(itemId);
+                    await ApiService.removeFromWishlist(itemId);
                     
-                    // Remove from local cart
-                    this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+                    // Remove from local wishlist
+                    this.wishlistItems = this.wishlistItems.filter(item => item.id !== itemId);
                     
-                    if (this.cartItems.length === 0) {
-                        this.showEmptyCart();
+                    if (this.wishlistItems.length === 0) {
+                        this.showEmptyWishlist();
                     } else {
-                        this.showCartItems();
-                        await this.calculateTotals();
+                        await this.showWishlistItems();
                     }
                     
                     this.updateHeaderCounts();
-                    this.showAlert('Item removed from cart', 'success');
+                    this.showAlert('Item removed from wishlist', 'success');
                     
                 } catch (error) {
                     console.error('Error removing item:', error);
@@ -1940,45 +1906,67 @@
                 }
             }
             
-            async calculateTotals() {
+            async clearWishlist() {
+                if (this.wishlistItems.length === 0) {
+                    this.showAlert('Wishlist is already empty', 'info');
+                    return;
+                }
+                
+                if (!confirm('Clear all items from your wishlist?')) return;
+                
                 try {
-                    const response = await ApiService.calculateCartTotals();
-                    this.cartTotals = response.totals || {
-                        subtotal: 0,
-                        shipping: 0,
-                        tax: 0,
-                        total: 0
-                    };
+                    await ApiService.clearWishlist();
                     
-                    // Update UI
-                    document.getElementById('cart-subtotal').textContent = `$${this.cartTotals.subtotal.toFixed(2)}`;
-                    document.getElementById('cart-shipping').textContent = `$${this.cartTotals.shipping.toFixed(2)}`;
-                    document.getElementById('cart-tax').textContent = `$${this.cartTotals.tax.toFixed(2)}`;
-                    document.getElementById('cart-total').textContent = `$${this.cartTotals.total.toFixed(2)}`;
+                    // Clear local wishlist
+                    this.wishlistItems = [];
+                    
+                    this.showEmptyWishlist();
+                    this.updateHeaderCounts();
+                    this.showAlert('Wishlist cleared successfully', 'success');
                     
                 } catch (error) {
-                    console.error('Error calculating totals:', error);
-                    // Calculate locally as fallback
-                    this.calculateLocalTotals();
+                    console.error('Error clearing wishlist:', error);
+                    this.showAlert('Failed to clear wishlist', 'error');
                 }
             }
             
-            calculateLocalTotals() {
-                const subtotal = this.cartItems.reduce((sum, item) => {
-                    return sum + (item.price || 0) * (item.quantity || 1);
-                }, 0);
-                
-                const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
-                const tax = subtotal * 0.16; // 16% VAT
-                const total = subtotal + shipping + tax;
-                
-                this.cartTotals = { subtotal, shipping, tax, total };
-                
-                // Update UI
-                document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-                document.getElementById('cart-shipping').textContent = `$${shipping.toFixed(2)}`;
-                document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
-                document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+            async moveToCart(itemId) {
+                try {
+                    const wishlistItem = this.wishlistItems.find(item => item.id === itemId);
+                    if (!wishlistItem) {
+                        throw new Error('Item not found');
+                    }
+                    
+                    // Move to cart
+                    await ApiService.moveToCart(itemId);
+                    
+                    // Remove from local wishlist
+                    this.wishlistItems = this.wishlistItems.filter(item => item.id !== itemId);
+                    
+                    if (this.wishlistItems.length === 0) {
+                        this.showEmptyWishlist();
+                    } else {
+                        await this.showWishlistItems();
+                    }
+                    
+                    this.updateHeaderCounts();
+                    this.showAlert('Item moved to cart successfully', 'success');
+                    
+                } catch (error) {
+                    console.error('Error moving item to cart:', error);
+                    
+                    // Fallback: Try to add to cart directly
+                    try {
+                        const wishlistItem = this.wishlistItems.find(item => item.id === itemId);
+                        if (wishlistItem) {
+                            await ApiService.addToCart(wishlistItem.product_id);
+                            await this.removeItem(itemId);
+                            this.showAlert('Item added to cart successfully', 'success');
+                        }
+                    } catch (fallbackError) {
+                        this.showAlert('Failed to move item to cart', 'error');
+                    }
+                }
             }
             
             async updateHeaderCounts() {
@@ -1998,49 +1986,6 @@
                     
                 } catch (error) {
                     console.error('Error updating header counts:', error);
-                }
-            }
-            
-            async checkout() {
-                if (this.cartItems.length === 0) {
-                    this.showAlert('Your cart is empty', 'error');
-                    return;
-                }
-                
-                const checkoutBtn = document.getElementById('checkout-btn');
-                const originalText = checkoutBtn.innerHTML;
-                
-                try {
-                    checkoutBtn.disabled = true;
-                    checkoutBtn.innerHTML = '<span class="loading-spinner"></span> Processing...';
-                    
-                    if (this.isAuthenticated) {
-                        // Create checkout session for logged in users
-                        const response = await ApiService.createCheckoutSession({
-                            items: this.cartItems,
-                            totals: this.cartTotals
-                        });
-                        
-                        if (response.checkoutUrl) {
-                            window.location.href = response.checkoutUrl;
-                        } else {
-                            // Redirect to checkout page
-                            window.location.href = 'checkout.html';
-                        }
-                    } else {
-                        // Redirect to login for guest users
-                        const proceed = confirm('Please login or register to proceed with checkout. Would you like to login now?');
-                        if (proceed) {
-                            window.location.href = 'login.html?redirect=checkout.html';
-                        }
-                    }
-                    
-                } catch (error) {
-                    console.error('Checkout error:', error);
-                    this.showAlert('Failed to proceed to checkout', 'error');
-                } finally {
-                    checkoutBtn.disabled = false;
-                    checkoutBtn.innerHTML = originalText;
                 }
             }
             
@@ -2066,9 +2011,9 @@
             }
         }
 
-        // Initialize cart when DOM is loaded
+        // Initialize wishlist when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            window.cart = new CartApp();
+            window.wishlist = new WishlistApp();
             
             // Global function for mobile menu
             window.closeMobileMenu = function() {

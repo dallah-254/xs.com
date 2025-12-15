@@ -810,12 +810,12 @@
                             <input type="text" class="form-input" value="+254" readonly>
                         </div>
                         <div class="phone-number">
-                            <input type="tel" class="form-input" id="phone" placeholder="7XX XXX XXX" pattern="[0-9]{9}" maxlength="9" required>
+                            <input type="tel" class="form-input" id="phone" placeholder="712345678" required>
                         </div>
                     </div>
                     <div class="validation-feedback" id="phone-validation"></div>
                     <span class="form-hint" style="font-size: 0.85rem; color: var(--secondary-text); margin-top: 5px; display: block;">
-                        Enter your 9-digit Safaricom, Airtel, or Telkom number (without 0)
+                        Enter your 9-digit Safaricom, Airtel, or Telkom number (without 0 or spaces)
                     </span>
                 </div>
 
@@ -1041,36 +1041,16 @@
     </div>
 
     <script>
-        // API Configuration - Shared with login page
-const API_CONFIG = {
-    BASE_URL: 'https://xs-auth-logic4.onrender.com/api',
+        // API Configuration
+        const API_CONFIG = {
+            BASE_URL: 'https://xs-auth-logic4.onrender.com/api',
             
             ENDPOINTS: {
-                // Customer registration
                 CUSTOMER_REGISTER: '/auth/customer/register',
-                VERIFY_EMAIL: '/auth/verify-email',
-                RESEND_VERIFICATION: '/auth/resend-verification',
-                
-                // Validation endpoints
                 VALIDATE_EMAIL: '/auth/validate-email',
                 VALIDATE_PHONE: '/auth/validate-phone',
                 VALIDATE_USERNAME: '/auth/validate-username',
-                VALIDATE_REFERRAL: '/auth/validate-referral',
-                
-                // Location endpoints
-                GET_COUNTIES: '/locations/counties',
-                GET_TOWNS: '/locations/towns',
-                VALIDATE_LOCATION: '/locations/validate',
-                
-                // Authentication (shared with login)
-                CUSTOMER_LOGIN: '/auth/customer/login',
-                CUSTOMER_LOGOUT: '/auth/customer/logout',
-                VERIFY_2FA: '/auth/verify-2fa',
-                FORGOT_PASSWORD: '/auth/forgot-password',
-                RESET_PASSWORD: '/auth/reset-password',
-                SOCIAL_LOGIN: '/auth/social/login',
-                VALIDATE_TOKEN: '/auth/validate-token',
-                REFRESH_TOKEN: '/auth/refresh-token'
+                VALIDATE_REFERRAL: '/auth/validate-referral'
             },
             
             HEADERS: {
@@ -1080,16 +1060,6 @@ const API_CONFIG = {
                 'X-Country-Code': 'KE'
             },
             
-            // Token configuration (shared with login)
-            TOKEN_CONFIG: {
-                ACCESS_TOKEN_KEY: 'xs_access_token',
-                REFRESH_TOKEN_KEY: 'xs_refresh_token',
-                USER_DATA_KEY: 'xs_user_data',
-                TOKEN_EXPIRY_KEY: 'xs_token_expiry',
-                REMEMBER_ME_KEY: 'xs_remember_me'
-            },
-            
-            // Validation rules
             VALIDATION_RULES: {
                 USERNAME: {
                     MIN_LENGTH: 3,
@@ -1116,17 +1086,6 @@ const API_CONFIG = {
                 }
             }
         };
-
-        // Kenya Counties Data
-        const KENYA_COUNTIES = [
-            "Nairobi", "Mombasa", "Kisumu", "Nakuru", "Kiambu", "Kakamega", "Baringo", 
-            "Bungoma", "Busia", "Elgeyo-Marakwet", "Embu", "Garissa", "Homa Bay", 
-            "Isiolo", "Kajiado", "Kericho", "Kilifi", "Kirinyaga", "Kisii", "Kitui", 
-            "Kwale", "Laikipia", "Lamu", "Machakos", "Makueni", "Mandera", "Marsabit", 
-            "Meru", "Migori", "Murang'a", "Nandi", "Narok", "Nyamira", "Nyandarua", 
-            "Nyeri", "Samburu", "Siaya", "Taita-Taveta", "Tana River", "Tharaka-Nithi", 
-            "Trans Nzoia", "Turkana", "Uasin Gishu", "Vihiga", "Wajir", "West Pokot"
-        ];
 
         // Kenya Towns by County
         const KENYA_TOWNS = {
@@ -1161,30 +1120,18 @@ const API_CONFIG = {
         const backBtn = document.getElementById('back-btn');
         const cancelBtn = document.getElementById('cancel-btn');
         const submitBtn = document.getElementById('submit-btn');
-        const verificationModal = document.getElementById('verification-modal');
 
-        // API Service (shared with login)
+        // API Service
         class ApiService {
-            static async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
+            static async request(endpoint, method = 'GET', data = null) {
                 const url = `${API_CONFIG.BASE_URL}${endpoint}`;
                 const headers = { ...API_CONFIG.HEADERS };
                 
-                // Add authorization header if required
-                if (requiresAuth) {
-                    const token = localStorage.getItem(API_CONFIG.TOKEN_CONFIG.ACCESS_TOKEN_KEY) || 
-                                  sessionStorage.getItem(API_CONFIG.TOKEN_CONFIG.ACCESS_TOKEN_KEY);
-                    if (token) {
-                        headers['Authorization'] = `Bearer ${token}`;
-                    }
-                }
-                
                 const config = {
                     method,
-                    headers,
-                    credentials: 'include'
+                    headers
                 };
                 
-                // Add request body for POST, PUT, PATCH requests
                 if (data && ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
                     config.body = JSON.stringify(data);
                 }
@@ -1208,62 +1155,35 @@ const API_CONFIG = {
                 return await this.request(
                     API_CONFIG.ENDPOINTS.CUSTOMER_REGISTER,
                     'POST',
-                    userData,
-                    false
+                    userData
                 );
             }
             
             static async validateEmail(email) {
                 return await this.request(
                     `${API_CONFIG.ENDPOINTS.VALIDATE_EMAIL}?email=${encodeURIComponent(email)}`,
-                    'GET',
-                    null,
-                    false
+                    'GET'
                 );
             }
             
             static async validatePhone(phone) {
                 return await this.request(
                     `${API_CONFIG.ENDPOINTS.VALIDATE_PHONE}?phone=${encodeURIComponent(phone)}`,
-                    'GET',
-                    null,
-                    false
+                    'GET'
                 );
             }
             
             static async validateUsername(username) {
                 return await this.request(
                     `${API_CONFIG.ENDPOINTS.VALIDATE_USERNAME}?username=${encodeURIComponent(username)}`,
-                    'GET',
-                    null,
-                    false
+                    'GET'
                 );
             }
             
             static async validateReferral(code) {
                 return await this.request(
                     `${API_CONFIG.ENDPOINTS.VALIDATE_REFERRAL}?code=${encodeURIComponent(code)}`,
-                    'GET',
-                    null,
-                    false
-                );
-            }
-            
-            static async getCounties() {
-                return await this.request(
-                    API_CONFIG.ENDPOINTS.GET_COUNTIES,
-                    'GET',
-                    null,
-                    false
-                );
-            }
-            
-            static async getTowns(county) {
-                return await this.request(
-                    `${API_CONFIG.ENDPOINTS.GET_TOWNS}?county=${encodeURIComponent(county)}`,
-                    'GET',
-                    null,
-                    false
+                    'GET'
                 );
             }
         }
@@ -1306,14 +1226,13 @@ const API_CONFIG = {
             }
             
             static isValidIDNumber(idNumber) {
-                if (!idNumber) return true; // Optional field
+                if (!idNumber) return true;
                 return API_CONFIG.VALIDATION_RULES.ID_NUMBER.PATTERN.test(idNumber);
             }
             
             static validateStep1(data) {
                 const errors = [];
                 
-                // Name validation
                 if (!data.firstName || data.firstName.length < 2) {
                     errors.push('First name must be at least 2 characters');
                 }
@@ -1322,17 +1241,14 @@ const API_CONFIG = {
                     errors.push('Last name must be at least 2 characters');
                 }
                 
-                // Email validation
                 if (!data.email || !this.isValidEmail(data.email)) {
                     errors.push('Please enter a valid email address');
                 }
                 
-                // Phone validation
                 if (!data.phone || !this.isValidPhone(data.phone)) {
                     errors.push('Please enter a valid Kenya phone number (9 digits starting with 7 or 1)');
                 }
                 
-                // Location validation
                 if (!data.county) {
                     errors.push('Please select your county');
                 }
@@ -1341,7 +1257,6 @@ const API_CONFIG = {
                     errors.push('Please enter your town or area');
                 }
                 
-                // ID validation
                 if (data.idNumber && !this.isValidIDNumber(data.idNumber)) {
                     errors.push('National ID must be 8 or 10 digits');
                 }
@@ -1355,12 +1270,10 @@ const API_CONFIG = {
             static validateStep2(data) {
                 const errors = [];
                 
-                // Username validation
                 if (!data.username || !this.isValidUsername(data.username)) {
                     errors.push('Username must be 3-20 characters and contain only letters, numbers, and underscores');
                 }
                 
-                // Password validation
                 if (!data.password || !this.isValidPassword(data.password)) {
                     errors.push('Password must be at least 8 characters with uppercase, lowercase, number, and special character');
                 }
@@ -1369,7 +1282,6 @@ const API_CONFIG = {
                     errors.push('Passwords do not match');
                 }
                 
-                // Terms validation
                 if (!data.termsAgreed) {
                     errors.push('You must agree to the Terms of Service and Privacy Policy');
                 }
@@ -1393,20 +1305,15 @@ const API_CONFIG = {
                 this.errorAlert = document.getElementById('error-alert');
                 this.successAlert = document.getElementById('success-alert');
                 this.infoAlert = document.getElementById('info-alert');
-                
-                this.isLoading = false;
-                this.validationTimeouts = {};
             }
             
             showLoading(message = 'Processing...') {
                 this.loadingText.textContent = message;
                 this.loadingOverlay.classList.add('active');
-                this.isLoading = true;
             }
             
             hideLoading() {
                 this.loadingOverlay.classList.remove('active');
-                this.isLoading = false;
             }
             
             showError(message) {
@@ -1414,8 +1321,6 @@ const API_CONFIG = {
                 this.errorAlert.style.display = 'block';
                 this.successAlert.style.display = 'none';
                 this.infoAlert.style.display = 'none';
-                
-                this.scrollToAlert(this.errorAlert);
             }
             
             showSuccess(message) {
@@ -1423,8 +1328,6 @@ const API_CONFIG = {
                 this.successAlert.style.display = 'block';
                 this.errorAlert.style.display = 'none';
                 this.infoAlert.style.display = 'none';
-                
-                this.scrollToAlert(this.successAlert);
             }
             
             showInfo(message) {
@@ -1432,18 +1335,12 @@ const API_CONFIG = {
                 this.infoAlert.style.display = 'block';
                 this.errorAlert.style.display = 'none';
                 this.successAlert.style.display = 'none';
-                
-                this.scrollToAlert(this.infoAlert);
             }
             
             hideAllAlerts() {
                 this.errorAlert.style.display = 'none';
                 this.successAlert.style.display = 'none';
                 this.infoAlert.style.display = 'none';
-            }
-            
-            scrollToAlert(element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
             showVerificationModal(message) {
@@ -1480,13 +1377,6 @@ const API_CONFIG = {
                     element.className = 'validation-feedback';
                 }
             }
-            
-            debounceValidation(fn, delay) {
-                return (...args) => {
-                    clearTimeout(this.validationTimeouts[fn.name]);
-                    this.validationTimeouts[fn.name] = setTimeout(() => fn(...args), delay);
-                };
-            }
         }
 
         // Password Strength Checker
@@ -1501,7 +1391,6 @@ const API_CONFIG = {
                     special: API_CONFIG.VALIDATION_RULES.PASSWORD.SPECIAL_CHARS.test(password)
                 };
                 
-                // Update requirement indicators
                 Object.keys(requirements).forEach(req => {
                     const element = document.getElementById(`req-${req}`);
                     if (element) {
@@ -1518,7 +1407,6 @@ const API_CONFIG = {
                     }
                 });
                 
-                // Show/hide requirements panel
                 const requirementsPanel = document.getElementById('password-requirements');
                 if (password.length > 0) {
                     requirementsPanel.classList.add('active');
@@ -1526,7 +1414,6 @@ const API_CONFIG = {
                     requirementsPanel.classList.remove('active');
                 }
                 
-                // Calculate strength percentage
                 const percentage = (strength / 5) * 100;
                 let strengthLevel = 'Weak';
                 let color = '#f44336';
@@ -1539,7 +1426,6 @@ const API_CONFIG = {
                     color = '#ff9800';
                 }
                 
-                // Update UI
                 const strengthBar = document.getElementById('strength-bar');
                 const strengthText = document.getElementById('strength-text');
                 
@@ -1582,7 +1468,7 @@ const API_CONFIG = {
             
             init() {
                 this.bindEvents();
-                this.setupRealTimeValidation();
+                this.initializeForm();
                 this.updateStepProgress();
             }
             
@@ -1623,36 +1509,63 @@ const API_CONFIG = {
                         }
                     }
                 });
+                
+                // Setup real-time feedback (no validation)
+                this.setupRealTimeFeedback();
             }
             
-            setupRealTimeValidation() {
-                // Step 1 validation
-                const step1Inputs = ['first-name', 'last-name', 'email', 'phone', 'id-number', 'county', 'town'];
-                step1Inputs.forEach(id => {
-                    const input = document.getElementById(id);
-                    if (input) {
-                        input.addEventListener('input', () => this.validateStep1());
-                        input.addEventListener('blur', () => this.validateStep1(true));
+            initializeForm() {
+                // Setup phone input
+                this.setupPhoneInput();
+                
+                // Auto-focus first input
+                document.getElementById('first-name').focus();
+                
+                // Load saved data if any
+                this.loadRegistrationData();
+            }
+            
+            setupPhoneInput() {
+                const phoneInput = document.getElementById('phone');
+                
+                // Prevent autofill from causing issues
+                phoneInput.autocomplete = 'off';
+                phoneInput.setAttribute('autocomplete', 'off');
+                
+                // Simple phone input handler - only allow numbers
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 9) {
+                        value = value.slice(0, 9);
+                    }
+                    e.target.value = value;
+                    
+                    // Enable/disable next button based on phone length
+                    const app = window.registrationApp;
+                    if (app) {
+                        app.validateStep1();
                     }
                 });
                 
-                // Step 2 validation
-                const step2Inputs = ['username', 'password', 'confirm-password', 'referral'];
-                step2Inputs.forEach(id => {
-                    const input = document.getElementById(id);
-                    if (input) {
-                        input.addEventListener('input', () => this.validateStep2());
-                        input.addEventListener('blur', () => this.validateStep2(true));
+                // Clear weird autofill values
+                phoneInput.addEventListener('focus', function(e) {
+                    const value = e.target.value;
+                    if (value && !/^[0-9]{0,9}$/.test(value)) {
+                        e.target.value = '';
                     }
                 });
-                
-                // Password strength real-time check
+            }
+            
+            setupRealTimeFeedback() {
+                // Password strength feedback
                 document.getElementById('password').addEventListener('input', (e) => {
                     PasswordStrengthChecker.checkStrength(e.target.value);
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    PasswordStrengthChecker.checkMatch(e.target.value, confirmPassword);
                     this.validateStep2();
                 });
                 
-                // Password match check
+                // Password match feedback
                 document.getElementById('confirm-password').addEventListener('input', () => {
                     const password = document.getElementById('password').value;
                     const confirmPassword = document.getElementById('confirm-password').value;
@@ -1660,41 +1573,66 @@ const API_CONFIG = {
                     this.validateStep2();
                 });
                 
+                // Email availability check (delayed)
+                const emailInput = document.getElementById('email');
+                let emailTimeout;
+                emailInput.addEventListener('input', () => {
+                    clearTimeout(emailTimeout);
+                    emailTimeout = setTimeout(() => {
+                        if (FormValidator.isValidEmail(emailInput.value)) {
+                            this.validateEmail(emailInput.value);
+                        }
+                    }, 1000);
+                    this.validateStep1();
+                });
+                
+                // Username availability check (delayed)
+                const usernameInput = document.getElementById('username');
+                let usernameTimeout;
+                usernameInput.addEventListener('input', () => {
+                    clearTimeout(usernameTimeout);
+                    usernameTimeout = setTimeout(() => {
+                        if (FormValidator.isValidUsername(usernameInput.value)) {
+                            this.validateUsername(usernameInput.value);
+                        }
+                    }, 1000);
+                    this.validateStep2();
+                });
+                
+                // Phone availability check (delayed)
+                const phoneInput = document.getElementById('phone');
+                let phoneTimeout;
+                phoneInput.addEventListener('input', () => {
+                    clearTimeout(phoneTimeout);
+                    phoneTimeout = setTimeout(() => {
+                        const phoneValue = phoneInput.value.replace(/\s/g, '');
+                        if (phoneValue.length === 9 && FormValidator.isValidPhone(phoneValue)) {
+                            this.validatePhone(phoneValue);
+                        }
+                    }, 1000);
+                    this.validateStep1();
+                });
+                
                 // Terms validation
                 document.getElementById('terms-agree').addEventListener('change', () => this.validateStep2());
                 document.getElementById('age-consent').addEventListener('change', () => this.validateStep2());
                 
-                // Email validation with debounce
-                const emailInput = document.getElementById('email');
-                if (emailInput) {
-                    const debouncedEmailValidation = this.ui.debounceValidation(() => {
-                        this.validateEmail(emailInput.value);
-                    }, 500);
-                    emailInput.addEventListener('input', debouncedEmailValidation);
-                }
-                
-                // Phone validation with debounce
-                const phoneInput = document.getElementById('phone');
-                if (phoneInput) {
-                    const debouncedPhoneValidation = this.ui.debounceValidation(() => {
-                        this.validatePhone(phoneInput.value);
-                    }, 500);
-                    phoneInput.addEventListener('input', debouncedPhoneValidation);
-                }
-                
-                // Username validation with debounce
-                const usernameInput = document.getElementById('username');
-                if (usernameInput) {
-                    const debouncedUsernameValidation = this.ui.debounceValidation(() => {
-                        this.validateUsername(usernameInput.value);
-                    }, 500);
-                    usernameInput.addEventListener('input', debouncedUsernameValidation);
-                }
+                // Other field validation
+                ['first-name', 'last-name', 'county', 'town'].forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.addEventListener('input', () => this.validateStep1());
+                    }
+                });
             }
             
             goToStep(step) {
-                if (step === 2 && !this.validateStep1(true)) {
-                    return;
+                // Validate before proceeding to step 2
+                if (step === 2) {
+                    const isValid = this.validateStep1(true);
+                    if (!isValid) {
+                        return;
+                    }
                 }
                 
                 currentStep = step;
@@ -1723,10 +1661,12 @@ const API_CONFIG = {
                 
                 this.updateStepProgress();
                 
-                // Scroll to top of form
-                document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Smooth scroll to form
+                setTimeout(() => {
+                    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
                 
-                // Validate the current step
+                // Validate current step
                 if (step === 1) {
                     this.validateStep1();
                 } else {
@@ -1746,9 +1686,12 @@ const API_CONFIG = {
                 // Update button state
                 nextBtn.disabled = !validation.isValid;
                 
-                // Show errors if requested
+                // Show errors only when requested (clicking next button)
                 if (!validation.isValid && showErrors && validation.errors.length > 0) {
                     this.ui.showError(validation.errors[0]);
+                    setTimeout(() => {
+                        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                 } else if (validation.isValid) {
                     this.ui.hideAllAlerts();
                 }
@@ -1763,9 +1706,12 @@ const API_CONFIG = {
                 // Update button state
                 submitBtn.disabled = !validation.isValid;
                 
-                // Show errors if requested
+                // Show errors only when requested (submitting)
                 if (!validation.isValid && showErrors && validation.errors.length > 0) {
                     this.ui.showError(validation.errors[0]);
+                    setTimeout(() => {
+                        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                 } else if (validation.isValid) {
                     this.ui.hideAllAlerts();
                 }
@@ -1886,7 +1832,6 @@ const API_CONFIG = {
                 registrationData.step1 = this.collectStep1Data();
                 registrationData.step2 = this.collectStep2Data();
                 
-                // Store in sessionStorage for persistence during registration
                 sessionStorage.setItem('xs_registration_data', JSON.stringify(registrationData));
             }
             
@@ -1895,23 +1840,17 @@ const API_CONFIG = {
                 if (savedData) {
                     registrationData = JSON.parse(savedData);
                     
-                    // Populate step 1 form
                     if (registrationData.step1) {
                         document.getElementById('first-name').value = registrationData.step1.firstName || '';
                         document.getElementById('last-name').value = registrationData.step1.lastName || '';
                         document.getElementById('email').value = registrationData.step1.email || '';
-                        
-                        if (registrationData.step1.phone) {
-                            document.getElementById('phone').value = registrationData.step1.phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
-                        }
-                        
+                        document.getElementById('phone').value = registrationData.step1.phone || '';
                         document.getElementById('id-number').value = registrationData.step1.idNumber || '';
                         document.getElementById('county').value = registrationData.step1.county || '';
                         document.getElementById('town').value = registrationData.step1.town || '';
                         document.getElementById('address').value = registrationData.step1.address || '';
                     }
                     
-                    // Populate step 2 form
                     if (registrationData.step2) {
                         document.getElementById('username').value = registrationData.step2.username || '';
                         document.getElementById('referral').value = registrationData.step2.referralCode || '';
@@ -1920,7 +1859,6 @@ const API_CONFIG = {
                         document.getElementById('age-consent').checked = registrationData.step2.ageConsent || false;
                     }
                     
-                    // Validate forms after loading
                     this.validateStep1();
                     this.validateStep2();
                 }
@@ -1936,55 +1874,32 @@ const API_CONFIG = {
                 
                 // Prepare user data for API
                 const userData = {
-                    // Personal details
                     firstName: registrationData.step1.firstName,
                     lastName: registrationData.step1.lastName,
                     email: registrationData.step1.email,
                     phone: `+254${registrationData.step1.phone}`,
                     idNumber: registrationData.step1.idNumber || undefined,
-                    
-                    // Location
                     county: registrationData.step1.county,
                     town: registrationData.step1.town,
                     address: registrationData.step1.address || undefined,
-                    country: 'KE',
-                    
-                    // Account details
                     username: registrationData.step2.username,
                     password: registrationData.step2.password,
-                    
-                    // Preferences
                     referralCode: registrationData.step2.referralCode || undefined,
                     marketingConsent: registrationData.step2.marketingConsent,
                     termsAgreed: registrationData.step2.termsAgreed,
-                    ageConsent: registrationData.step2.ageConsent,
-                    
-                    // Device info
-                    deviceInfo: {
-                        userAgent: navigator.userAgent,
-                        platform: navigator.platform,
-                        language: navigator.language,
-                        screenResolution: `${window.screen.width}x${window.screen.height}`,
-                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                    },
-                    
-                    // Registration metadata
-                    registrationSource: 'web',
-                    registrationTimestamp: new Date().toISOString(),
-                    ipAddress: '0.0.0.0' // Will be populated by backend
+                    ageConsent: registrationData.step2.ageConsent
                 };
                 
                 this.ui.showLoading('Creating your account...');
                 this.ui.hideAllAlerts();
                 
                 try {
-                    // Call registration API
                     const result = await ApiService.customerRegister(userData);
                     
-                    // Clear saved registration data
+                    // Clear saved data
                     sessionStorage.removeItem('xs_registration_data');
                     
-                    // Store temporary data for login page
+                    // Store for login page
                     localStorage.setItem('xs_registration_success', 'true');
                     localStorage.setItem('xs_user_temp_data', JSON.stringify({
                         email: userData.email,
@@ -1996,7 +1911,7 @@ const API_CONFIG = {
                     this.ui.hideLoading();
                     this.ui.showVerificationModal(result.message || 'Your account has been created successfully! Please check your email for verification instructions.');
                     
-                    // Auto-redirect to login page after delay
+                    // Auto-redirect to login page
                     setTimeout(() => {
                         window.location.href = 'login.html';
                     }, 8000);
@@ -2005,8 +1920,9 @@ const API_CONFIG = {
                     this.ui.hideLoading();
                     this.ui.showError(error.message || 'Registration failed. Please try again.');
                     
-                    // Scroll to error
-                    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                 }
             }
             
@@ -2014,13 +1930,11 @@ const API_CONFIG = {
                 const townInput = document.getElementById('town');
                 const datalistId = `towns-${county}`;
                 
-                // Remove existing datalist
                 const existingDatalist = document.getElementById(datalistId);
                 if (existingDatalist) {
                     existingDatalist.remove();
                 }
                 
-                // Create new datalist if we have suggestions for this county
                 if (KENYA_TOWNS[county]) {
                     const datalist = document.createElement('datalist');
                     datalist.id = datalistId;
@@ -2049,42 +1963,11 @@ const API_CONFIG = {
                 icon.classList.toggle('fa-eye');
                 icon.classList.toggle('fa-eye-slash');
             }
-            
-            // Format phone number as user types
-            formatPhoneNumber() {
-                const phoneInput = document.getElementById('phone');
-                phoneInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    if (value.length > 9) value = value.slice(0, 9);
-                    
-                    // Format as XXX XXX XXX
-                    if (value.length > 0) {
-                        if (value.length <= 3) {
-                            value = value;
-                        } else if (value.length <= 6) {
-                            value = `${value.slice(0, 3)} ${value.slice(3)}`;
-                        } else {
-                            value = `${value.slice(0, 3)} ${value.slice(3, 6)} ${value.slice(6, 9)}`;
-                        }
-                    }
-                    
-                    e.target.value = value;
-                });
-            }
         }
 
         // Initialize the application when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             window.registrationApp = new RegistrationApp();
-            
-            // Load any saved registration data
-            window.registrationApp.loadRegistrationData();
-            
-            // Format phone number input
-            window.registrationApp.formatPhoneNumber();
-            
-            // Auto-focus first input
-            document.getElementById('first-name').focus();
         });
     </script>
 </body>

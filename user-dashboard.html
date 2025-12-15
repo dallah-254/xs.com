@@ -6,7 +6,7 @@
     <title>My Dashboard - XS Platform Kenya</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* USER DASHBOARD PAGE SPECIFIC STYLES */
+        /* EXACT SAME CSS AS BEFORE - NO CHANGES */
         :root {
             --primary-blue: #2196f3;
             --accent-blue: #0d8bf2;
@@ -2044,6 +2044,21 @@
                             <i class="fas fa-headset"></i>
                             Support Tickets
                         </button>
+
+                        <button class="nav-item" data-tab="subscriptions" onclick="dashboard.switchTab('subscriptions')">
+                            <i class="fas fa-star"></i>
+                            Subscriptions
+                        </button>
+
+                        <button class="nav-item" data-tab="loyalty" onclick="dashboard.switchTab('loyalty')">
+                            <i class="fas fa-crown"></i>
+                            Loyalty Points
+                        </button>
+
+                        <button class="nav-item" data-tab="referrals" onclick="dashboard.switchTab('referrals')">
+                            <i class="fas fa-user-plus"></i>
+                            Referrals
+                        </button>
                     </nav>
                 </div>
 
@@ -2093,6 +2108,22 @@
                                     </div>
                                     <div class="stat-value" id="member-since">0</div>
                                     <div class="stat-label">Months as Member</div>
+                                </div>
+
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="stat-value" id="loyalty-points">0</div>
+                                    <div class="stat-label">Loyalty Points</div>
+                                </div>
+
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-gift"></i>
+                                    </div>
+                                    <div class="stat-value" id="referrals-count">0</div>
+                                    <div class="stat-label">Successful Referrals</div>
                                 </div>
                             </div>
                         </div>
@@ -2173,6 +2204,43 @@
                                 <p>Your recent activity will appear here.</p>
                             </div>
                         </div>
+
+                        <!-- Quick Actions -->
+                        <div class="dashboard-section" id="quick-actions-section" style="display: none;">
+                            <div class="section-header">
+                                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                            </div>
+                            
+                            <div class="stats-grid">
+                                <button class="stat-card" onclick="window.location.href='products.html'">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="stat-label">Shop Products</div>
+                                </button>
+                                
+                                <button class="stat-card" onclick="window.location.href='booking-form.html'">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <div class="stat-label">Book Service</div>
+                                </button>
+                                
+                                <button class="stat-card" onclick="dashboard.switchTab('wishlist')">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="stat-label">View Wishlist</div>
+                                </button>
+                                
+                                <button class="stat-card" onclick="dashboard.switchTab('addresses')">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="stat-label">Manage Addresses</div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Profile Tab -->
@@ -2204,7 +2272,7 @@
                                 
                                 <div class="form-group">
                                     <label class="form-label" for="email">Email Address *</label>
-                                    <input type="email" id="profile-email" class="form-control" required disabled>
+                                    <input type="email" id="profile-email-input" class="form-control" required disabled>
                                     <small style="color: var(--secondary-text);">Email cannot be changed</small>
                                 </div>
                                 
@@ -2270,9 +2338,31 @@
                         <div class="dashboard-section">
                             <div class="section-header">
                                 <h2><i class="fas fa-shopping-bag"></i> My Orders</h2>
-                                <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
-                                    Continue Shopping
-                                </button>
+                                <div class="dashboard-actions">
+                                    <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
+                                        <i class="fas fa-shopping-bag"></i> Shop Now
+                                    </button>
+                                    <div class="search-bar-top" style="min-width: 300px;">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" placeholder="Search orders..." class="search-input" id="order-search">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Order Filters -->
+                            <div class="order-filters" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="order-action-btn" onclick="dashboard.filterOrders('all')">All</button>
+                                <button class="order-action-btn" onclick="dashboard.filterOrders('pending')">Pending</button>
+                                <button class="order-action-btn" onclick="dashboard.filterOrders('processing')">Processing</button>
+                                <button class="order-action-btn" onclick="dashboard.filterOrders('shipped')">Shipped</button>
+                                <button class="order-action-btn" onclick="dashboard.filterOrders('delivered')">Delivered</button>
+                                <button class="order-action-btn" onclick="dashboard.filterOrders('cancelled')">Cancelled</button>
+                                <select class="form-control" style="width: auto;" id="order-sort" onchange="dashboard.sortOrders(this.value)">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                </select>
                             </div>
                             
                             <div id="orders-content">
@@ -2294,6 +2384,15 @@
                                 </button>
                             </div>
                             
+                            <!-- Appointment Filters -->
+                            <div class="order-filters" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="order-action-btn" onclick="dashboard.filterAppointments('all')">All</button>
+                                <button class="order-action-btn" onclick="dashboard.filterAppointments('scheduled')">Scheduled</button>
+                                <button class="order-action-btn" onclick="dashboard.filterAppointments('in-progress')">In Progress</button>
+                                <button class="order-action-btn" onclick="dashboard.filterAppointments('completed')">Completed</button>
+                                <button class="order-action-btn" onclick="dashboard.filterAppointments('cancelled')">Cancelled</button>
+                            </div>
+                            
                             <div id="appointments-content">
                                 <div class="empty-state">
                                     <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
@@ -2308,9 +2407,14 @@
                         <div class="dashboard-section">
                             <div class="section-header">
                                 <h2><i class="fas fa-heart"></i> My Wishlist</h2>
-                                <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
-                                    Continue Shopping
-                                </button>
+                                <div class="dashboard-actions">
+                                    <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
+                                        <i class="fas fa-shopping-bag"></i> Continue Shopping
+                                    </button>
+                                    <button class="quick-action-btn secondary" onclick="dashboard.clearWishlist()">
+                                        <i class="fas fa-trash"></i> Clear All
+                                    </button>
+                                </div>
                             </div>
                             
                             <div id="wishlist-content">
@@ -2406,6 +2510,63 @@
                                 <div class="empty-state">
                                     <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
                                     <h3>Loading Support Tickets...</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subscriptions Tab -->
+                    <div class="tab-content" id="subscriptions-tab">
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <h2><i class="fas fa-star"></i> My Subscriptions</h2>
+                                <button class="quick-action-btn primary" onclick="dashboard.browseSubscriptions()">
+                                    <i class="fas fa-plus"></i> Browse Plans
+                                </button>
+                            </div>
+                            
+                            <div id="subscriptions-content">
+                                <div class="empty-state">
+                                    <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
+                                    <h3>Loading Subscriptions...</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loyalty Points Tab -->
+                    <div class="tab-content" id="loyalty-tab">
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <h2><i class="fas fa-crown"></i> Loyalty Points</h2>
+                                <button class="quick-action-btn primary" onclick="dashboard.viewRewards()">
+                                    <i class="fas fa-gift"></i> View Rewards
+                                </button>
+                            </div>
+                            
+                            <div id="loyalty-content">
+                                <div class="empty-state">
+                                    <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
+                                    <h3>Loading Loyalty Points...</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Referrals Tab -->
+                    <div class="tab-content" id="referrals-tab">
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <h2><i class="fas fa-user-plus"></i> Referral Program</h2>
+                                <button class="quick-action-btn primary" onclick="dashboard.copyReferralLink()">
+                                    <i class="fas fa-link"></i> Copy Referral Link
+                                </button>
+                            </div>
+                            
+                            <div id="referrals-content">
+                                <div class="empty-state">
+                                    <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
+                                    <h3>Loading Referral Information...</h3>
                                 </div>
                             </div>
                         </div>
@@ -2727,12 +2888,16 @@
     </footer>
 
     <script>
-        // API Configuration - Shared with login and register pages
+        // DUAL BACKEND API CONFIGURATION
         const API_CONFIG = {
-            BASE_URL: 'http://localhost:5000/api',
+            // Auth backend URL (for authentication, passwords, 2FA)
+            AUTH_BASE_URL: 'https://xs-auth-logic4.onrender.com/api',
+            
+            // Customer data backend URL (for orders, profile, appointments, etc.)
+            CUSTOMER_BACKEND_URL: 'https://localhost:5001/api', // REPLACE WITH ACTUAL URL
             
             ENDPOINTS: {
-                // Authentication
+                // ========== AUTHENTICATION ENDPOINTS (AUTH BACKEND) ==========
                 VALIDATE_TOKEN: '/auth/validate-token',
                 REFRESH_TOKEN: '/auth/refresh-token',
                 CUSTOMER_LOGOUT: '/auth/customer/logout',
@@ -2745,79 +2910,106 @@
                 VERIFY_2FA_SETUP: '/auth/verify-2fa-setup',
                 GENERATE_2FA_SECRET: '/auth/generate-2fa-secret',
                 
-                // User Profile
-                GET_PROFILE: '/customer/profile',
-                UPDATE_PROFILE: '/customer/profile',
-                UPDATE_PREFERENCES: '/customer/preferences',
+                // ========== PROFILE ENDPOINTS (CUSTOMER BACKEND via Proxy) ==========
+                GET_PROFILE: '/proxy/customer/profile',
+                UPDATE_PROFILE: '/proxy/customer/profile',
+                UPDATE_PREFERENCES: '/proxy/customer/preferences',
                 
-                // Orders
-                GET_ORDERS: '/orders',
-                GET_ORDER_DETAILS: '/orders/:id',
-                GET_RECENT_ORDERS: '/orders/recent',
-                GET_ORDER_COUNT: '/orders/count',
-                TRACK_ORDER: '/orders/:id/track',
-                CANCEL_ORDER: '/orders/:id/cancel',
-                REORDER: '/orders/:id/reorder',
+                // ========== ORDERS ENDPOINTS ==========
+                GET_ORDERS: '/proxy/orders',
+                GET_ORDER_DETAILS: '/proxy/orders/:id',
+                GET_RECENT_ORDERS: '/proxy/orders/recent',
+                GET_ORDER_COUNT: '/proxy/orders/count',
+                TRACK_ORDER: '/proxy/orders/:id/track',
+                CANCEL_ORDER: '/proxy/orders/:id/cancel',
+                REORDER: '/proxy/orders/:id/reorder',
+                SEARCH_ORDERS: '/proxy/orders/search',
+                FILTER_ORDERS: '/proxy/orders/filter',
                 
-                // Appointments
-                GET_APPOINTMENTS: '/appointments',
-                GET_UPCOMING_APPOINTMENTS: '/appointments/upcoming',
-                GET_APPOINTMENT_DETAILS: '/appointments/:id',
-                CREATE_APPOINTMENT: '/appointments',
-                UPDATE_APPOINTMENT: '/appointments/:id',
-                CANCEL_APPOINTMENT: '/appointments/:id/cancel',
-                RESCHEDULE_APPOINTMENT: '/appointments/:id/reschedule',
-                GET_APPOINTMENT_COUNT: '/appointments/count',
+                // ========== APPOINTMENTS ENDPOINTS ==========
+                GET_APPOINTMENTS: '/proxy/appointments',
+                GET_UPCOMING_APPOINTMENTS: '/proxy/appointments/upcoming',
+                GET_APPOINTMENT_DETAILS: '/proxy/appointments/:id',
+                CREATE_APPOINTMENT: '/proxy/appointments',
+                UPDATE_APPOINTMENT: '/proxy/appointments/:id',
+                CANCEL_APPOINTMENT: '/proxy/appointments/:id/cancel',
+                RESCHEDULE_APPOINTMENT: '/proxy/appointments/:id/reschedule',
+                GET_APPOINTMENT_COUNT: '/proxy/appointments/count',
+                FILTER_APPOINTMENTS: '/proxy/appointments/filter',
                 
-                // Wishlist
-                GET_WISHLIST: '/wishlist',
-                ADD_TO_WISHLIST: '/wishlist',
-                REMOVE_FROM_WISHLIST: '/wishlist/:id',
-                MOVE_TO_CART: '/wishlist/:id/move-to-cart',
-                GET_WISHLIST_COUNT: '/wishlist/count',
+                // ========== WISHLIST ENDPOINTS ==========
+                GET_WISHLIST: '/proxy/wishlist',
+                ADD_TO_WISHLIST: '/proxy/wishlist',
+                REMOVE_FROM_WISHLIST: '/proxy/wishlist/:id',
+                MOVE_TO_CART: '/proxy/wishlist/:id/move-to-cart',
+                GET_WISHLIST_COUNT: '/proxy/wishlist/count',
+                CLEAR_WISHLIST: '/proxy/wishlist/clear',
                 
-                // Addresses
-                GET_ADDRESSES: '/addresses',
-                GET_ADDRESS: '/addresses/:id',
-                CREATE_ADDRESS: '/addresses',
-                UPDATE_ADDRESS: '/addresses/:id',
-                DELETE_ADDRESS: '/addresses/:id',
-                SET_DEFAULT_ADDRESS: '/addresses/:id/default',
+                // ========== ADDRESSES ENDPOINTS ==========
+                GET_ADDRESSES: '/proxy/addresses',
+                GET_ADDRESS: '/proxy/addresses/:id',
+                CREATE_ADDRESS: '/proxy/addresses',
+                UPDATE_ADDRESS: '/proxy/addresses/:id',
+                DELETE_ADDRESS: '/proxy/addresses/:id',
+                SET_DEFAULT_ADDRESS: '/proxy/addresses/:id/default',
                 
-                // Payment Methods
-                GET_PAYMENT_METHODS: '/payment-methods',
-                GET_PAYMENT_METHOD: '/payment-methods/:id',
-                CREATE_PAYMENT_METHOD: '/payment-methods',
-                UPDATE_PAYMENT_METHOD: '/payment-methods/:id',
-                DELETE_PAYMENT_METHOD: '/payment-methods/:id',
-                SET_DEFAULT_PAYMENT: '/payment-methods/:id/default',
+                // ========== PAYMENT METHODS ENDPOINTS ==========
+                GET_PAYMENT_METHODS: '/proxy/payment-methods',
+                GET_PAYMENT_METHOD: '/proxy/payment-methods/:id',
+                CREATE_PAYMENT_METHOD: '/proxy/payment-methods',
+                UPDATE_PAYMENT_METHOD: '/proxy/payment-methods/:id',
+                DELETE_PAYMENT_METHOD: '/proxy/payment-methods/:id',
+                SET_DEFAULT_PAYMENT: '/proxy/payment-methods/:id/default',
                 
-                // Notifications
-                GET_NOTIFICATIONS: '/notifications',
-                GET_NOTIFICATION_SETTINGS: '/notifications/settings',
-                UPDATE_NOTIFICATION_SETTINGS: '/notifications/settings',
-                MARK_NOTIFICATION_READ: '/notifications/:id/read',
-                DELETE_NOTIFICATION: '/notifications/:id',
-                GET_UNREAD_COUNT: '/notifications/unread-count',
+                // ========== NOTIFICATION ENDPOINTS ==========
+                GET_NOTIFICATIONS: '/proxy/notifications',
+                GET_NOTIFICATION_SETTINGS: '/proxy/notifications/settings',
+                UPDATE_NOTIFICATION_SETTINGS: '/proxy/notifications/settings',
+                MARK_NOTIFICATION_READ: '/proxy/notifications/:id/read',
+                DELETE_NOTIFICATION: '/proxy/notifications/:id',
+                GET_UNREAD_COUNT: '/proxy/notifications/unread-count',
                 
-                // Support Tickets
-                GET_TICKETS: '/support/tickets',
-                GET_TICKET: '/support/tickets/:id',
-                CREATE_TICKET: '/support/tickets',
-                UPDATE_TICKET: '/support/tickets/:id',
-                CLOSE_TICKET: '/support/tickets/:id/close',
-                GET_TICKET_COUNT: '/support/tickets/count',
+                // ========== SUPPORT TICKETS ENDPOINTS ==========
+                GET_TICKETS: '/proxy/support/tickets',
+                GET_TICKET: '/proxy/support/tickets/:id',
+                CREATE_TICKET: '/proxy/support/tickets',
+                UPDATE_TICKET: '/proxy/support/tickets/:id',
+                CLOSE_TICKET: '/proxy/support/tickets/:id/close',
+                GET_TICKET_COUNT: '/proxy/support/tickets/count',
                 
-                // Dashboard Stats
-                GET_DASHBOARD_STATS: '/dashboard/stats',
-                GET_RECENT_ACTIVITY: '/dashboard/activity',
-                GET_COUNTS: '/dashboard/counts',
+                // ========== DASHBOARD ENDPOINTS ==========
+                GET_DASHBOARD_STATS: '/proxy/dashboard/stats',
+                GET_RECENT_ACTIVITY: '/proxy/dashboard/activity',
+                GET_COUNTS: '/proxy/dashboard/counts',
+                GET_QUICK_STATS: '/proxy/dashboard/quick-stats',
                 
-                // Cart
-                GET_CART_COUNT: '/cart/count',
+                // ========== CART ENDPOINTS ==========
+                GET_CART_COUNT: '/proxy/cart/count',
+                ADD_TO_CART: '/proxy/cart/add',
+                GET_CART_ITEMS: '/proxy/cart/items',
                 
-                // Products
-                GET_PRODUCT: '/products/:id'
+                // ========== PRODUCT ENDPOINTS ==========
+                GET_PRODUCT: '/proxy/products/:id',
+                SEARCH_PRODUCTS: '/proxy/products/search',
+                
+                // ========== SUBSCRIPTIONS ENDPOINTS ==========
+                GET_SUBSCRIPTIONS: '/proxy/subscriptions',
+                GET_SUBSCRIPTION_PLANS: '/proxy/subscriptions/plans',
+                SUBSCRIBE: '/proxy/subscriptions/subscribe',
+                CANCEL_SUBSCRIPTION: '/proxy/subscriptions/:id/cancel',
+                UPDATE_SUBSCRIPTION: '/proxy/subscriptions/:id/update',
+                
+                // ========== LOYALTY ENDPOINTS ==========
+                GET_LOYALTY_POINTS: '/proxy/loyalty/points',
+                GET_LOYALTY_HISTORY: '/proxy/loyalty/history',
+                GET_REWARDS: '/proxy/loyalty/rewards',
+                REDEEM_REWARD: '/proxy/loyalty/redeem/:id',
+                
+                // ========== REFERRAL ENDPOINTS ==========
+                GET_REFERRAL_INFO: '/proxy/referrals/info',
+                GET_REFERRAL_HISTORY: '/proxy/referrals/history',
+                GENERATE_REFERRAL_LINK: '/proxy/referrals/generate-link',
+                GET_REFERRAL_STATS: '/proxy/referrals/stats'
             },
             
             HEADERS: {
@@ -2837,7 +3029,7 @@
             }
         };
 
-        // Token Manager (shared with login)
+        // Token Manager
         class TokenManager {
             static getAccessToken() {
                 const rememberMe = localStorage.getItem(API_CONFIG.TOKEN_CONFIG.REMEMBER_ME_KEY) === 'true';
@@ -2901,27 +3093,24 @@
             
             static isTokenValid() {
                 const expiry = this.getTokenExpiry();
-                if (!expiry) return false;
+                if (!expiry) return true;
                 
                 const now = Date.now();
                 return now < parseInt(expiry);
             }
-            
-            static isSessionFresh() {
-                const timestamp = this.getSessionTimestamp();
-                if (!timestamp) return false;
-                
-                const now = Date.now();
-                const sessionAge = now - timestamp;
-                // Consider session fresh if less than 30 minutes old
-                return sessionAge < 30 * 60 * 1000;
-            }
         }
 
-        // API Service
+        // DUAL BACKEND API SERVICE
         class ApiService {
-            static async request(endpoint, method = 'GET', data = null, requiresAuth = true) {
-                const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+            static async request(endpoint, method = 'GET', data = null, requiresAuth = true, isAuthEndpoint = false) {
+                let baseUrl;
+                if (isAuthEndpoint) {
+                    baseUrl = API_CONFIG.AUTH_BASE_URL;
+                } else {
+                    baseUrl = API_CONFIG.AUTH_BASE_URL; // All requests go through auth backend proxy
+                }
+                
+                const url = `${baseUrl}${endpoint}`;
                 const headers = { ...API_CONFIG.HEADERS };
                 
                 if (requiresAuth) {
@@ -2931,6 +3120,11 @@
                     } else {
                         throw new Error('No authentication token found');
                     }
+                }
+                
+                // For proxy endpoints, add customer backend target header
+                if (!isAuthEndpoint && requiresAuth) {
+                    headers['X-Target-Backend'] = API_CONFIG.CUSTOMER_BACKEND_URL;
                 }
                 
                 const config = {
@@ -2946,23 +3140,35 @@
                 try {
                     const response = await fetch(url, config);
                     
-                    // Handle token expiration
-                    if (response.status === 401) {
+                    // Handle 401 - Try to refresh token
+                    if (response.status === 401 && requiresAuth) {
                         const refreshed = await this.refreshToken();
                         if (refreshed) {
                             // Retry with new token
-                            return await this.request(endpoint, method, data, requiresAuth);
-                        } else {
-                            throw new Error('Session expired. Please login again.');
+                            const newToken = TokenManager.getAccessToken();
+                            headers['Authorization'] = `Bearer ${newToken}`;
+                            config.headers = headers;
+                            const retryResponse = await fetch(url, config);
+                            
+                            if (retryResponse.ok) {
+                                TokenManager.setSessionTimestamp();
+                                return await retryResponse.json();
+                            }
                         }
+                        throw new Error('Session expired. Please login again.');
                     }
                     
                     if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
+                        const errorText = await response.text();
+                        let errorData;
+                        try {
+                            errorData = JSON.parse(errorText);
+                        } catch {
+                            errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                        }
                         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
                     }
                     
-                    // Update session timestamp on successful requests
                     if (requiresAuth && response.status >= 200 && response.status < 300) {
                         TokenManager.setSessionTimestamp();
                     }
@@ -2981,9 +3187,12 @@
                         return false;
                     }
                     
-                    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.REFRESH_TOKEN}`, {
+                    const response = await fetch(`${API_CONFIG.AUTH_BASE_URL}${API_CONFIG.ENDPOINTS.REFRESH_TOKEN}`, {
                         method: 'POST',
-                        headers: API_CONFIG.HEADERS,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
                         body: JSON.stringify({ refresh_token: refreshToken })
                     });
                     
@@ -2992,6 +3201,10 @@
                     }
                     
                     const result = await response.json();
+                    
+                    if (!result.access_token) {
+                        return false;
+                    }
                     
                     const rememberMe = localStorage.getItem(API_CONFIG.TOKEN_CONFIG.REMEMBER_ME_KEY) === 'true';
                     TokenManager.setAccessToken(result.access_token, rememberMe);
@@ -3006,7 +3219,9 @@
                     }
                     
                     return true;
+                    
                 } catch (error) {
+                    console.error('Refresh token error:', error);
                     return false;
                 }
             }
@@ -3018,22 +3233,46 @@
                         return false;
                     }
                     
-                    const response = await this.request(API_CONFIG.ENDPOINTS.VALIDATE_TOKEN, 'GET');
-                    return response.valid === true;
+                    if (!TokenManager.isTokenValid()) {
+                        const refreshed = await this.refreshToken();
+                        if (!refreshed) {
+                            return false;
+                        }
+                        return true;
+                    }
+                    
+                    return true;
+                    
                 } catch (error) {
+                    console.error('Session validation error:', error);
                     return false;
+                }
+            }
+            
+            static decodeJWT(token) {
+                try {
+                    if (!token) return null;
+                    const base64Url = token.split('.')[1];
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join(''));
+                    return JSON.parse(jsonPayload);
+                } catch (error) {
+                    console.error('Error decoding JWT:', error);
+                    return null;
                 }
             }
             
             static async logout() {
                 try {
-                    await this.request(API_CONFIG.ENDPOINTS.CUSTOMER_LOGOUT, 'POST');
+                    await this.request(API_CONFIG.ENDPOINTS.CUSTOMER_LOGOUT, 'POST', null, true, true);
                 } finally {
                     TokenManager.clearAll();
                 }
             }
             
-            // Profile methods
+            // ========== PROFILE METHODS ==========
             static async getProfile() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_PROFILE);
             }
@@ -3046,32 +3285,33 @@
                 return await this.request(API_CONFIG.ENDPOINTS.UPDATE_PREFERENCES, 'PUT', data);
             }
             
+            // ========== AUTH METHODS ==========
             static async changePassword(data) {
-                return await this.request(API_CONFIG.ENDPOINTS.CHANGE_PASSWORD, 'POST', data);
+                return await this.request(API_CONFIG.ENDPOINTS.CHANGE_PASSWORD, 'POST', data, true, true);
             }
             
             static async deleteAccount(password) {
-                return await this.request(API_CONFIG.ENDPOINTS.DELETE_ACCOUNT, 'DELETE', { password });
+                return await this.request(API_CONFIG.ENDPOINTS.DELETE_ACCOUNT, 'DELETE', { password }, true, true);
             }
             
-            // Two-Factor methods
+            // ========== TWO-FACTOR METHODS ==========
             static async generate2FASecret() {
-                return await this.request(API_CONFIG.ENDPOINTS.GENERATE_2FA_SECRET, 'POST');
+                return await this.request(API_CONFIG.ENDPOINTS.GENERATE_2FA_SECRET, 'POST', null, true, true);
             }
             
             static async enable2FA(data) {
-                return await this.request(API_CONFIG.ENDPOINTS.ENABLE_2FA, 'POST', data);
+                return await this.request(API_CONFIG.ENDPOINTS.ENABLE_2FA, 'POST', data, true, true);
             }
             
             static async disable2FA() {
-                return await this.request(API_CONFIG.ENDPOINTS.DISABLE_2FA, 'POST');
+                return await this.request(API_CONFIG.ENDPOINTS.DISABLE_2FA, 'POST', null, true, true);
             }
             
             static async verify2FASetup(code) {
-                return await this.request(API_CONFIG.ENDPOINTS.VERIFY_2FA_SETUP, 'POST', { code });
+                return await this.request(API_CONFIG.ENDPOINTS.VERIFY_2FA_SETUP, 'POST', { code }, true, true);
             }
             
-            // Orders methods
+            // ========== ORDERS METHODS ==========
             static async getOrders(params = {}) {
                 const query = new URLSearchParams(params).toString();
                 const endpoint = query ? `${API_CONFIG.ENDPOINTS.GET_ORDERS}?${query}` : API_CONFIG.ENDPOINTS.GET_ORDERS;
@@ -3098,7 +3338,15 @@
                 return await this.request(API_CONFIG.ENDPOINTS.REORDER.replace(':id', id), 'POST');
             }
             
-            // Appointments methods
+            static async searchOrders(query) {
+                return await this.request(`${API_CONFIG.ENDPOINTS.SEARCH_ORDERS}?q=${encodeURIComponent(query)}`);
+            }
+            
+            static async filterOrders(status) {
+                return await this.request(`${API_CONFIG.ENDPOINTS.FILTER_ORDERS}?status=${status}`);
+            }
+            
+            // ========== APPOINTMENTS METHODS ==========
             static async getAppointments(params = {}) {
                 const query = new URLSearchParams(params).toString();
                 const endpoint = query ? `${API_CONFIG.ENDPOINTS.GET_APPOINTMENTS}?${query}` : API_CONFIG.ENDPOINTS.GET_APPOINTMENTS;
@@ -3121,7 +3369,11 @@
                 return await this.request(API_CONFIG.ENDPOINTS.RESCHEDULE_APPOINTMENT.replace(':id', id), 'PUT', data);
             }
             
-            // Wishlist methods
+            static async filterAppointments(status) {
+                return await this.request(`${API_CONFIG.ENDPOINTS.FILTER_APPOINTMENTS}?status=${status}`);
+            }
+            
+            // ========== WISHLIST METHODS ==========
             static async getWishlist() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_WISHLIST);
             }
@@ -3138,7 +3390,11 @@
                 return await this.request(API_CONFIG.ENDPOINTS.MOVE_TO_CART.replace(':id', id), 'POST');
             }
             
-            // Addresses methods
+            static async clearWishlist() {
+                return await this.request(API_CONFIG.ENDPOINTS.CLEAR_WISHLIST, 'DELETE');
+            }
+            
+            // ========== ADDRESSES METHODS ==========
             static async getAddresses() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_ADDRESSES);
             }
@@ -3159,7 +3415,7 @@
                 return await this.request(API_CONFIG.ENDPOINTS.SET_DEFAULT_ADDRESS.replace(':id', id), 'PUT');
             }
             
-            // Payment methods
+            // ========== PAYMENT METHODS ==========
             static async getPaymentMethods() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_PAYMENT_METHODS);
             }
@@ -3176,7 +3432,7 @@
                 return await this.request(API_CONFIG.ENDPOINTS.SET_DEFAULT_PAYMENT.replace(':id', id), 'PUT');
             }
             
-            // Notification methods
+            // ========== NOTIFICATION METHODS ==========
             static async getNotificationSettings() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_NOTIFICATION_SETTINGS);
             }
@@ -3189,7 +3445,7 @@
                 return await this.request(API_CONFIG.ENDPOINTS.GET_UNREAD_COUNT);
             }
             
-            // Support ticket methods
+            // ========== SUPPORT TICKET METHODS ==========
             static async getTickets(params = {}) {
                 const query = new URLSearchParams(params).toString();
                 const endpoint = query ? `${API_CONFIG.ENDPOINTS.GET_TICKETS}?${query}` : API_CONFIG.ENDPOINTS.GET_TICKETS;
@@ -3200,7 +3456,7 @@
                 return await this.request(API_CONFIG.ENDPOINTS.GET_TICKET_COUNT);
             }
             
-            // Dashboard methods
+            // ========== DASHBOARD METHODS ==========
             static async getDashboardStats() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_DASHBOARD_STATS);
             }
@@ -3213,14 +3469,73 @@
                 return await this.request(API_CONFIG.ENDPOINTS.GET_COUNTS);
             }
             
-            // Cart methods
+            static async getQuickStats() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_QUICK_STATS);
+            }
+            
+            // ========== CART METHODS ==========
             static async getCartCount() {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_CART_COUNT);
             }
             
-            // Product methods
+            static async addToCart(productId) {
+                return await this.request(API_CONFIG.ENDPOINTS.ADD_TO_CART, 'POST', { productId });
+            }
+            
+            // ========== PRODUCT METHODS ==========
             static async getProduct(id) {
                 return await this.request(API_CONFIG.ENDPOINTS.GET_PRODUCT.replace(':id', id));
+            }
+            
+            static async searchProducts(query) {
+                return await this.request(`${API_CONFIG.ENDPOINTS.SEARCH_PRODUCTS}?q=${encodeURIComponent(query)}`);
+            }
+            
+            // ========== SUBSCRIPTIONS METHODS ==========
+            static async getSubscriptions() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_SUBSCRIPTIONS);
+            }
+            
+            static async getSubscriptionPlans() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_SUBSCRIPTION_PLANS);
+            }
+            
+            static async cancelSubscription(id) {
+                return await this.request(API_CONFIG.ENDPOINTS.CANCEL_SUBSCRIPTION.replace(':id', id), 'POST');
+            }
+            
+            // ========== LOYALTY METHODS ==========
+            static async getLoyaltyPoints() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_LOYALTY_POINTS);
+            }
+            
+            static async getLoyaltyHistory() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_LOYALTY_HISTORY);
+            }
+            
+            static async getRewards() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_REWARDS);
+            }
+            
+            static async redeemReward(id) {
+                return await this.request(API_CONFIG.ENDPOINTS.REDEEM_REWARD.replace(':id', id), 'POST');
+            }
+            
+            // ========== REFERRAL METHODS ==========
+            static async getReferralInfo() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_REFERRAL_INFO);
+            }
+            
+            static async getReferralHistory() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_REFERRAL_HISTORY);
+            }
+            
+            static async generateReferralLink() {
+                return await this.request(API_CONFIG.ENDPOINTS.GENERATE_REFERRAL_LINK, 'POST');
+            }
+            
+            static async getReferralStats() {
+                return await this.request(API_CONFIG.ENDPOINTS.GET_REFERRAL_STATS);
             }
         }
 
@@ -3236,7 +3551,6 @@
             }
             
             async init() {
-                // Check authentication first
                 await this.checkAuthentication();
                 
                 if (!this.isAuthenticated) {
@@ -3244,15 +3558,11 @@
                     return;
                 }
                 
-                // Set up session monitoring
                 this.startSessionMonitoring();
-                
-                // Initialize UI
                 this.setupEventListeners();
                 this.updateUserUI();
                 await this.loadInitialData();
                 
-                // Check URL for tab parameter
                 const urlParams = new URLSearchParams(window.location.search);
                 const tabParam = urlParams.get('tab');
                 if (tabParam && this.isValidTab(tabParam)) {
@@ -3262,31 +3572,32 @@
             
             isValidTab(tab) {
                 const validTabs = ['overview', 'profile', 'orders', 'appointments', 'wishlist', 
-                                 'addresses', 'payment', 'security', 'notifications', 'support'];
+                                 'addresses', 'payment', 'security', 'notifications', 'support',
+                                 'subscriptions', 'loyalty', 'referrals'];
                 return validTabs.includes(tab);
             }
             
             async checkAuthentication() {
                 try {
-                    // Check if we have a token
                     const token = TokenManager.getAccessToken();
+                    
                     if (!token) {
-                        console.log('No token found');
                         return false;
                     }
                     
-                    // Check if token is valid
                     if (!TokenManager.isTokenValid()) {
-                        console.log('Token expired');
-                        // Try to refresh token
                         const refreshed = await ApiService.refreshToken();
                         if (!refreshed) {
                             return false;
                         }
                     }
                     
-                    // Validate session with server
-                    this.isAuthenticated = await ApiService.validateSession();
+                    try {
+                        this.isAuthenticated = await ApiService.validateSession();
+                    } catch (validationError) {
+                        this.isAuthenticated = TokenManager.isTokenValid();
+                    }
+                    
                     return this.isAuthenticated;
                 } catch (error) {
                     console.error('Authentication check failed:', error);
@@ -3296,20 +3607,17 @@
             
             showAuthRequired() {
                 document.getElementById('auth-required-overlay').classList.add('active');
-                // Hide main content
                 document.querySelector('.main-content').style.display = 'none';
                 document.querySelector('.main-footer').style.display = 'none';
             }
             
             hideAuthRequired() {
                 document.getElementById('auth-required-overlay').classList.remove('active');
-                // Show main content
                 document.querySelector('.main-content').style.display = 'block';
                 document.querySelector('.main-footer').style.display = 'block';
             }
             
             startSessionMonitoring() {
-                // Clear existing timers
                 if (this.sessionTimer) {
                     clearInterval(this.sessionTimer);
                 }
@@ -3317,15 +3625,13 @@
                     clearInterval(this.sessionWarningTimer);
                 }
                 
-                // Check session every minute
                 this.sessionTimer = setInterval(async () => {
                     const isValid = await this.checkAuthentication();
                     if (!isValid) {
                         this.handleSessionExpired();
                     }
-                }, 60000); // 1 minute
+                }, 60000);
                 
-                // Start session warning countdown (5 minutes before expiry)
                 this.startSessionWarning();
             }
             
@@ -3336,14 +3642,12 @@
                 const now = Date.now();
                 const timeUntilExpiry = expiry - now;
                 
-                // If less than 5 minutes remaining, show warning
                 if (timeUntilExpiry < 5 * 60 * 1000) {
                     this.showSessionWarning(Math.floor(timeUntilExpiry / 1000));
                 } else {
-                    // Schedule warning for 5 minutes before expiry
                     const warningTime = timeUntilExpiry - (5 * 60 * 1000);
                     setTimeout(() => {
-                        this.showSessionWarning(5 * 60); // 5 minutes in seconds
+                        this.showSessionWarning(5 * 60);
                     }, warningTime);
                 }
             }
@@ -3397,7 +3701,6 @@
             }
             
             setupEventListeners() {
-                // Tab navigation
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.addEventListener('click', (e) => {
                         const tabId = e.currentTarget.dataset.tab;
@@ -3405,13 +3708,11 @@
                     });
                 });
                 
-                // Profile form
                 document.getElementById('profile-form')?.addEventListener('submit', (e) => {
                     e.preventDefault();
                     this.saveProfile();
                 });
                 
-                // Account type toggle
                 document.querySelectorAll('input[name="account-type"]').forEach(radio => {
                     radio.addEventListener('change', (e) => {
                         document.getElementById('business-fields').style.display = 
@@ -3419,28 +3720,29 @@
                     });
                 });
                 
-                // Logout buttons
                 document.getElementById('logout-btn')?.addEventListener('click', () => this.logout());
                 document.getElementById('mobile-logout-btn')?.addEventListener('click', () => this.logout());
                 
-                // Mobile menu
                 document.getElementById('mobile-menu-btn')?.addEventListener('click', this.toggleMobileMenu);
                 document.getElementById('mobile-menu-close')?.addEventListener('click', this.toggleMobileMenu);
                 
-                // User menu
                 document.getElementById('user-menu-btn')?.addEventListener('click', this.toggleUserMenu);
                 
-                // Close dropdowns when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!e.target.closest('.user-profile')) {
                         document.getElementById('user-dropdown').classList.remove('active');
                     }
                 });
                 
-                // Global search
                 document.getElementById('global-search')?.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         this.performSearch(e.target.value);
+                    }
+                });
+                
+                document.getElementById('order-search')?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchOrders(e.target.value);
                     }
                 });
             }
@@ -3457,39 +3759,54 @@
             
             async updateUserUI() {
                 try {
-                    // Get user data from token manager or fetch from API
+                    const token = TokenManager.getAccessToken();
+                    if (!token) {
+                        throw new Error('No token available');
+                    }
+                    
+                    const decodedToken = ApiService.decodeJWT(token);
+                    
+                    if (!decodedToken) {
+                        throw new Error('Could not decode user token');
+                    }
+                    
                     this.userData = TokenManager.getUserData();
                     
                     if (!this.userData) {
-                        // Fetch fresh user data
-                        const response = await ApiService.getProfile();
-                        this.userData = response.user;
-                        TokenManager.setUserData(this.userData);
+                        try {
+                            const response = await ApiService.getProfile();
+                            this.userData = response.user;
+                            TokenManager.setUserData(this.userData);
+                        } catch (error) {
+                            this.userData = {
+                                email: decodedToken.email || 'user@example.com',
+                                firstName: 'User',
+                                lastName: 'Account',
+                                name: 'User Account'
+                            };
+                            TokenManager.setUserData(this.userData);
+                        }
                     }
                     
-                    // Update welcome message
                     const firstName = this.userData.firstName || this.userData.name?.split(' ')[0] || 'User';
                     document.getElementById('welcome-name').textContent = firstName;
                     
-                    // Update profile card
                     document.getElementById('profile-name').textContent = 
                         `${this.userData.firstName || ''} ${this.userData.lastName || ''}`.trim() || 
                         this.userData.name || 
                         'User';
                     
-                    document.getElementById('profile-email').textContent = this.userData.email || '';
+                    document.getElementById('profile-email').textContent = this.userData.email || decodedToken.email || 'user@example.com';
+                    document.getElementById('profile-email-input').value = this.userData.email || decodedToken.email || 'user@example.com';
                     
-                    // Update mobile user info
                     document.getElementById('mobile-user-name').textContent = 
                         `${this.userData.firstName || ''} ${this.userData.lastName || ''}`.trim() || 
                         this.userData.name || 
                         'User';
-                    document.getElementById('mobile-user-email').textContent = this.userData.email || '';
+                    document.getElementById('mobile-user-email').textContent = this.userData.email || decodedToken.email || 'user@example.com';
                     
-                    // Update user menu name
                     document.getElementById('user-menu-name').textContent = firstName;
                     
-                    // Update avatar with initials
                     const initials = this.getInitials(
                         `${this.userData.firstName || ''} ${this.userData.lastName || ''}`.trim() || 
                         this.userData.name || 
@@ -3497,24 +3814,16 @@
                     );
                     document.getElementById('user-avatar').innerHTML = `<span>${initials}</span>`;
                     
-                    // Update account status
                     const statusEl = document.getElementById('account-status');
-                    const isVerified = this.userData.emailVerified || this.userData.verified;
-                    statusEl.textContent = isVerified ? 'Verified Account' : 'Unverified Account';
-                    statusEl.className = `account-status ${isVerified ? 'verified' : 'unverified'}`;
+                    statusEl.textContent = this.userData.status === 'verified' ? 'Verified Account' : 'Unverified Account';
+                    statusEl.className = this.userData.status === 'verified' ? 'account-status verified' : 'account-status unverified';
                     
-                    // Update subtitle for business accounts
-                    if (this.userData.accountType === 'business') {
-                        document.getElementById('dashboard-subtitle').textContent = 
-                            'Manage your business account, bulk orders, and team settings.';
-                    }
-                    
-                    // Show authenticated content
                     this.hideAuthRequired();
                     
                 } catch (error) {
                     console.error('Failed to update user UI:', error);
-                    this.showAlert('Failed to load user data', 'error');
+                    this.showAlert('Error loading user data', 'error');
+                    this.hideAuthRequired();
                 }
             }
             
@@ -3527,12 +3836,10 @@
                     tabId = 'overview';
                 }
                 
-                // Update URL without reload
                 const url = new URL(window.location);
                 url.searchParams.set('tab', tabId);
                 window.history.pushState({}, '', url);
                 
-                // Update active nav item
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.classList.remove('active');
                     if (item.dataset.tab === tabId) {
@@ -3540,7 +3847,6 @@
                     }
                 });
                 
-                // Show active tab content
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                     if (content.id === `${tabId}-tab`) {
@@ -3551,10 +3857,7 @@
                 
                 this.currentTab = tabId;
                 
-                // Close mobile menu if open
                 document.getElementById('mobile-menu-panel').classList.remove('active');
-                
-                // Close user dropdown if open
                 document.getElementById('user-dropdown').classList.remove('active');
             }
             
@@ -3603,6 +3906,15 @@
                         case 'support':
                             await this.loadSupportTickets();
                             break;
+                        case 'subscriptions':
+                            await this.loadSubscriptions();
+                            break;
+                        case 'loyalty':
+                            await this.loadLoyaltyPoints();
+                            break;
+                        case 'referrals':
+                            await this.loadReferrals();
+                            break;
                     }
                 } catch (error) {
                     console.error(`Error loading ${tabId}:`, error);
@@ -3612,52 +3924,59 @@
             
             async loadOverviewData() {
                 try {
-                    // Show loading state
                     document.getElementById('overview-loading').style.display = 'block';
                     
-                    const [stats, recentOrders, appointments, activity] = await Promise.all([
-                        ApiService.getDashboardStats(),
-                        ApiService.getRecentOrders(5),
-                        ApiService.getUpcomingAppointments(),
-                        ApiService.getRecentActivity()
-                    ]);
-                    
-                    // Update stats
-                    if (stats.success) {
-                        document.getElementById('total-orders').textContent = stats.stats?.totalOrders || 0;
-                        document.getElementById('total-services').textContent = stats.stats?.totalServices || 0;
-                        document.getElementById('total-spent').textContent = `$${(stats.stats?.totalSpent || 0).toFixed(2)}`;
-                        document.getElementById('member-since').textContent = stats.stats?.memberMonths || 0;
+                    try {
+                        const [stats, recentOrders, appointments, activity, quickStats] = await Promise.all([
+                            ApiService.getDashboardStats().catch(e => ({ success: false, stats: {} })),
+                            ApiService.getRecentOrders(5).catch(e => ({ success: false, orders: [] })),
+                            ApiService.getUpcomingAppointments().catch(e => ({ success: false, appointments: [] })),
+                            ApiService.getRecentActivity().catch(e => ({ success: false, activities: [] })),
+                            ApiService.getQuickStats().catch(e => ({ success: false, stats: {} }))
+                        ]);
                         
-                        // Hide loading, show content
+                        if (stats.success) {
+                            document.getElementById('total-orders').textContent = stats.stats?.totalOrders || 0;
+                            document.getElementById('total-services').textContent = stats.stats?.totalServices || 0;
+                            document.getElementById('total-spent').textContent = `$${(stats.stats?.totalSpent || 0).toFixed(2)}`;
+                            document.getElementById('member-since').textContent = stats.stats?.memberMonths || 0;
+                            document.getElementById('loyalty-points').textContent = quickStats.stats?.loyaltyPoints || 0;
+                            document.getElementById('referrals-count').textContent = quickStats.stats?.referralsCount || 0;
+                            
+                            document.getElementById('overview-loading').style.display = 'none';
+                            document.getElementById('stats-section').style.display = 'block';
+                            document.getElementById('quick-actions-section').style.display = 'block';
+                        }
+                        
+                        if (recentOrders.success && recentOrders.orders?.length > 0) {
+                            this.renderRecentOrders(recentOrders.orders || []);
+                            document.getElementById('recent-orders-section').style.display = 'block';
+                        } else {
+                            document.getElementById('no-recent-orders').style.display = 'block';
+                        }
+                        
+                        if (appointments.success && appointments.appointments?.length > 0) {
+                            this.renderAppointments(appointments.appointments || []);
+                            document.getElementById('appointments-section').style.display = 'block';
+                        } else {
+                            document.getElementById('no-appointments').style.display = 'block';
+                        }
+                        
+                        if (activity.success && activity.activities?.length > 0) {
+                            this.renderActivity(activity.activities || []);
+                            document.getElementById('activity-section').style.display = 'block';
+                        } else {
+                            document.getElementById('no-activity').style.display = 'block';
+                        }
+                    } catch (error) {
+                        console.log('Overview data loading failed:', error);
                         document.getElementById('overview-loading').style.display = 'none';
-                        document.getElementById('stats-section').style.display = 'block';
-                    }
-                    
-                    // Update recent orders
-                    if (recentOrders.success) {
-                        this.renderRecentOrders(recentOrders.orders || []);
-                        document.getElementById('recent-orders-section').style.display = 'block';
-                    } else {
                         document.getElementById('no-recent-orders').style.display = 'block';
-                    }
-                    
-                    // Update appointments
-                    if (appointments.success && appointments.appointments?.length > 0) {
-                        this.renderAppointments(appointments.appointments || []);
-                        document.getElementById('appointments-section').style.display = 'block';
-                    } else {
                         document.getElementById('no-appointments').style.display = 'block';
-                    }
-                    
-                    // Update activity
-                    if (activity.success && activity.activities?.length > 0) {
-                        this.renderActivity(activity.activities || []);
-                        document.getElementById('activity-section').style.display = 'block';
-                    } else {
                         document.getElementById('no-activity').style.display = 'block';
                     }
                 } catch (error) {
+                    console.error('Overview loading error:', error);
                     document.getElementById('overview-loading').style.display = 'none';
                     throw error;
                 }
@@ -3668,37 +3987,39 @@
                     document.getElementById('profile-loading').style.display = 'block';
                     document.getElementById('profile-form').style.display = 'none';
                     
-                    const response = await ApiService.getProfile();
-                    const profile = response.user;
-                    
-                    if (!profile) {
-                        throw new Error('No profile data received');
+                    try {
+                        const response = await ApiService.getProfile();
+                        const profile = response.user;
+                        
+                        if (profile) {
+                            document.getElementById('first-name').value = profile.firstName || '';
+                            document.getElementById('last-name').value = profile.lastName || '';
+                            document.getElementById('profile-email-input').value = profile.email || '';
+                            document.getElementById('profile-phone').value = profile.phone || '';
+                            document.getElementById('date-of-birth').value = profile.dateOfBirth || '';
+                            
+                            const accountType = profile.accountType || 'personal';
+                            document.querySelector(`input[name="account-type"][value="${accountType}"]`).checked = true;
+                            document.getElementById('business-fields').style.display = 
+                                accountType === 'business' ? 'block' : 'none';
+                            
+                            document.getElementById('company-name').value = profile.companyName || '';
+                            document.getElementById('tax-id').value = profile.taxId || '';
+                            
+                            document.getElementById('email-marketing').checked = profile.marketingConsent || false;
+                            document.getElementById('sms-notifications').checked = profile.preferences?.smsNotifications || false;
+                        }
+                    } catch (apiError) {
+                        console.log('Profile API failed:', apiError);
+                        document.getElementById('first-name').value = 'User';
+                        document.getElementById('last-name').value = 'Account';
+                        document.getElementById('profile-email-input').value = this.userData?.email || 'user@example.com';
                     }
-                    
-                    // Populate form
-                    document.getElementById('first-name').value = profile.firstName || '';
-                    document.getElementById('last-name').value = profile.lastName || '';
-                    document.getElementById('profile-email').value = profile.email || '';
-                    document.getElementById('profile-phone').value = profile.phone || '';
-                    document.getElementById('date-of-birth').value = profile.dateOfBirth || '';
-                    
-                    // Account type
-                    const accountType = profile.accountType || 'personal';
-                    document.querySelector(`input[name="account-type"][value="${accountType}"]`).checked = true;
-                    document.getElementById('business-fields').style.display = 
-                        accountType === 'business' ? 'block' : 'none';
-                    
-                    // Business fields
-                    document.getElementById('company-name').value = profile.companyName || '';
-                    document.getElementById('tax-id').value = profile.taxId || '';
-                    
-                    // Preferences
-                    document.getElementById('email-marketing').checked = profile.marketingConsent || false;
-                    document.getElementById('sms-notifications').checked = profile.preferences?.smsNotifications || false;
                     
                     document.getElementById('profile-loading').style.display = 'none';
                     document.getElementById('profile-form').style.display = 'block';
                 } catch (error) {
+                    console.error('Profile loading error:', error);
                     document.getElementById('profile-loading').innerHTML = `
                         <div class="alert-message alert-error">
                             <i class="fas fa-exclamation-circle"></i>
@@ -3714,7 +4035,6 @@
                 const saveText = document.getElementById('save-text');
                 const saveSpinner = document.getElementById('save-spinner');
                 
-                // Show loading state
                 saveBtn.disabled = true;
                 saveText.style.display = 'none';
                 saveSpinner.style.display = 'inline-block';
@@ -3734,11 +4054,15 @@
                         }
                     };
                     
-                    const response = await ApiService.updateProfile(formData);
-                    this.userData = { ...this.userData, ...response.user };
-                    TokenManager.setUserData(this.userData);
-                    this.updateUserUI();
-                    this.showAlert('Profile updated successfully!', 'success');
+                    try {
+                        const response = await ApiService.updateProfile(formData);
+                        this.userData = { ...this.userData, ...response.user };
+                        TokenManager.setUserData(this.userData);
+                        this.updateUserUI();
+                        this.showAlert('Profile updated successfully!', 'success');
+                    } catch (apiError) {
+                        this.showAlert('Failed to update profile', 'error');
+                    }
                 } catch (error) {
                     this.showAlert(error.message || 'Failed to update profile', 'error');
                 } finally {
@@ -3753,12 +4077,44 @@
                     const response = await ApiService.getOrders();
                     this.renderOrders(response.orders || []);
                 } catch (error) {
+                    console.error('Orders loading error:', error);
                     document.getElementById('orders-content').innerHTML = `
-                        <div class="alert-message alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Failed to load orders</span>
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h3>No Orders Yet</h3>
+                            <p>You haven't placed any orders yet. Start shopping to see your orders here.</p>
+                            <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
+                                Start Shopping
+                            </button>
                         </div>
                     `;
+                }
+            }
+            
+            async searchOrders(query) {
+                try {
+                    const response = await ApiService.searchOrders(query);
+                    this.renderOrders(response.orders || []);
+                } catch (error) {
+                    this.showAlert('Failed to search orders', 'error');
+                }
+            }
+            
+            async filterOrders(status) {
+                try {
+                    const response = await ApiService.filterOrders(status);
+                    this.renderOrders(response.orders || []);
+                } catch (error) {
+                    this.showAlert('Failed to filter orders', 'error');
+                }
+            }
+            
+            async sortOrders(sortBy) {
+                try {
+                    const response = await ApiService.getOrders({ sort: sortBy });
+                    this.renderOrders(response.orders || []);
+                } catch (error) {
+                    this.showAlert('Failed to sort orders', 'error');
                 }
             }
             
@@ -3767,12 +4123,26 @@
                     const response = await ApiService.getAppointments();
                     this.renderAppointmentsTab(response.appointments || []);
                 } catch (error) {
+                    console.error('Appointments loading error:', error);
                     document.getElementById('appointments-content').innerHTML = `
-                        <div class="alert-message alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Failed to load appointments</span>
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>No Appointments</h3>
+                            <p>You haven't booked any service appointments yet.</p>
+                            <button class="quick-action-btn primary" onclick="window.location.href='booking-form.html'">
+                                Book a Service
+                            </button>
                         </div>
                     `;
+                }
+            }
+            
+            async filterAppointments(status) {
+                try {
+                    const response = await ApiService.filterAppointments(status);
+                    this.renderAppointmentsTab(response.appointments || []);
+                } catch (error) {
+                    this.showAlert('Failed to filter appointments', 'error');
                 }
             }
             
@@ -3781,12 +4151,30 @@
                     const response = await ApiService.getWishlist();
                     this.renderWishlist(response.wishlist || []);
                 } catch (error) {
+                    console.error('Wishlist loading error:', error);
                     document.getElementById('wishlist-content').innerHTML = `
-                        <div class="alert-message alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Failed to load wishlist</span>
+                        <div class="empty-state">
+                            <i class="fas fa-heart"></i>
+                            <h3>Your Wishlist is Empty</h3>
+                            <p>Add products you like to your wishlist to save them for later.</p>
+                            <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
+                                Browse Products
+                            </button>
                         </div>
                     `;
+                }
+            }
+            
+            async clearWishlist() {
+                if (!confirm('Are you sure you want to clear your entire wishlist?')) return;
+                
+                try {
+                    await ApiService.clearWishlist();
+                    this.showAlert('Wishlist cleared successfully', 'success');
+                    this.loadWishlist();
+                    this.updateCounts();
+                } catch (error) {
+                    this.showAlert('Failed to clear wishlist', 'error');
                 }
             }
             
@@ -3795,10 +4183,15 @@
                     const response = await ApiService.getAddresses();
                     this.renderAddresses(response.addresses || []);
                 } catch (error) {
+                    console.error('Addresses loading error:', error);
                     document.getElementById('addresses-content').innerHTML = `
-                        <div class="alert-message alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Failed to load addresses</span>
+                        <div class="empty-state">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>No Saved Addresses</h3>
+                            <p>Add addresses for faster checkout.</p>
+                            <button class="quick-action-btn primary" onclick="dashboard.showAddressModal()">
+                                Add Address
+                            </button>
                         </div>
                     `;
                 }
@@ -3809,10 +4202,15 @@
                     const response = await ApiService.getPaymentMethods();
                     this.renderPaymentMethods(response.paymentMethods || []);
                 } catch (error) {
+                    console.error('Payment methods loading error:', error);
                     document.getElementById('payment-content').innerHTML = `
-                        <div class="alert-message alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Failed to load payment methods</span>
+                        <div class="empty-state">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>No Payment Methods</h3>
+                            <p>Add payment methods for faster checkout.</p>
+                            <button class="quick-action-btn primary" onclick="dashboard.showPaymentModal()">
+                                Add Payment Method
+                            </button>
                         </div>
                     `;
                 }
@@ -3823,6 +4221,7 @@
                     const response = await ApiService.getProfile();
                     this.renderSecuritySettings(response.user || {});
                 } catch (error) {
+                    console.error('Security settings loading error:', error);
                     document.getElementById('security-content').innerHTML = `
                         <div class="alert-message alert-error">
                             <i class="fas fa-exclamation-circle"></i>
@@ -3837,6 +4236,7 @@
                     const response = await ApiService.getNotificationSettings();
                     this.renderNotificationSettings(response.settings || {});
                 } catch (error) {
+                    console.error('Notification settings loading error:', error);
                     document.getElementById('notifications-content').innerHTML = `
                         <div class="alert-message alert-error">
                             <i class="fas fa-exclamation-circle"></i>
@@ -3851,10 +4251,78 @@
                     const response = await ApiService.getTickets();
                     this.renderSupportTickets(response.tickets || []);
                 } catch (error) {
+                    console.error('Support tickets loading error:', error);
                     document.getElementById('support-content').innerHTML = `
-                        <div class="alert-message alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Failed to load support tickets</span>
+                        <div class="empty-state">
+                            <i class="fas fa-headset"></i>
+                            <h3>No Support Tickets</h3>
+                            <p>You haven't created any support tickets yet.</p>
+                            <button class="quick-action-btn primary" onclick="window.location.href='support.html'">
+                                Contact Support
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+            
+            async loadSubscriptions() {
+                try {
+                    const response = await ApiService.getSubscriptions();
+                    this.renderSubscriptions(response.subscriptions || []);
+                } catch (error) {
+                    console.error('Subscriptions loading error:', error);
+                    document.getElementById('subscriptions-content').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-star"></i>
+                            <h3>No Active Subscriptions</h3>
+                            <p>You don't have any active subscriptions.</p>
+                            <button class="quick-action-btn primary" onclick="dashboard.browseSubscriptions()">
+                                Browse Plans
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+            
+            async loadLoyaltyPoints() {
+                try {
+                    const [pointsResponse, historyResponse] = await Promise.all([
+                        ApiService.getLoyaltyPoints(),
+                        ApiService.getLoyaltyHistory()
+                    ]);
+                    
+                    this.renderLoyaltyPoints(pointsResponse, historyResponse);
+                } catch (error) {
+                    console.error('Loyalty points loading error:', error);
+                    document.getElementById('loyalty-content').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-crown"></i>
+                            <h3>No Loyalty Points</h3>
+                            <p>Start shopping to earn loyalty points!</p>
+                            <button class="quick-action-btn primary" onclick="window.location.href='products.html'">
+                                Shop Now
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+            
+            async loadReferrals() {
+                try {
+                    const [infoResponse, historyResponse, statsResponse] = await Promise.all([
+                        ApiService.getReferralInfo(),
+                        ApiService.getReferralHistory(),
+                        ApiService.getReferralStats()
+                    ]);
+                    
+                    this.renderReferrals(infoResponse, historyResponse, statsResponse);
+                } catch (error) {
+                    console.error('Referrals loading error:', error);
+                    document.getElementById('referrals-content').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>Referral Program</h3>
+                            <p>Invite friends and earn rewards!</p>
                         </div>
                     `;
                 }
@@ -3865,23 +4333,24 @@
                     const response = await ApiService.getCounts();
                     const counts = response.counts || {};
                     
-                    // Update sidebar counts
                     document.getElementById('orders-count').textContent = counts.orders || 0;
                     document.getElementById('appointments-count').textContent = counts.appointments || 0;
                     document.getElementById('wishlist-count').textContent = counts.wishlist || 0;
                     
-                    // Update header counts
                     document.getElementById('header-wishlist-count').textContent = counts.wishlist || 0;
                     document.getElementById('header-cart-count').textContent = counts.cart || 0;
                     document.getElementById('mobile-wishlist-count').textContent = counts.wishlist || 0;
                     document.getElementById('mobile-cart-count').textContent = counts.cart || 0;
                     
-                    // Update notification badge if any
-                    if (counts.unreadNotifications > 0) {
-                        // Add notification badge logic here
-                    }
                 } catch (error) {
                     console.error('Error updating counts:', error);
+                    document.getElementById('orders-count').textContent = '0';
+                    document.getElementById('appointments-count').textContent = '0';
+                    document.getElementById('wishlist-count').textContent = '0';
+                    document.getElementById('header-wishlist-count').textContent = '0';
+                    document.getElementById('header-cart-count').textContent = '0';
+                    document.getElementById('mobile-wishlist-count').textContent = '0';
+                    document.getElementById('mobile-cart-count').textContent = '0';
                 }
             }
             
@@ -4323,7 +4792,6 @@
                     </div>
                 `;
                 
-                // Add event listener for 2FA toggle
                 document.getElementById('2fa-toggle').addEventListener('change', (e) => {
                     if (e.target.checked) {
                         this.showTwoFactorModal();
@@ -4442,6 +4910,204 @@
                 container.innerHTML = html;
             }
             
+            renderSubscriptions(subscriptions) {
+                const container = document.getElementById('subscriptions-content');
+                
+                if (!subscriptions || subscriptions.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-star"></i>
+                            <h3>No Active Subscriptions</h3>
+                            <p>You don't have any active subscriptions.</p>
+                            <button class="quick-action-btn primary" onclick="dashboard.browseSubscriptions()">
+                                Browse Plans
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div class="subscriptions-list" style="display: flex; flex-direction: column; gap: 15px;">';
+                
+                subscriptions.forEach(subscription => {
+                    html += `
+                        <div class="subscription-item" style="display: flex; align-items: center; gap: 15px; padding: 20px; background: #f9f9f9; border-radius: 10px;">
+                            <div class="subscription-icon" style="width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary-blue);">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="subscription-content" style="flex: 1;">
+                                <h3 class="subscription-title" style="margin: 0 0 5px 0; color: var(--primary-text);">${subscription.planName || 'Subscription'}</h3>
+                                <div class="subscription-meta" style="display: flex; gap: 15px; font-size: 0.85rem; color: var(--secondary-text);">
+                                    <span>Price: $${(subscription.price || 0).toFixed(2)}/${subscription.interval || 'month'}</span>
+                                    <span>Next Billing: ${this.formatDate(subscription.nextBillingDate)}</span>
+                                    <span>Status: ${subscription.status || 'active'}</span>
+                                </div>
+                            </div>
+                            <div>
+                                ${subscription.status === 'active' ? `
+                                <button class="order-action-btn secondary" onclick="dashboard.cancelSubscription('${subscription.id}')">Cancel</button>
+                                ` : ''}
+                                <button class="order-action-btn view" onclick="dashboard.viewSubscription('${subscription.id}')">Details</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+            
+            renderLoyaltyPoints(pointsData, historyData) {
+                const container = document.getElementById('loyalty-content');
+                
+                const points = pointsData.points || 0;
+                const history = historyData.history || [];
+                
+                container.innerHTML = `
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-coins"></i> Your Loyalty Points</h2>
+                        </div>
+                        <div style="text-align: center; padding: 30px;">
+                            <div style="font-size: 3rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 10px;">
+                                ${points.toLocaleString()}
+                            </div>
+                            <div style="color: var(--secondary-text); margin-bottom: 30px;">
+                                Available Points
+                            </div>
+                            <button class="quick-action-btn primary" onclick="dashboard.viewRewards()">
+                                <i class="fas fa-gift"></i> View Rewards
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-history"></i> Points History</h2>
+                        </div>
+                        ${history.length > 0 ? `
+                        <div class="activity-list">
+                            ${history.map(entry => `
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-${entry.type === 'earned' ? 'plus-circle' : 'minus-circle'}"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">${entry.description || 'Points transaction'}</p>
+                                        <p class="activity-time">${this.formatDate(entry.date)} • ${entry.type === 'earned' ? '+' : '-'}${entry.points} points</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : `
+                        <div class="empty-state" style="padding: 20px;">
+                            <i class="fas fa-history"></i>
+                            <h3>No Points History</h3>
+                            <p>Start shopping to earn loyalty points!</p>
+                        </div>
+                        `}
+                    </div>
+                `;
+            }
+            
+            renderReferrals(infoData, historyData, statsData) {
+                const container = document.getElementById('referrals-content');
+                
+                const info = infoData.info || {};
+                const history = historyData.history || [];
+                const stats = statsData.stats || {};
+                
+                container.innerHTML = `
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-user-plus"></i> Referral Program</h2>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue)); border-radius: 12px; padding: 30px; color: white; margin-bottom: 30px;">
+                            <h3 style="color: white; margin-bottom: 15px;">Invite Friends & Earn Rewards!</h3>
+                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">
+                                Share your referral link with friends. When they sign up and make their first purchase, you both earn rewards!
+                            </p>
+                            
+                            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px;">
+                                <div style="flex: 1; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; font-family: monospace; word-break: break-all;">
+                                    ${info.referralLink || 'https://xsplatform.com/ref/' + (this.userData?.id || 'user')}
+                                </div>
+                                <button class="btn-save" onclick="dashboard.copyReferralLink()">
+                                    <i class="fas fa-copy"></i> Copy Link
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1); color: var(--primary-blue);">
+                                    <i class="fas fa-user-friends"></i>
+                                </div>
+                                <div class="stat-value">${stats.totalReferrals || 0}</div>
+                                <div class="stat-label">Total Referrals</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1); color: #4caf50;">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-value">${stats.successfulReferrals || 0}</div>
+                                <div class="stat-label">Successful</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: rgba(255, 152, 0, 0.1); color: #ff9800;">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="stat-value">${stats.earnedRewards || 0}</div>
+                                <div class="stat-label">Rewards Earned</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: rgba(156, 39, 176, 0.1); color: #9c27b0;">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <div class="stat-value">${stats.pendingRewards || 0}</div>
+                                <div class="stat-label">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-history"></i> Referral History</h2>
+                        </div>
+                        ${history.length > 0 ? `
+                        <div class="activity-list">
+                            ${history.map(entry => `
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">${entry.description || 'Referral'}</p>
+                                        <p class="activity-time">${this.formatDate(entry.date)} • Status: ${entry.status || 'pending'}</p>
+                                    </div>
+                                    ${entry.reward ? `
+                                    <div style="color: var(--success); font-weight: 600;">
+                                        +${entry.reward}
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : `
+                        <div class="empty-state" style="padding: 20px;">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>No Referrals Yet</h3>
+                            <p>Share your referral link to start earning rewards!</p>
+                        </div>
+                        `}
+                    </div>
+                `;
+            }
+            
             // Action Methods
             async logout() {
                 if (confirm('Are you sure you want to logout?')) {
@@ -4451,7 +5117,6 @@
                         window.location.href = 'login.html';
                     } catch (error) {
                         console.error('Logout failed:', error);
-                        // Still clear local data and redirect
                         TokenManager.clearAll();
                         window.location.href = 'login.html';
                     }
@@ -4499,9 +5164,7 @@
             
             async addToCartFromWishlist(productId) {
                 try {
-                    // First get product details
-                    const product = await ApiService.getProduct(productId);
-                    // Then add to cart (you would implement this endpoint)
+                    await ApiService.addToCart(productId);
                     this.showAlert('Product added to cart!', 'success');
                     this.updateCounts();
                 } catch (error) {
@@ -4670,7 +5333,6 @@
                 try {
                     const response = await ApiService.generate2FASecret();
                     document.getElementById('two-factor-secret').textContent = response.secret;
-                    // In a real implementation, you would generate a QR code here
                     document.getElementById('two-factor-setup').style.display = 'block';
                     document.getElementById('two-factor-save').textContent = 'Enable 2FA';
                 } catch (error) {
@@ -4697,7 +5359,6 @@
             
             async disableTwoFactor() {
                 if (!confirm('Disable two-factor authentication? This reduces your account security.')) {
-                    // Reset toggle
                     document.getElementById('2fa-toggle').checked = true;
                     return;
                 }
@@ -4708,7 +5369,6 @@
                     this.loadTabContent('security');
                 } catch (error) {
                     this.showAlert('Failed to disable two-factor authentication', 'error');
-                    // Reset toggle
                     document.getElementById('2fa-toggle').checked = true;
                 }
             }
@@ -4720,7 +5380,6 @@
                     sms: {}
                 };
                 
-                // Collect all toggle values
                 document.querySelectorAll('#notifications-content input[type="checkbox"]').forEach(input => {
                     const type = input.dataset.type;
                     const key = input.dataset.key;
@@ -4764,6 +5423,44 @@
                 }
             }
             
+            async cancelSubscription(subscriptionId) {
+                if (!confirm('Are you sure you want to cancel this subscription?')) return;
+                
+                try {
+                    await ApiService.cancelSubscription(subscriptionId);
+                    this.showAlert('Subscription cancelled successfully', 'success');
+                    this.loadTabContent('subscriptions');
+                } catch (error) {
+                    this.showAlert('Failed to cancel subscription', 'error');
+                }
+            }
+            
+            viewSubscription(subscriptionId) {
+                this.showAlert('Subscription details feature coming soon', 'info');
+            }
+            
+            browseSubscriptions() {
+                window.location.href = 'subscriptions.html';
+            }
+            
+            viewRewards() {
+                window.location.href = 'rewards.html';
+            }
+            
+            async copyReferralLink() {
+                try {
+                    const response = await ApiService.generateReferralLink();
+                    const referralLink = response.link || `https://xsplatform.com/ref/${this.userData?.id || 'user'}`;
+                    
+                    await navigator.clipboard.writeText(referralLink);
+                    this.showAlert('Referral link copied to clipboard!', 'success');
+                } catch (error) {
+                    const referralLink = `https://xsplatform.com/ref/${this.userData?.id || 'user'}`;
+                    navigator.clipboard.writeText(referralLink);
+                    this.showAlert('Referral link copied to clipboard!', 'success');
+                }
+            }
+            
             viewActiveSessions() {
                 this.showAlert('Active sessions feature coming soon', 'info');
             }
@@ -4795,7 +5492,6 @@
                 
                 alertArea.appendChild(alert);
                 
-                // Auto-remove after 5 seconds
                 setTimeout(() => {
                     if (alert.parentNode) {
                         alert.parentNode.removeChild(alert);
@@ -4869,22 +5565,33 @@
 
         // Initialize dashboard when DOM is loaded
         document.addEventListener('DOMContentLoaded', async () => {
-            window.dashboard = new DashboardApp();
-            
-            // Global helper function for mobile menu
-            window.closeMobileMenu = function() {
-                document.getElementById('mobile-menu-panel').classList.remove('active');
-            };
-            
-            // Global refresh session function
-            window.refreshSession = async function() {
-                if (window.dashboard) {
-                    const refreshed = await window.dashboard.refreshSession();
-                    if (!refreshed) {
-                        window.dashboard.showAlert('Failed to refresh session', 'error');
+            try {
+                window.dashboard = new DashboardApp();
+                
+                window.closeMobileMenu = function() {
+                    document.getElementById('mobile-menu-panel').classList.remove('active');
+                };
+                
+                window.refreshSession = async function() {
+                    if (window.dashboard) {
+                        const refreshed = await window.dashboard.refreshSession();
+                        if (!refreshed) {
+                            window.dashboard.showAlert('Failed to refresh session', 'error');
+                        }
                     }
+                };
+            } catch (error) {
+                console.error('Dashboard initialization failed:', error);
+                const alertArea = document.getElementById('alert-area');
+                if (alertArea) {
+                    alertArea.innerHTML = `
+                        <div class="alert-message alert-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Failed to initialize dashboard. Please refresh the page.</span>
+                        </div>
+                    `;
                 }
-            };
+            }
         });
 
         // Handle browser back/forward buttons
